@@ -28,7 +28,6 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-@SuppressWarnings(value = "all")
 public class MusicPlayerTest {
 
     private static int totalPlayTime;
