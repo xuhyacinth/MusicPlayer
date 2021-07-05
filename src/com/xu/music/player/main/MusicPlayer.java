@@ -142,7 +142,7 @@ public class MusicPlayer {
         shell.setLayout(new FillLayout(SWT.HORIZONTAL));
         shell.setBackgroundMode(SWT.INHERIT_DEFAULT);
 
-        player = XMusic.player();
+        player = XMusic.createPlayer();
 
         // 托盘引入
         tray = display.getSystemTray();
@@ -469,21 +469,6 @@ public class MusicPlayer {
         }
         updatePlayerSongLists(Constant.MUSIC_PLAYER_SONGS_LIST, table);
         readMusicPlayerPlayingSong();
-
-        Constant.MUSIC_PLAYER_COLORS.add(Color.BLACK);
-        Constant.MUSIC_PLAYER_COLORS.add(Color.BLUE);
-        Constant.MUSIC_PLAYER_COLORS.add(Color.CYAN);
-        Constant.MUSIC_PLAYER_COLORS.add(Color.DARK_GRAY);
-        Constant.MUSIC_PLAYER_COLORS.add(Color.GRAY);
-        Constant.MUSIC_PLAYER_COLORS.add(Color.GREEN);
-        Constant.MUSIC_PLAYER_COLORS.add(Color.LIGHT_GRAY);
-        Constant.MUSIC_PLAYER_COLORS.add(Color.MAGENTA);
-        Constant.MUSIC_PLAYER_COLORS.add(Color.ORANGE);
-        Constant.MUSIC_PLAYER_COLORS.add(Color.PINK);
-        Constant.MUSIC_PLAYER_COLORS.add(Color.RED);
-        Constant.MUSIC_PLAYER_COLORS.add(Color.WHITE);
-        Constant.MUSIC_PLAYER_COLORS.add(Color.YELLOW);
-
     }
 
     /**
@@ -502,7 +487,7 @@ public class MusicPlayer {
         TableItem item;
         for (int i = 0; i < lists.size(); i++) {
             item = new TableItem(table, SWT.NONE);
-            item.setText(new String[]{"" + (i + 1), lists.get(i).split(Constant.MUSIC_PLAYER_SYSTEM_SPLIT)[1]});
+            item.setText(new String[]{lists.get(i).split(Constant.MUSIC_PLAYER_SYSTEM_SPLIT)[0], lists.get(i).split(Constant.MUSIC_PLAYER_SYSTEM_SPLIT)[2]});
         }
     }
 
@@ -566,7 +551,11 @@ public class MusicPlayer {
             }
         }
 
-        player.load(Constant.PLAYING_SONG_NAME.split(Constant.MUSIC_PLAYER_SYSTEM_SPLIT)[0]);
+        try {
+            player.load(Constant.PLAYING_SONG_NAME.split(Constant.MUSIC_PLAYER_SYSTEM_SPLIT)[1]);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         try {
             player.start();
@@ -605,7 +594,7 @@ public class MusicPlayer {
         start.setImage(SWTResourceManager.getImage(MusicPlayer.class, "/com/xu/music/player/image/start.png"));
 
         Constant.PLAYING_SONG_HAVE_LYRIC = false;
-        Constant.PLAYING_SONG_LENGTH = Integer.parseInt(Constant.PLAYING_SONG_NAME.split(Constant.MUSIC_PLAYER_SYSTEM_SPLIT)[3]);
+        Constant.PLAYING_SONG_LENGTH = Integer.parseInt(Constant.PLAYING_SONG_NAME.split(Constant.MUSIC_PLAYER_SYSTEM_SPLIT)[4]);
         ttime.setText(format(Constant.PLAYING_SONG_LENGTH));
 
         TableItem[] items = table.getItems();

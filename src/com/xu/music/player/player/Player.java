@@ -3,6 +3,7 @@ package com.xu.music.player.player;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioFormat.Encoding;
 import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +20,7 @@ public interface Player {
      * @Description: Java Music 加载音频
      * @date 2019年10月31日19:06:39
      */
-    void load(URL url);
+    void load(URL url) throws UnsupportedAudioFileException, IOException, Exception;
 
     /**
      * Java Music 加载音频
@@ -30,7 +31,7 @@ public interface Player {
      * @Description: Java Music 加载音频
      * @date 2019年10月31日19:06:39
      */
-    void load(File file);
+    void load(File file) throws UnsupportedAudioFileException, IOException, Exception;
 
     /**
      * Java Music 加载音频
@@ -40,7 +41,7 @@ public interface Player {
      * @Description: Java Music 加载音频
      * @date 2019年10月31日19:06:39
      */
-    void load(String path);
+    void load(String path) throws Exception;
 
     /**
      * Java Music 加载音频
@@ -51,7 +52,7 @@ public interface Player {
      * @Description: Java Music 加载音频
      * @date 2019年10月31日19:06:39
      */
-    void load(InputStream stream);
+    void load(InputStream stream) throws Exception;
 
     /**
      * Java Music 加载音频
@@ -63,7 +64,7 @@ public interface Player {
      * @Description: Java Music 加载音频
      * @date 2019年10月31日19:06:39
      */
-    void load(Encoding encoding, AudioInputStream stream);
+    void load(Encoding encoding, AudioInputStream stream) throws Exception;
 
     /**
      * Java Music 加载音频
@@ -75,7 +76,7 @@ public interface Player {
      * @Description: Java Music 加载音频
      * @date 2019年10月31日19:06:39
      */
-    void load(AudioFormat format, AudioInputStream stream);
+    void load(AudioFormat format, AudioInputStream stream) throws Exception;
 
     /**
      * Java Music 结束播放
@@ -124,7 +125,7 @@ public interface Player {
      * @Description: Java Music 是否运行
      * @date 2019年10月31日19:06:39
      */
-    boolean isAlive();
+    boolean isActive();
 
     /**
      * Java Music 是否正在播放

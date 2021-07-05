@@ -8,35 +8,25 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
 public class Writing {
 
-    public static void main(String[] args) {
-        Writing writing = new Writing();
-        List<String> list = new ArrayList<String>();
-        list.add("F:\\KuGou\\丸子呦 - 广寒宫.mp3<-->Y");
-        writing.write(list);
-        for (String l : Constant.MUSIC_PLAYER_SONGS_LIST) {
-            System.out.println(l);
-        }
-    }
-
-
-    public boolean write(List<String> lists) {
+    public void write(List<String> lists) {
         File file = new File(Constant.MUSIC_PLAYER_SONG_LISTS_FULL_PATH);
-        HashSet<String> songs = new HashSet<String>();
+        HashSet<String> songs = new HashSet<>();
         if (file.exists()) {
             songs = new Reading().read();
+            int count = songs.size();
             String content;
             String[] splits;
             for (String list : lists) {
                 splits = list.split(Constant.MUSIC_PLAYER_SYSTEM_SPLIT);
-                content = splits[0];
+                content = count + "";
                 try {
+                    content += Constant.MUSIC_PLAYER_SYSTEM_SPLIT + splits[0];
                     content += Constant.MUSIC_PLAYER_SYSTEM_SPLIT + getSongName(splits[0]);
                     content += Constant.MUSIC_PLAYER_SYSTEM_SPLIT + getSongName(splits[0]);
                     content += Constant.MUSIC_PLAYER_SYSTEM_SPLIT + getSongLength(splits[0]);
@@ -44,6 +34,7 @@ public class Writing {
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }
+                count++;
                 songs.add(content);
             }
         } else {
@@ -55,10 +46,12 @@ public class Writing {
             }
             String content;
             String[] splits;
+            int count = 0;
             for (String list : lists) {
                 splits = list.split(Constant.MUSIC_PLAYER_SYSTEM_SPLIT);
-                content = splits[0];
+                content = count + "";
                 try {
+                    content += Constant.MUSIC_PLAYER_SYSTEM_SPLIT + splits[0];
                     content += Constant.MUSIC_PLAYER_SYSTEM_SPLIT + getSongName(splits[0]);
                     content += Constant.MUSIC_PLAYER_SYSTEM_SPLIT + getSongName(splits[0]);
                     content += Constant.MUSIC_PLAYER_SYSTEM_SPLIT + getSongLength(splits[0]);
@@ -66,13 +59,14 @@ public class Writing {
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }
+                count++;
                 songs.add(content);
             }
         }
         FileWriter fWriter = null;
         BufferedWriter bWriter;
         try {
-            fWriter = new FileWriter(new File(Constant.MUSIC_PLAYER_SONG_LISTS_FULL_PATH));
+            fWriter = new FileWriter(Constant.MUSIC_PLAYER_SONG_LISTS_FULL_PATH);
             bWriter = new BufferedWriter(fWriter);
             Constant.MUSIC_PLAYER_SONGS_LIST.clear();
             for (String song : songs) {
@@ -84,7 +78,6 @@ public class Writing {
             bWriter.close();
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
         } finally {
             try {
                 if (fWriter != null) {
@@ -94,7 +87,6 @@ public class Writing {
                 e.printStackTrace();
             }
         }
-        return true;
     }
 
     private String getSongName(String song) {

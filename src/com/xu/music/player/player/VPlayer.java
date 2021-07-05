@@ -16,7 +16,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.LinkedList;
 
-public class XMusic implements Player {
+public class VPlayer implements Player {
 
     private static Thread thread = null;
     private static DataLine.Info info = null;
@@ -26,19 +26,15 @@ public class XMusic implements Player {
     private static volatile boolean playing = false;
     public static volatile LinkedList<Double> deque = new LinkedList<>();
 
-    private XMusic() {
+    private VPlayer() {
     }
 
     private static class SingletonHolder {
-        private static final XMusic player = new XMusic();
+        private static final VPlayer player = new VPlayer();
     }
 
-    public static XMusic createPlayer() {
-        return XMusic.SingletonHolder.player;
-    }
-
-    public static boolean isPlaying() {
-        return playing;
+    public static VPlayer createPlayer() {
+        return SingletonHolder.player;
     }
 
     @Override
@@ -50,7 +46,7 @@ public class XMusic implements Player {
     @Override
     public void load(File file) throws Exception {
         end();
-        loadFile(AudioSystem.getAudioInputStream(file));
+        load(AudioSystem.getAudioInputStream(file));
     }
 
     @Override
@@ -117,7 +113,6 @@ public class XMusic implements Player {
             }
         } else {
             playing = true;
-            thread.setUncaughtExceptionHandler(new ExceptionHandler());
             thread = new Thread(() -> {
                 try {
                     if (info != null) {
@@ -186,7 +181,7 @@ public class XMusic implements Player {
 
     @Override
     public double length() {
-        return Integer.parseInt(Constant.PLAYING_SONG_NAME.split(Constant.MUSIC_PLAYER_SYSTEM_SPLIT)[4]);
+        return 0;
     }
 
     public void put(Double v) {
@@ -204,10 +199,10 @@ public class XMusic implements Player {
             if (format.getEncoding().toString().toLowerCase().contains("mpeg")) {//mp3
                 MpegAudioFileReader mp = new MpegAudioFileReader();
                 format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, format.getSampleRate(), 16, format.getChannels(), format.getChannels() * 2, format.getSampleRate(), false);
-                XMusic.stream = AudioSystem.getAudioInputStream(format, stream);
+                VPlayer.stream = AudioSystem.getAudioInputStream(format, stream);
             } else if (format.getEncoding().toString().toLowerCase().contains("flac")) {
                 format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, format.getSampleRate(), 16, format.getChannels(), format.getChannels() * 2, format.getSampleRate(), false);
-                XMusic.stream = AudioSystem.getAudioInputStream(format, stream);
+                VPlayer.stream = AudioSystem.getAudioInputStream(format, stream);
             }
             info = new DataLine.Info(SourceDataLine.class, format, AudioSystem.NOT_SPECIFIED);
             data = (SourceDataLine) AudioSystem.getLine(info);
@@ -217,4 +212,3 @@ public class XMusic implements Player {
     }
 
 }
-

@@ -8,13 +8,14 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
+import java.util.stream.Collectors;
 
 public class Reading {
 
     public HashSet<String> read() {
         File file = new File(Constant.MUSIC_PLAYER_SONG_LISTS_FULL_PATH);
         if (file.exists() && file.isFile()) {
-            HashSet<String> songs = new HashSet<String>();
+            HashSet<String> songs = new HashSet<>();
             Constant.MUSIC_PLAYER_SONGS_LIST.clear();
             InputStreamReader fReader = null;
             BufferedReader bReader = null;
@@ -40,7 +41,7 @@ public class Reading {
                     e.printStackTrace();
                 }
             }
-            return songs;
+            return (HashSet<String>) songs.stream().sorted().collect(Collectors.toSet());
         } else {
             return null;
         }
