@@ -1,5 +1,36 @@
 package com.xu.music.player.main;
 
+import java.awt.Color;
+import java.awt.Toolkit;
+import java.util.LinkedList;
+import java.util.Random;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseTrackAdapter;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.ProgressBar;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Tray;
+import org.eclipse.wb.swt.SWTResourceManager;
+
 import com.xu.music.player.config.Reading;
 import com.xu.music.player.config.SongChoiceWindow;
 import com.xu.music.player.entity.PlayerEntity;
@@ -10,21 +41,6 @@ import com.xu.music.player.player.Player;
 import com.xu.music.player.player.XMusic;
 import com.xu.music.player.system.Constant;
 import com.xu.music.player.tray.MusicPlayerTray;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.*;
-import org.eclipse.wb.swt.SWTResourceManager;
-
-import java.awt.*;
-import java.util.LinkedList;
-import java.util.Random;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
 
 /**
  * Java MusicPlayer 观察者
@@ -37,14 +53,14 @@ import java.util.prefs.Preferences;
  */
 public class MusicPlayer {
 
-    public static boolean playing = true;// 播放按钮
-    private static Player player = null;//播放器
+    public static boolean playing = true; // 播放按钮
+    private static Player player = null; // 播放器
     private static int merchant = 0;
     private static int remainder = 0;
     private static String format = "";
     protected Shell shell;
     private Display display;
-    private Tray tray;// 播放器托盘
+    private Tray tray; // 播放器托盘
     private Table lists;
     private Table lyrics;
     private Composite top;
@@ -52,13 +68,13 @@ public class MusicPlayer {
     private ProgressBar progress; // 进度条
     private Label ttime;
 
-    private int clickX, clickY;//界面移动
+    private int clickX, clickY; // 界面移动
     private Label rtime;
 
-    private boolean choise = true;// 双击播放
+    private boolean choise = true; // 双击播放
     private Label start;
     private ControllerServer server = new ControllerServer(); // 歌词及频谱
-    private boolean click = false;//界面移动
+    private boolean click = false; // 界面移动
 
     /**
      * Launch the application.
@@ -174,11 +190,11 @@ public class MusicPlayer {
             }
         });
         combo.addModifyListener(arg0 -> {
-            //List<APISearchTipsEntity> songs = Search.search(combo.getText(),"API");
-            //for (APISearchTipsEntity song:songs) {
-            //	combo.add(song.getFilename());
-            //}
-            //combo.setListVisible(true);
+            // List<APISearchTipsEntity> songs = Search.search(combo.getText(),"API");
+            // for (APISearchTipsEntity song:songs) {
+            // 	combo.add(song.getFilename());
+            // }
+            // combo.setListVisible(true);
             combo.clearSelection();
             for (int i = 0; i < Constant.MUSIC_PLAYER_SONGS_LIST.size(); i++) {
                 if (Constant.MUSIC_PLAYER_SONGS_LIST.get(i).contains(combo.getText())) {
@@ -241,11 +257,11 @@ public class MusicPlayer {
             public void mouseDown(MouseEvent e) {
                 playing = Constant.MUSIC_PLAYER_PLAYING_STATE;
                 if (playing && !XMusic.isPlaying()) {
-                    //TODO:
+                    // TODO:
                     start.setImage(SWTResourceManager.getImage(MusicPlayer.class, "/com/xu/music/player/image/start.png"));
                     playing = false;
                 } else {
-                    //TODO:
+                    // TODO:
                     playing = true;
                     start.setImage(SWTResourceManager.getImage(MusicPlayer.class, "/com/xu/music/player/image/stop.png"));
                 }
@@ -257,9 +273,9 @@ public class MusicPlayer {
         progress = new ProgressBar(foot, SWT.NONE);
         progress.setEnabled(false);
         progress.setBounds(238, 25, 610, 17);
-        progress.setMaximum(100);//设置进度条的最大长度
+        progress.setMaximum(100);// 设置进度条的最大长度
         progress.setSelection(0);
-        progress.setMinimum(0);//设置进度的条最小程度
+        progress.setMinimum(0);// 设置进度的条最小程度
 
         ttime = new Label(foot, SWT.NONE);
         ttime.setFont(SWTResourceManager.getFont("Consolas", 9, SWT.NORMAL));
@@ -274,7 +290,7 @@ public class MusicPlayer {
         mform.setWeights(new int[]{1, 5, 1});
         cform.setWeights(new int[]{156, 728});
 
-        //界面移动
+        // 界面移动
         top.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseDown(MouseEvent e) {
@@ -288,7 +304,7 @@ public class MusicPlayer {
                 click = false;
             }
         });
-        top.addMouseMoveListener(arg0 -> {//当鼠标按下的时候执行这条语句
+        top.addMouseMoveListener(arg0 -> {// 当鼠标按下的时候执行这条语句
             if (click) {
                 shell.setLocation(shell.getLocation().x - clickX + arg0.x, shell.getLocation().y - clickY + arg0.y);
             }
@@ -320,7 +336,7 @@ public class MusicPlayer {
             }
         });
 
-        //退出
+        // 退出
         exit.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseDown(MouseEvent e) {
@@ -346,7 +362,7 @@ public class MusicPlayer {
             }
         });
 
-        //双击播放
+        // 双击播放
         lists.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseDoubleClick(MouseEvent e) {
@@ -359,12 +375,12 @@ public class MusicPlayer {
                 if (choise) {
                     TableItem[] items = lists.getSelection();
                     int index = Integer.parseInt(items[0].getText(0).trim());
-                    changePlayingSong(index - 1, 1);//下一曲
+                    nextSong(index - 1, true);// 下一曲
                 }
             }
         });
 
-        //上一曲
+        // 上一曲
         prev.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseDown(MouseEvent e) {
@@ -373,12 +389,12 @@ public class MusicPlayer {
 
             @Override
             public void mouseUp(MouseEvent e) {
-                changePlayingSong(-1, 0);//上一曲
+                nextSong(-1, false);// 上一曲
                 prev.setImage(SWTResourceManager.getImage(MusicPlayer.class, "/com/xu/music/player/image/lastsong-1.png"));
             }
         });
 
-        //下一曲
+        // 下一曲
         next.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseDown(MouseEvent e) {
@@ -387,7 +403,7 @@ public class MusicPlayer {
 
             @Override
             public void mouseUp(MouseEvent e) {
-                changePlayingSong(-1, 1);//下一曲
+                nextSong(-1, true);// 下一曲
                 next.setImage(SWTResourceManager.getImage(MusicPlayer.class, "/com/xu/music/player/image/nextsong-1.png"));
             }
         });
@@ -442,9 +458,7 @@ public class MusicPlayer {
             }
         });
 
-
         initMusicPlayer(shell, lists);
-
         System.gc();
 
     }
@@ -518,23 +532,20 @@ public class MusicPlayer {
      * <table border="1" cellpadding="10">
      * <tr><td colspan="2" align="center">changePlayingSong</td></tr>
      * <tr><th align="center">Mode 输入参数</th><th align="center">参数解释</th></tr>
-     * <tr><td align="left">0</td><td align="left">上一曲</td></tr>
-     * <tr><td align="left">1</td><td align="left">下一曲</td></tr>
+     * <tr><td align="left">false</td><td align="left">上一曲</td></tr>
+     * <tr><td align="left">true</td><td align="left">下一曲</td></tr>
      *
      * @param index 歌曲索引
-     * @param mode  切歌模式(上一曲/下一曲)
+     * @param next  切歌模式(上一曲/下一曲)
      * @return void
      * @Author: hyacinth
-     * @Title: changePlayingSong
-     * @Description: TODO
-     * @date: 2019年12月26日 下午7:33:36
+     * @Title: nextSong
+     * @date: 2021年9月6日17点11分
      */
-    public void changePlayingSong(int index, int mode) {
-        System.out.println(Constant.PLAYING_SONG_INDEX + "\t" + Constant.MUSIC_PLAYER_SONGS_LIST.get(Constant.PLAYING_SONG_INDEX));
-
-        Constant.PLAYING_SONG_INDEX = index == -1 ? Constant.PLAYING_SONG_INDEX : index;
-        Constant.PLAYING_SONG_NAME = Constant.MUSIC_PLAYER_SONGS_LIST.get(Constant.PLAYING_SONG_INDEX);
-
+    private void nextSong(int index, boolean next) {
+        if (index >= Constant.MUSIC_PLAYER_SONGS_LIST.size()) {
+            index = 0;
+        }
         if (Constant.MUSIC_PLAYER_SONGS_LIST.size() <= 0) {
             Toolkit.getDefaultToolkit().beep();
             MessageBox message = new MessageBox(shell, SWT.YES | SWT.ICON_WARNING | SWT.NO);
@@ -550,31 +561,27 @@ public class MusicPlayer {
                 message.open();
             }
         }
-
+        Constant.PLAYING_SONG_INDEX = index == -1 ? Constant.PLAYING_SONG_INDEX : index;
+        Constant.PLAYING_SONG_NAME = Constant.MUSIC_PLAYER_SONGS_LIST.get(Constant.PLAYING_SONG_INDEX);
         try {
             player.load(Constant.PLAYING_SONG_NAME.split(Constant.MUSIC_PLAYER_SYSTEM_SPLIT)[1]);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
             player.start();
         } catch (Exception e1) {
             e1.printStackTrace();
         }
         Constant.MUSIC_PLAYER_PLAYING_STATE = true;
         updatePlayerSongListsColor(lists, Constant.PLAYING_SONG_INDEX);
-        if (mode == 0) {//上一曲
-            if (Constant.PLAYING_SONG_INDEX <= 0) {
-                Constant.PLAYING_SONG_INDEX = Constant.MUSIC_PLAYER_SONGS_LIST.size();
-            } else {
-                Constant.PLAYING_SONG_INDEX--;
-            }
-        } else {//下一曲
+        if (next) {// 下一曲
             if (Constant.PLAYING_SONG_INDEX >= Constant.MUSIC_PLAYER_SONGS_LIST.size()) {
                 Constant.PLAYING_SONG_INDEX = 0;
             } else {
                 Constant.PLAYING_SONG_INDEX++;
+            }
+        } else {// 上一曲
+            if (Constant.PLAYING_SONG_INDEX <= 0) {
+                Constant.PLAYING_SONG_INDEX = Constant.MUSIC_PLAYER_SONGS_LIST.size();
+            } else {
+                Constant.PLAYING_SONG_INDEX--;
             }
         }
     }
@@ -688,9 +695,9 @@ public class MusicPlayer {
      * @date: 2019年12月29日 下午2:58:24
      */
     private void readMusicPlayerPlayingSong() {
-        //Preferences preferences = Preferences.userNodeForPackage(MusicPlayer.class);
-        //String index = preferences.get("MusicPlayer", null);
-        //next_song(Integer.parseInt(index));
+        Preferences preferences = Preferences.userNodeForPackage(MusicPlayer.class);
+        String index = preferences.get("MusicPlayer", null);
+        nextSong(Integer.parseInt(index), true);
     }
 
     /**
