@@ -1,12 +1,16 @@
 package com.xu.music.player.lyric;
 
-import com.xu.music.player.system.Constant;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.xu.music.player.system.Constant;
 
 /**
  * Java MusicPlayer 加载本地歌词

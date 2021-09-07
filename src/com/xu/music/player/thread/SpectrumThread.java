@@ -1,22 +1,25 @@
 package com.xu.music.player.thread;
 
-import com.xu.music.player.fft.Complex;
-import com.xu.music.player.fft.FFT;
-import com.xu.music.player.player.XMusic;
-import com.xu.music.player.system.Constant;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-
-import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+
+import javax.imageio.ImageIO;
+
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+
+import com.xu.music.player.fft.Complex;
+import com.xu.music.player.fft.FFT;
+import com.xu.music.player.player.XMusic;
+import com.xu.music.player.system.Constant;
 
 /**
  * Java MusicPlayer 音频线程

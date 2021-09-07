@@ -1,14 +1,15 @@
 package com.xu.music.player.config;
 
-import com.xu.music.player.system.Constant;
+import java.io.File;
+import java.util.LinkedList;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
-import java.io.File;
-import java.util.LinkedList;
+import com.xu.music.player.system.Constant;
 
 public class SongChoiceWindow {
 

@@ -1,36 +1,34 @@
 package com.xu.music.player.player;
 
-import com.xu.music.player.modle.Controller;
-import com.xu.music.player.modle.ControllerServer;
-import com.xu.music.player.system.Constant;
-import javazoom.spi.mpeg.sampled.file.MpegAudioFileReader;
-
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.SourceDataLine;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.LinkedList;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.SourceDataLine;
+
+import com.xu.music.player.modle.Controller;
+import com.xu.music.player.modle.ControllerServer;
+import com.xu.music.player.system.Constant;
+
+import javazoom.spi.mpeg.sampled.file.MpegAudioFileReader;
+
 public class VPlayer implements Player {
 
+    public static volatile LinkedList<Double> deque = new LinkedList<>();
     private static Thread thread = null;
     private static DataLine.Info info = null;
     private static AudioFormat format = null;
     private static SourceDataLine data = null;
     private static AudioInputStream stream = null;
     private static volatile boolean playing = false;
-    public static volatile LinkedList<Double> deque = new LinkedList<>();
 
     private VPlayer() {
-    }
-
-    private static class SingletonHolder {
-        private static final VPlayer player = new VPlayer();
     }
 
     public static VPlayer createPlayer() {
@@ -209,6 +207,10 @@ public class VPlayer implements Player {
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
+    }
+
+    private static class SingletonHolder {
+        private static final VPlayer player = new VPlayer();
     }
 
 }

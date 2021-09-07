@@ -66,12 +66,12 @@ public class MusicPlayer {
     private Composite top;
     private Composite foot; // 频谱面板
     private ProgressBar progress; // 进度条
-    private Label ttime;
+    private Label timeLabel1;
 
     private int clickX, clickY; // 界面移动
-    private Label rtime;
+    private Label timeLabel2;
 
-    private boolean choise = true; // 双击播放
+    private boolean chose = true; // 双击播放
     private Label start;
     private ControllerServer server = new ControllerServer(); // 歌词及频谱
     private boolean click = false; // 界面移动
@@ -111,24 +111,6 @@ public class MusicPlayer {
         return format;
     }
 
-    public static void JVMinfo() {
-        long vmFree;
-        long vmUse;
-        long vmTotal;
-        long vmMax;
-        int byteToMb = 1024;
-        Runtime rt = Runtime.getRuntime();
-        vmTotal = rt.totalMemory() / byteToMb;
-        vmFree = rt.freeMemory() / byteToMb;
-        vmMax = rt.maxMemory() / byteToMb;
-        vmUse = vmTotal - vmFree;
-        System.out.println("JVM 已用内存为：" + vmUse + "\tKB");
-        System.out.println("JVM 空闲内存为：" + vmFree + "\tKB");
-        System.out.println("JVM 可用内存为：" + vmTotal + "\tKB");
-        System.out.println("JVM 最大内存为：" + vmMax + "\tKB");
-        System.gc();
-    }
-
     /**
      * Open the window.
      */
@@ -165,13 +147,13 @@ public class MusicPlayer {
         MusicPlayerTray trayutil = new MusicPlayerTray(shell, tray);
         trayutil.tray();
 
-        Composite mpanel = new Composite(shell, SWT.NONE);
-        mpanel.setBackgroundMode(SWT.INHERIT_FORCE);
-        mpanel.setLayout(new FillLayout(SWT.HORIZONTAL));
+        Composite composite = new Composite(shell, SWT.NONE);
+        composite.setBackgroundMode(SWT.INHERIT_FORCE);
+        composite.setLayout(new FillLayout(SWT.HORIZONTAL));
 
-        SashForm mform = new SashForm(mpanel, SWT.VERTICAL);
+        SashForm sashForm = new SashForm(composite, SWT.VERTICAL);
 
-        top = new Composite(mform, SWT.NONE);
+        top = new Composite(sashForm, SWT.NONE);
         top.setBackgroundMode(SWT.INHERIT_FORCE);
 
         Label exit = new Label(top, SWT.NONE);
@@ -206,17 +188,17 @@ public class MusicPlayer {
         combo.setBounds(283, 21, 330, 25);
         combo.setVisible(false);
 
-        Composite center = new Composite(mform, SWT.NONE);
+        Composite center = new Composite(sashForm, SWT.NONE);
         center.setBackgroundMode(SWT.INHERIT_FORCE);
         center.setLayout(new FillLayout(SWT.HORIZONTAL));
 
-        SashForm cform = new SashForm(center, SWT.NONE);
+        SashForm sashForm1 = new SashForm(center, SWT.NONE);
 
-        Composite lpanel = new Composite(cform, SWT.NONE);
-        lpanel.setBackgroundMode(SWT.INHERIT_FORCE);
-        lpanel.setLayout(new FillLayout(SWT.HORIZONTAL));
+        Composite composite1 = new Composite(sashForm1, SWT.NONE);
+        composite1.setBackgroundMode(SWT.INHERIT_FORCE);
+        composite1.setLayout(new FillLayout(SWT.HORIZONTAL));
 
-        lists = new Table(lpanel, SWT.FULL_SELECTION);
+        lists = new Table(composite1, SWT.FULL_SELECTION);
         lists.setHeaderVisible(true);
 
         TableColumn tableColumn = new TableColumn(lists, SWT.NONE);
@@ -227,11 +209,11 @@ public class MusicPlayer {
         tableColumn_1.setWidth(117);
         tableColumn_1.setText("歌曲");
 
-        Composite rpanel = new Composite(cform, SWT.NONE);
-        rpanel.setBackgroundMode(SWT.INHERIT_FORCE);
-        rpanel.setLayout(new FillLayout(SWT.HORIZONTAL));
+        Composite composite2 = new Composite(sashForm1, SWT.NONE);
+        composite2.setBackgroundMode(SWT.INHERIT_FORCE);
+        composite2.setLayout(new FillLayout(SWT.HORIZONTAL));
 
-        lyrics = new Table(rpanel, SWT.NONE);
+        lyrics = new Table(composite2, SWT.NONE);
 
         TableColumn tableColumn_2 = new TableColumn(lyrics, SWT.CENTER);
         tableColumn_2.setText("歌词");
@@ -240,7 +222,7 @@ public class MusicPlayer {
         tableColumn_3.setWidth(738);
         tableColumn_3.setText("歌词");
 
-        foot = new Composite(mform, SWT.NONE);
+        foot = new Composite(sashForm, SWT.NONE);
         foot.setBackgroundMode(SWT.INHERIT_FORCE);
 
         Label prev = new Label(foot, SWT.NONE);
@@ -277,18 +259,18 @@ public class MusicPlayer {
         progress.setSelection(0);
         progress.setMinimum(0);// 设置进度的条最小程度
 
-        ttime = new Label(foot, SWT.NONE);
-        ttime.setFont(SWTResourceManager.getFont("Consolas", 9, SWT.NORMAL));
-        ttime.setEnabled(false);
-        ttime.setBounds(238, 4, 73, 20);
+        timeLabel1 = new Label(foot, SWT.NONE);
+        timeLabel1.setFont(SWTResourceManager.getFont("Consolas", 9, SWT.NORMAL));
+        timeLabel1.setEnabled(false);
+        timeLabel1.setBounds(238, 4, 73, 20);
 
-        rtime = new Label(foot, SWT.RIGHT);
-        rtime.setFont(SWTResourceManager.getFont("Consolas", 9, SWT.NORMAL));
-        rtime.setEnabled(false);
-        rtime.setBounds(775, 4, 73, 20);
+        timeLabel2 = new Label(foot, SWT.RIGHT);
+        timeLabel2.setFont(SWTResourceManager.getFont("Consolas", 9, SWT.NORMAL));
+        timeLabel2.setEnabled(false);
+        timeLabel2.setBounds(775, 4, 73, 20);
 
-        mform.setWeights(new int[]{1, 5, 1});
-        cform.setWeights(new int[]{156, 728});
+        sashForm.setWeights(new int[]{1, 5, 1});
+        sashForm1.setWeights(new int[]{156, 728});
 
         // 界面移动
         top.addMouseListener(new MouseAdapter() {
@@ -323,6 +305,7 @@ public class MusicPlayer {
                 shell.setMinimized(true);
             }
         });
+
         mini.addMouseTrackListener(new MouseTrackAdapter() {
             @Override
             public void mouseExit(MouseEvent e) {
@@ -366,13 +349,13 @@ public class MusicPlayer {
         lists.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseDoubleClick(MouseEvent e) {
-                choise = true;
+                chose = true;
             }
         });
         lists.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                if (choise) {
+                if (chose) {
                     TableItem[] items = lists.getSelection();
                     int index = Integer.parseInt(items[0].getText(0).trim());
                     nextSong(index - 1, true);// 下一曲
@@ -411,8 +394,8 @@ public class MusicPlayer {
         foot.addControlListener(new ControlAdapter() {
             @Override
             public void controlResized(ControlEvent e) {
-                mform.setWeights(new int[]{1, 5, 1});
-                cform.setWeights(new int[]{156, 728});
+                sashForm.setWeights(new int[]{1, 5, 1});
+                sashForm1.setWeights(new int[]{156, 728});
             }
         });
 
@@ -426,35 +409,35 @@ public class MusicPlayer {
             }
         });
 
-        mform.addControlListener(new ControlAdapter() {
+        sashForm.addControlListener(new ControlAdapter() {
             @Override
             public void controlResized(ControlEvent e) {
-                mform.setWeights(new int[]{1, 5, 1});
-                cform.setWeights(new int[]{156, 728});
+                sashForm.setWeights(new int[]{1, 5, 1});
+                sashForm1.setWeights(new int[]{156, 728});
             }
         });
 
-        lpanel.addControlListener(new ControlAdapter() {
+        composite1.addControlListener(new ControlAdapter() {
             @Override
             public void controlResized(ControlEvent e) {
-                mform.setWeights(new int[]{1, 5, 1});
-                cform.setWeights(new int[]{156, 728});
+                sashForm.setWeights(new int[]{1, 5, 1});
+                sashForm1.setWeights(new int[]{156, 728});
             }
         });
 
-        rpanel.addControlListener(new ControlAdapter() {
+        composite2.addControlListener(new ControlAdapter() {
             @Override
             public void controlResized(ControlEvent e) {
-                mform.setWeights(new int[]{1, 5, 1});
-                cform.setWeights(new int[]{156, 728});
+                sashForm.setWeights(new int[]{1, 5, 1});
+                sashForm1.setWeights(new int[]{156, 728});
             }
         });
 
-        cform.addControlListener(new ControlAdapter() {
+        sashForm1.addControlListener(new ControlAdapter() {
             @Override
             public void controlResized(ControlEvent e) {
-                mform.setWeights(new int[]{1, 5, 1});
-                cform.setWeights(new int[]{156, 728});
+                sashForm.setWeights(new int[]{1, 5, 1});
+                sashForm1.setWeights(new int[]{156, 728});
             }
         });
 
@@ -602,7 +585,7 @@ public class MusicPlayer {
 
         Constant.PLAYING_SONG_HAVE_LYRIC = false;
         Constant.PLAYING_SONG_LENGTH = Integer.parseInt(Constant.PLAYING_SONG_NAME.split(Constant.MUSIC_PLAYER_SYSTEM_SPLIT)[4]);
-        ttime.setText(format(Constant.PLAYING_SONG_LENGTH));
+        timeLabel1.setText(format(Constant.PLAYING_SONG_LENGTH));
 
         TableItem[] items = table.getItems();
         for (int i = 0; i < items.length; i++) {
@@ -633,7 +616,7 @@ public class MusicPlayer {
                     }
                 }
                 PlayerEntity.setBar(progress);
-                PlayerEntity.setText(rtime);
+                PlayerEntity.setText(timeLabel2);
                 PlayerEntity.setSong(Constant.PLAYING_SONG_NAME);
                 PlayerEntity.setTable(lyrics);
             }
@@ -642,7 +625,6 @@ public class MusicPlayer {
             server.startLyricPlayer(new Controller(), null);
         }
         setMusicPlayerPlayingSong(index + "");
-        JVMinfo();
     }
 
     /**

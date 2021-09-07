@@ -1,14 +1,15 @@
 package com.xu.music.player.modle;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.wb.swt.SWTResourceManager;
+
 import com.xu.music.player.entity.PlayerEntity;
 import com.xu.music.player.lyric.LyricyNotify;
 import com.xu.music.player.system.Constant;
 import com.xu.music.player.thread.LyricyThread;
 import com.xu.music.player.thread.SpectrumThread;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.wb.swt.SWTResourceManager;
 
 /**
  * Java MusicPlayer 观察者
