@@ -18,15 +18,18 @@ import com.xu.music.player.system.Constant;
 
 import javazoom.spi.mpeg.sampled.file.MpegAudioFileReader;
 
+/**
+ * @author hyacinth
+ */
 public class VPlayer implements Player {
 
-    public static volatile LinkedList<Double> deque = new LinkedList<>();
-    private static Thread thread = null;
-    private static DataLine.Info info = null;
-    private static AudioFormat format = null;
-    private static SourceDataLine data = null;
-    private static AudioInputStream stream = null;
-    private static volatile boolean playing = false;
+    public volatile LinkedList<Double> deque = new LinkedList<>();
+    private Thread thread = null;
+    private DataLine.Info info = null;
+    private AudioFormat format = null;
+    private SourceDataLine data = null;
+    private AudioInputStream stream = null;
+    private volatile boolean playing = false;
 
     private VPlayer() {
     }
@@ -197,10 +200,8 @@ public class VPlayer implements Player {
             if (format.getEncoding().toString().toLowerCase().contains("mpeg")) {//mp3
                 MpegAudioFileReader mp = new MpegAudioFileReader();
                 format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, format.getSampleRate(), 16, format.getChannels(), format.getChannels() * 2, format.getSampleRate(), false);
-                VPlayer.stream = AudioSystem.getAudioInputStream(format, stream);
             } else if (format.getEncoding().toString().toLowerCase().contains("flac")) {
                 format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, format.getSampleRate(), 16, format.getChannels(), format.getChannels() * 2, format.getSampleRate(), false);
-                VPlayer.stream = AudioSystem.getAudioInputStream(format, stream);
             }
             info = new DataLine.Info(SourceDataLine.class, format, AudioSystem.NOT_SPECIFIED);
             data = (SourceDataLine) AudioSystem.getLine(info);

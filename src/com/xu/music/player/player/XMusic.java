@@ -18,6 +18,9 @@ import com.xu.music.player.system.Constant;
 
 import javazoom.spi.mpeg.sampled.file.MpegAudioFileReader;
 
+/**
+ * @author hyacinth
+ */
 public class XMusic implements Player {
 
     public static volatile LinkedList<Double> deque = new LinkedList<>();

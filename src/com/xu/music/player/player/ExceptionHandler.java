@@ -1,5 +1,8 @@
 package com.xu.music.player.player;
 
+/**
+ * @author hyacinth
+ */
 public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
 
     @Override

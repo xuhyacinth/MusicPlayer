@@ -8,8 +8,10 @@ import java.net.URL;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioFormat.Encoding;
 import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.UnsupportedAudioFileException;
 
+/**
+ * @author hyacinth
+ */
 public interface Player {
 
     /**
@@ -17,27 +19,31 @@ public interface Player {
      *
      * @param url 音频文件url地址
      * @return boolean 是否加载成功
+     * @throws Exception 异常
      * @Title: load
      * @Description: Java Music 加载音频
      * @date 2019年10月31日19:06:39
      */
-    void load(URL url) throws UnsupportedAudioFileException, IOException, Exception;
+    void load(URL url) throws Exception;
 
     /**
      * Java Music 加载音频
      *
      * @param file 音频文件
      * @return boolean 是否加载成功
+     * @throws Exception 异常
      * @Title: load
      * @Description: Java Music 加载音频
      * @date 2019年10月31日19:06:39
      */
-    void load(File file) throws UnsupportedAudioFileException, IOException, Exception;
+    void load(File file) throws Exception;
 
     /**
      * Java Music 加载音频
      *
+     * @param path 文件路径
      * @return boolean 是否加载成功
+     * @throws Exception 异常
      * @Title: load
      * @Description: Java Music 加载音频
      * @date 2019年10月31日19:06:39
@@ -49,6 +55,7 @@ public interface Player {
      *
      * @param stream 音频文件输入流
      * @return boolean 是否加载成功
+     * @throws Exception 异常
      * @Title: load
      * @Description: Java Music 加载音频
      * @date 2019年10月31日19:06:39
@@ -61,6 +68,7 @@ public interface Player {
      * @param encoding Encoding
      * @param stream   AudioInputStream
      * @return boolean 是否加载成功
+     * @throws Exception 异常
      * @Title: load
      * @Description: Java Music 加载音频
      * @date 2019年10月31日19:06:39
@@ -73,6 +81,7 @@ public interface Player {
      * @param stream AudioFormat
      * @param stream AudioInputStream
      * @return boolean 是否加载成功
+     * @throws Exception 异常
      * @Title: load
      * @Description: Java Music 加载音频
      * @date 2019年10月31日19:06:39
@@ -82,7 +91,7 @@ public interface Player {
     /**
      * Java Music 结束播放
      *
-     * @throws IOException
+     * @throws Exception 异常
      * @Title: end
      * @Description: Java Music 结束播放
      * @date 2019年10月31日19:06:39
@@ -101,7 +110,7 @@ public interface Player {
     /**
      * Java Music 开始播放
      *
-     * @throws Exception
+     * @throws Exception 异常
      * @Title: start
      * @Description: Java Music 结束播放
      * @date 2019年10月31日19:06:39
