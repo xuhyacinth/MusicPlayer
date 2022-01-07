@@ -27,8 +27,8 @@ public class VPlayer implements Player {
     private Thread thread = null;
     private DataLine.Info info = null;
     private AudioFormat format = null;
-    private SourceDataLine data = null;
-    private AudioInputStream stream = null;
+    private SourceDataLine line = null;
+    private AudioInputStream audio = null;
     private volatile boolean playing = false;
 
     private VPlayer() {
@@ -47,7 +47,15 @@ public class VPlayer implements Player {
     @Override
     public void load(File file) throws Exception {
         end();
-        load(AudioSystem.getAudioInputStream(file));
+        String name = file.getName();
+        if (Audio.isSupport(name)) {
+            if (Audio.getIndex(name) == Audio.MP3.getIndex()) {
+                MpegAudioFileReader reader = new MpegAudioFileReader();
+                load(reader.getAudioInputStream(file));
+            } else {
+                load(AudioSystem.getAudioInputStream(file));
+            }
+        }
     }
 
     @Override
@@ -59,27 +67,40 @@ public class VPlayer implements Player {
     @Override
     public void load(InputStream stream) throws Exception {
         end();
-        loadFile(AudioSystem.getAudioInputStream(stream));
+        loadAudio(AudioSystem.getAudioInputStream(stream));
     }
 
     @Override
     public void load(AudioFormat.Encoding encoding, AudioInputStream stream) throws Exception {
         end();
-        loadFile(AudioSystem.getAudioInputStream(encoding, stream));
+        loadAudio(AudioSystem.getAudioInputStream(encoding, stream));
     }
 
     @Override
     public void load(AudioFormat format, AudioInputStream stream) throws Exception {
         end();
-        loadFile(AudioSystem.getAudioInputStream(format, stream));
+        loadAudio(AudioSystem.getAudioInputStream(format, stream));
+    }
+
+    private void loadAudio(AudioInputStream stream) {
+        try {
+            format = stream.getFormat();
+            format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, format.getSampleRate(), 16, format.getChannels(),
+                    format.getChannels() * 2, format.getSampleRate(), false);
+            audio = AudioSystem.getAudioInputStream(format, stream);
+            info = new DataLine.Info(SourceDataLine.class, format, AudioSystem.NOT_SPECIFIED);
+            line = (SourceDataLine) AudioSystem.getLine(info);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override
     public void end() throws IOException {
-        if (data != null) {
-            data.stop();
-            data.drain();
-            stream.close();
+        if (line != null) {
+            line.stop();
+            line.drain();
+            audio.close();
             if (thread != null) {
                 thread.stop();
                 thread = null;
@@ -91,8 +112,8 @@ public class VPlayer implements Player {
 
     @Override
     public void stop() {
-        if (data != null && data.isOpen()) {
-            data.stop();
+        if (line != null && line.isOpen()) {
+            line.stop();
             synchronized (thread) {
                 try {
                     thread.wait(0);
@@ -109,7 +130,7 @@ public class VPlayer implements Player {
         if (thread != null) {
             synchronized (thread) {
                 thread.notify();
-                data.start();
+                line.start();
                 playing = true;
             }
         } else {
@@ -117,12 +138,12 @@ public class VPlayer implements Player {
             thread = new Thread(() -> {
                 try {
                     if (info != null) {
-                        data.open(format);
-                        data.start();
+                        line.open(format);
+                        line.start();
                         byte[] buf = new byte[4];
-                        int channels = stream.getFormat().getChannels();
-                        float rate = stream.getFormat().getSampleRate();
-                        while (stream.read(buf) != -1 && playing) {
+                        int channels = audio.getFormat().getChannels();
+                        float rate = audio.getFormat().getSampleRate();
+                        while (audio.read(buf) != -1 && playing) {
                             if (channels == 2) {//立体声
                                 if (rate == 16) {
                                     put((double) ((buf[1] << 8) | buf[0]));//左声道
@@ -144,7 +165,7 @@ public class VPlayer implements Player {
                                     put((double) buf[3]);
                                 }
                             }
-                            data.write(buf, 0, 4);
+                            line.write(buf, 0, 4);
                         }
                         new ControllerServer().endLyricPlayer(new Controller());// 结束歌词和频谱
                         System.out.println("解码器 结束歌词和频谱");
@@ -162,22 +183,22 @@ public class VPlayer implements Player {
 
     @Override
     public boolean isOpen() {
-        return null != data && data.isOpen();
+        return null != line && line.isOpen();
     }
 
     @Override
     public boolean isActive() {
-        return null != data && data.isActive();
+        return null != line && line.isActive();
     }
 
     @Override
     public boolean isRuning() {
-        return null != data && data.isRunning();
+        return null != line && line.isRunning();
     }
 
     @Override
     public String info() {
-        return null == data ? "" : data.getFormat().toString();
+        return null == line ? "" : line.getFormat().toString();
     }
 
     @Override
@@ -191,22 +212,6 @@ public class VPlayer implements Player {
             if (deque.size() > Constant.SPECTRUM_TOTAL_NUMBER) {
                 deque.removeFirst();
             }
-        }
-    }
-
-    private void loadFile(AudioInputStream stream) {
-        try {
-            format = stream.getFormat();
-            if (format.getEncoding().toString().toLowerCase().contains("mpeg")) {//mp3
-                MpegAudioFileReader mp = new MpegAudioFileReader();
-                format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, format.getSampleRate(), 16, format.getChannels(), format.getChannels() * 2, format.getSampleRate(), false);
-            } else if (format.getEncoding().toString().toLowerCase().contains("flac")) {
-                format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, format.getSampleRate(), 16, format.getChannels(), format.getChannels() * 2, format.getSampleRate(), false);
-            }
-            info = new DataLine.Info(SourceDataLine.class, format, AudioSystem.NOT_SPECIFIED);
-            data = (SourceDataLine) AudioSystem.getLine(info);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
         }
     }
 

@@ -9,6 +9,12 @@
 
     <dependencies>
 
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.12.0</version>
+        </dependency>
+
         <!-- MP3文件 解码 -->
         <dependency>
             <groupId>com.googlecode.soundlibs</groupId>
@@ -32,9 +38,9 @@
 
         <!-- fastjson -->
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>1.2.62</version>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>5.7.9</version>
         </dependency>
 
         <dependency>
