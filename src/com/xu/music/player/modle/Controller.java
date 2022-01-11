@@ -30,12 +30,12 @@ public class Controller implements Observer {
     private String format = "";
 
     @Override
-    public void start(PlayerEntity entity) {
+    public void start() {
         if (Constant.PLAYING_SONG_HAVE_LYRIC && Constant.MUSIC_PLAYER_SYSTEM_START_LYRIC) {
-            startLyricPlayer(entity);
+            startLyricPlayer();
         }
         if (Constant.MUSIC_PLAYER_SYSTEM_START_SPECTRUM) {
-            startSpectrumPlayer(entity);
+            startSpectrumPlayer();
         }
     }
 
@@ -79,7 +79,7 @@ public class Controller implements Observer {
         stopSpectrumPlayer();
     }
 
-    public void startLyricPlayer(PlayerEntity entity) {
+    public void startLyricPlayer() {
         int length = Integer.parseInt(Constant.PLAYING_SONG_NAME.split(Constant.MUSIC_PLAYER_SYSTEM_SPLIT)[3]);
         PlayerEntity.getBar().setMaximum(length);
         PlayerEntity.getBar().setSelection(0);
@@ -114,7 +114,7 @@ public class Controller implements Observer {
         }
     }
 
-    public void startSpectrumPlayer(PlayerEntity entity) {
+    public void startSpectrumPlayer() {
         if (Constant.SPECTRUM_TOTAL_HEIGHT == 0) {
             Constant.SPECTRUM_TOTAL_HEIGHT = PlayerEntity.getSpectrum().getClientArea().height;
             Constant.SPECTRUM_TOTAL_WIDTH = PlayerEntity.getSpectrum().getClientArea().width;

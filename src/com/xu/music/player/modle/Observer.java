@@ -1,7 +1,5 @@
 package com.xu.music.player.modle;
 
-import com.xu.music.player.entity.PlayerEntity;
-
 /**
  * Java MusocPlayer 抽象 观察者 接口
  *
@@ -13,7 +11,7 @@ import com.xu.music.player.entity.PlayerEntity;
  */
 public interface Observer {
 
-    void start(PlayerEntity entity);
+    void start();
 
     void stop();
 

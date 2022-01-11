@@ -118,7 +118,7 @@ public class XMusic implements Player {
             }
         } else {
             playing = true;
-            thread.setUncaughtExceptionHandler(new ExceptionHandler());
+            //thread.setUncaughtExceptionHandler(new ExceptionHandler());
             thread = new Thread(() -> {
                 try {
                     if (info != null) {

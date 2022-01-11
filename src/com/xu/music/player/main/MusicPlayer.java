@@ -140,6 +140,7 @@ public class MusicPlayer {
         shell.setLayout(new FillLayout(SWT.HORIZONTAL));
         shell.setBackgroundMode(SWT.INHERIT_DEFAULT);
 
+        // 初始化播放器
         player = XMusic.createPlayer();
 
         // 托盘引入
@@ -489,28 +490,6 @@ public class MusicPlayer {
     }
 
     /**
-     * Java MusicPlayer 更新播放歌曲列表
-     *
-     * @param table
-     * @return void
-     * @Author: hyacinth
-     * @Title: markSongsLists
-     * @Description: TODO
-     * @date: 2019年12月31日 下午8:20:33
-     */
-    public void markSongsLists(Table table, int index) {
-        TableItem[] items = table.getItems();
-        for (int i = 0, len = items.length; i < len; i++) {
-            if (index == i) {
-                items[i].setBackground(SWTResourceManager.getColor(SWT.COLOR_GRAY));
-            } else {
-                items[i].setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-            }
-        }
-        table.setTopIndex(index);
-    }
-
-    /**
      * Java MusicPlayer 改变播放歌曲
      * <table border="1" cellpadding="10">
      * <tr><td colspan="2" align="center">changePlayingSong</td></tr>
@@ -567,6 +546,7 @@ public class MusicPlayer {
                 Constant.PLAYING_SONG_INDEX--;
             }
         }
+        updatePlayerSongListsColor(lists, Constant.PLAYING_SONG_INDEX);
     }
 
     /**
@@ -622,7 +602,7 @@ public class MusicPlayer {
             }
             PlayerEntity.setSpectrum(foot);
             server.endLyricPlayer(new Controller());
-            server.startLyricPlayer(new Controller(), null);
+            server.startLyricPlayer(new Controller());
         }
         setMusicPlayerPlayingSong(index + "");
     }
@@ -677,9 +657,9 @@ public class MusicPlayer {
      * @date: 2019年12月29日 下午2:58:24
      */
     private void readMusicPlayerPlayingSong() {
-        Preferences preferences = Preferences.userNodeForPackage(MusicPlayer.class);
-        String index = preferences.get("MusicPlayer", null);
-        nextSong(Integer.parseInt(index), true);
+//        Preferences preferences = Preferences.userNodeForPackage(MusicPlayer.class);
+//        String index = preferences.get("MusicPlayer", null);
+//        nextSong(Integer.parseInt(index), true);
     }
 
     /**

@@ -1,7 +1,5 @@
 package com.xu.music.player.modle;
 
-import com.xu.music.player.entity.PlayerEntity;
-
 /**
  * Java MusocPlayer 被观察者
  *
@@ -14,13 +12,13 @@ import com.xu.music.player.entity.PlayerEntity;
 public class ControllerServer implements Observed {
 
     @Override
-    public void startLyricPlayer(Observer observer, PlayerEntity entity) {
-        observer.start(entity);
+    public void startLyricPlayer(Observer observer) {
+        observer.start();
     }
 
     @Override
-    public void startSpectrumPlayer(Observer observer, PlayerEntity entity) {
-        observer.start(entity);
+    public void startSpectrumPlayer(Observer observer) {
+        observer.start();
     }
 
     @Override
