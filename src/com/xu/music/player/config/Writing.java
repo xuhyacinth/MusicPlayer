@@ -13,6 +13,7 @@ import org.jaudiotagger.audio.AudioFileIO;
 
 import com.xu.music.player.system.Constant;
 
+@Deprecated
 public class Writing {
 
     public void write(List<String> lists) {

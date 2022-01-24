@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import com.xu.music.player.system.Constant;
 
+@Deprecated
 public class Reading {
 
     public HashSet<String> read() {

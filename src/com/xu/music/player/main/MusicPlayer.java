@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Tray;
 import org.eclipse.wb.swt.SWTResourceManager;
 
-import com.xu.music.player.config.SongChoiceWindow;
+import com.xu.music.player.config.SongChooseWindow;
 import com.xu.music.player.entity.PlayerEntity;
 import com.xu.music.player.lyric.LoadLocalLyric;
 import com.xu.music.player.modle.Controller;
@@ -467,9 +467,9 @@ public class MusicPlayer {
         QueryWrapper<SongEntity> wrapper = new QueryWrapper<>(SongEntity.class, "player");
         List<SongEntity> entities = wrapper.list();
         if (CollectionUtil.isEmpty(entities)) {
-            SongChoiceWindow choice = new SongChoiceWindow();
+            SongChooseWindow choice = new SongChooseWindow();
             Toolkit.getDefaultToolkit().beep();
-            choice.openChoiseWindows(shell);
+            choice.openChooseWindows(shell);
         }
         initSongList(entities, table);
         getPlayingSong();
