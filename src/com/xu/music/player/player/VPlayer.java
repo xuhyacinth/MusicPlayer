@@ -23,19 +23,25 @@ import javazoom.spi.mpeg.sampled.file.MpegAudioFileReader;
  */
 public class VPlayer implements Player {
 
+    public volatile LinkedList<Double> deque = new LinkedList<>();
     private Thread thread = null;
     private DataLine.Info info = null;
     private AudioFormat format = null;
     private SourceDataLine line = null;
     private AudioInputStream audio = null;
     private volatile boolean playing = false;
-    public volatile LinkedList<Double> deque = new LinkedList<>();
 
     private VPlayer() {
     }
 
     public static VPlayer createPlayer() {
         return SingletonHolder.player;
+    }
+
+    public static void main(String[] args) throws Exception {
+        Player player = VPlayer.createPlayer();
+        player.load("E:\\KuGou\\不才 - 化身孤岛的鲸(1).flac");
+        player.start();
     }
 
     @Override
@@ -217,12 +223,6 @@ public class VPlayer implements Player {
 
     private static class SingletonHolder {
         private static final VPlayer player = new VPlayer();
-    }
-
-    public static void main(String[] args) throws Exception {
-        Player player = VPlayer.createPlayer();
-        player.load("E:\\KuGou\\不才 - 化身孤岛的鲸(1).flac");
-        player.start();
     }
 
 }

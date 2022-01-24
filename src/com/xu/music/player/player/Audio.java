@@ -46,10 +46,6 @@ public enum Audio {
         this.suffix = suffix;
     }
 
-    public int getIndex() {
-        return index;
-    }
-
     public static int getIndex(String name) {
         if (StringUtils.isBlank(name)) {
             throw new RuntimeException("文件名称为空！");
@@ -74,6 +70,10 @@ public enum Audio {
             }
         }
         return false;
+    }
+
+    public int getIndex() {
+        return index;
     }
 
 }

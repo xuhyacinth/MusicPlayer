@@ -53,12 +53,12 @@ import com.xu.music.player.tray.MusicPlayerTray;
  */
 public class MusicPlayer {
 
-    public boolean playing = true; // 播放按钮
-    private Player player = null; // 播放器
     private static int merchant = 0;
     private static int remainder = 0;
     private static String format = "";
+    public boolean playing = true; // 播放按钮
     protected Shell shell;
+    private Player player = null; // 播放器
     private Display display;
     private Tray tray; // 播放器托盘
     private Table lists;

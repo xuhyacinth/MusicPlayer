@@ -1,6 +1,7 @@
 package com.xu.music.player.sql;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.sql.Blob;
@@ -27,23 +28,46 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 
-/**
- * @author Administrator
- */
 public class Helper {
+
+    private static final String DATABASE = "sqlite/player/player.db";
+    private static final String DATA_BASE_LINUX = "sqlite/sqlite-tools-linux-x86-3370200/sqlite3";
+    private static final String DATA_BASE_WINDOWS = "sqlite/sqlite-tools-win32-x86-3370200/sqlite3.exe";
+    private static final String DATA_BASE_MAC_OS_X = "sqlite/sqlite-tools-osx-x86-3370200/sqlite3";
+
+    static {
+        try {
+            String path;
+            switch (OperateSystemType.getSystemMainType().type) {
+                case 2:
+                case 3:
+                    path = new File(DATA_BASE_MAC_OS_X).getCanonicalPath();
+                    break;
+                case 4:
+                    path = new File(DATA_BASE_LINUX).getCanonicalPath();
+                    break;
+                default:
+                    path = new File(DATA_BASE_WINDOWS).getCanonicalPath();
+            }
+            System.setProperty("java.library.path", path + ";" + System.getProperty("java.library.path"));
+            Class.forName("org.sqlite.JDBC");
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
 
     private ResultSet result = null;
     private Connection connection = null;
     private PreparedStatement statement = null;
 
-    private static final String DATABASE = "sqlite/player/player.db";
-
-    static {
-        try {
-            Class.forName("org.sqlite.JDBC");
-        } catch (Exception e) {
-            e.printStackTrace();
+    private static String toDbCase(String str) {
+        String reg = "[A-Z]+";
+        Matcher matcher = Pattern.compile(reg).matcher(str);
+        while (matcher.find()) {
+            String group = matcher.group();
+            str = str.replace(group, "_" + group.toLowerCase(Locale.ROOT));
         }
+        return str;
     }
 
     public Connection getConnection() {
@@ -51,7 +75,7 @@ public class Helper {
         try {
             connection = DriverManager.getConnection("jdbc:sqlite:" + DATABASE);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
         return connection;
     }
@@ -64,7 +88,7 @@ public class Helper {
             try {
                 rs.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e.getMessage());
             }
         }
         if (pstmt != null) {
@@ -78,7 +102,7 @@ public class Helper {
             try {
                 connection.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e.getMessage());
             }
         }
     }
@@ -97,31 +121,38 @@ public class Helper {
                 try {
                     if (object != null) {
                         type = object.getClass().getName();
-                        if ("javax.sql.rowset.serial.SerialBlob".equals(type)) {//javax.sql.rowset.serial.SerialBlob
-                            pstmt.setBlob(i + 1, (Blob) params.get(i));
-                        } else if ("java.lang.Integer".equals(type)) {//java.lang.Integer
-                            pstmt.setInt(i + 1, Integer.parseInt(String.valueOf(object)));
-                        } else if ("java.lang.Double".equals(type)) {//java.lang.Double
-                            pstmt.setDouble(i + 1, Double.parseDouble(String.valueOf(object)));
-                        } else if ("java.lang.Float".equals(type)) {//java.lang.Float
-                            pstmt.setDouble(i + 1, Float.parseFloat(String.valueOf(object)));
-                        } else if ("java.lang.Long".equals(type)) {//java.lang.Long
-                            pstmt.setLong(i + 1, Long.parseLong(String.valueOf(object)));
-                        } else if ("java.lang.Short".equals(type)) {//java.lang.Short
-                            pstmt.setShort(i + 1, Short.parseShort(String.valueOf(object)));
-                        } else if ("java.lang.String".equals(type)) {//java.lang.String
-                            pstmt.setString(i + 1, String.valueOf(object));
-                        } else if ("java.lang.Timestamp".equals(type)) {//java.sql.Timestamp
-                            pstmt.setTimestamp(i + 1, (Timestamp) params.get(i));
-                        } else {
-                            pstmt.setString(i + 1, String.valueOf(object));
+                        type = StringUtils.substring(type, type.lastIndexOf(".") + 1);
+                        switch (type) {
+                            case "SerialBlob":
+                                pstmt.setBlob(i + 1, (Blob) params.get(i));
+                                break;
+                            case "Integer":
+                                pstmt.setInt(i + 1, Integer.parseInt(String.valueOf(object)));
+                                break;
+                            case "Double":
+                                pstmt.setDouble(i + 1, Double.parseDouble(String.valueOf(object)));
+                                break;
+                            case "Float":
+                                pstmt.setFloat(i + 1, Float.parseFloat(String.valueOf(object)));
+                                break;
+                            case "Long":
+                                pstmt.setLong(i + 1, Long.parseLong(String.valueOf(object)));
+                                break;
+                            case "Short":
+                                pstmt.setShort(i + 1, Short.parseShort(String.valueOf(object)));
+                                break;
+                            case "Timestamp":
+                                pstmt.setTimestamp(i + 1, (Timestamp) params.get(i));
+                                break;
+                            default:
+                                pstmt.setString(i + 1, String.valueOf(object));
                         }
                     } else {
                         pstmt.setString(i + 1, "");
                     }
 
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    throw new RuntimeException(e.getMessage());
                 }
             }
         }
@@ -164,7 +195,7 @@ public class Helper {
                         pstmt.setString(i + 1, "");
                     }
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    throw new RuntimeException(e.getMessage());
                 }
             }
         }
@@ -181,11 +212,11 @@ public class Helper {
         connection = this.getConnection();
         int result = 0;
         try {
-            connection.setAutoCommit(false);  //事务处理
+            connection.setAutoCommit(false); // 事务处理
             for (int i = 0; i < sql.size(); i++) {
                 List<Object> param = params.get(i);
-                statement = connection.prepareStatement(sql.get(i));  //预编译对象
-                setValues(statement, param);    //设置参数
+                statement = connection.prepareStatement(sql.get(i)); // 预编译对象
+                setValues(statement, param); // 设置参数
                 result = statement.executeUpdate();
             }
             connection.commit(); //没有错处执行
@@ -194,7 +225,7 @@ public class Helper {
             try {
                 connection.rollback();  //出错回滚
             } catch (SQLException e1) {
-                e1.printStackTrace();
+                throw new RuntimeException(e.getMessage());
             }
         } finally {
             closeAll(connection, statement, null);
@@ -220,7 +251,7 @@ public class Helper {
             try {
                 connection.rollback();  //出错回滚
             } catch (SQLException e1) {
-                e1.printStackTrace();
+                throw new RuntimeException(e.getMessage());
             }
         } finally {
             closeAll(connection, statement, null);
@@ -246,7 +277,7 @@ public class Helper {
             try {
                 connection.rollback();  //出错回滚
             } catch (SQLException e1) {
-                e1.printStackTrace();
+                throw new RuntimeException(e.getMessage());
             }
         } finally {
             closeAll(connection, statement, null);
@@ -255,7 +286,6 @@ public class Helper {
         return result;
     }
 
-
     /**
      * 多SQL查询(不建议使用)
      *
@@ -263,8 +293,8 @@ public class Helper {
      * @param params sql语句参数
      * @return 结果
      */
-    public List<String> find(String sql, List<Object> params) {
-        List<String> list = new ArrayList<String>();
+    public List<String> queryBeans(String sql, List<Object> params) {
+        List<String> list = new ArrayList<>();
         connection = this.getConnection();
         try {
             statement = connection.prepareStatement(sql);  //预编译对象
@@ -280,7 +310,7 @@ public class Helper {
                 }
             }
         } catch (SQLException e) {
-            //TODO:
+            throw new RuntimeException(e.getMessage());
         } finally {
             closeAll(connection, statement, result);
         }
@@ -294,16 +324,16 @@ public class Helper {
      * @param params sql语句参数
      * @return 结果
      */
-    public List<String> find(String sql, Object... params) {
-        List<String> list = new ArrayList<String>();
+    public List<String> queryBeans(String sql, Object... params) {
+        List<String> list = new ArrayList<>();
         connection = this.getConnection();
         try {
-            statement = connection.prepareStatement(sql);  //预编译对象
-            setValues(statement, params);   //设置参数
-            result = statement.executeQuery();  //执行查询
+            statement = connection.prepareStatement(sql); // 预编译对象
+            setValues(statement, params); // 设置参数
+            result = statement.executeQuery(); //执行查询
 
-            ResultSetMetaData md = result.getMetaData();  //结果集的元数据，它反映了结果集的信息
-            int count = md.getColumnCount();    //取出结果集中列的数量
+            ResultSetMetaData md = result.getMetaData(); // 结果集的元数据，它反映了结果集的信息
+            int count = md.getColumnCount(); // 取出结果集中列的数量
 
             if (result.next()) {
                 for (int i = 1; i <= count; i++) {
@@ -311,7 +341,7 @@ public class Helper {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         } finally {
             closeAll(connection, statement, result);
         }
@@ -325,13 +355,12 @@ public class Helper {
      * @param c      JavaBean
      * @param params sql语句参数
      * @return 结果
-     * @throws Exception
      */
-    public <T> List<T> find(String sql, Class<T> c, List<Object> params) throws Exception {
+    public <T> List<T> queryBeans(String sql, Class<T> c, List<Object> params) {
         if (params == null) {
-            return find(sql, c);
+            return queryBeans(sql, c);
         } else {
-            return find(sql, c, params.toArray());
+            return queryBeans(sql, c, params.toArray());
         }
 
     }
@@ -344,8 +373,8 @@ public class Helper {
      * @param params sql语句参数
      * @return 结果
      */
-    public <T> List<T> find(String sql, Class<T> c, Object... params) {
-        return Optional.ofNullable(finds(sql, params)).orElse(new ArrayList<>()).stream().filter(Objects::nonNull).map(item -> {
+    public <T> List<T> queryBeans(String sql, Class<T> c, Object... params) {
+        return Optional.ofNullable(queryMaps(sql, params)).orElse(new ArrayList<>()).stream().filter(Objects::nonNull).map(item -> {
             Field[] fields = c.getDeclaredFields();
             T t = null;
             try {
@@ -353,7 +382,7 @@ public class Helper {
                 for (Field field : fields) {
                     for (Map.Entry<String, Object> result : item.entrySet()) {
                         if (StringUtils.equalsIgnoreCase(field.getName(), result.getKey()) ||
-                                StringUtils.equalsIgnoreCase(to_db_case(field.getName()), result.getKey())) {
+                                StringUtils.equalsIgnoreCase(toDbCase(field.getName()), result.getKey())) {
                             field.setAccessible(true);
                             switch (field.getType().getName()) {
                                 case "java.time.LocalDateTime":
@@ -371,20 +400,10 @@ public class Helper {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                throw new RuntimeException(e.getMessage());
             }
             return t;
         }).filter(Objects::nonNull).collect(Collectors.toList());
-    }
-
-    private static String to_db_case(String str) {
-        String reg = "[A-Z]+";
-        Matcher matcher = Pattern.compile(reg).matcher(str);
-        while (matcher.find()) {
-            String group = matcher.group();
-            str = str.replace(group, "_" + group.toLowerCase(Locale.ROOT));
-        }
-        return str;
     }
 
     /**
@@ -394,11 +413,11 @@ public class Helper {
      * @param params sql语句参数
      * @return 结果
      */
-    public List<Map<String, Object>> finds(String sql, List<Object> params) {
+    public List<Map<String, Object>> queryMaps(String sql, List<Object> params) {
         if (params == null) {
-            return finds(sql);
+            return queryMaps(sql);
         } else {
-            return finds(sql, params.toArray());
+            return queryMaps(sql, params.toArray());
         }
     }
 
@@ -409,7 +428,7 @@ public class Helper {
      * @param objs sql语句参数
      * @return 结果
      */
-    public List<Map<String, Object>> finds(String sql, Object... objs) {
+    public List<Map<String, Object>> queryMaps(String sql, Object... objs) {
         List<Map<String, Object>> list = new ArrayList<>();
         connection = this.getConnection();
         try {
@@ -460,7 +479,7 @@ public class Helper {
                 list.add(map);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         } finally {
             this.closeAll(connection, statement, result);
         }
