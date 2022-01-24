@@ -25,7 +25,7 @@ public class Reading {
                 bReader = new BufferedReader(fReader);
                 while ((song = bReader.readLine()) != null) {
                     songs.add(song);
-                    Constant.MUSIC_PLAYER_SONGS_LIST.add(song);
+                    //Constant.MUSIC_PLAYER_SONGS_LIST.add(song);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

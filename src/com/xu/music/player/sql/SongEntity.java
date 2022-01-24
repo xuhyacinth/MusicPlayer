@@ -8,20 +8,21 @@ import lombok.Data;
  * @author hyacinth
  */
 @Data
-public class PlayerEntity {
+public class SongEntity {
+
     private String id;
     private String name;
     private String info;
-    private String path;
+    private String songPath;
+    private String lyricPath;
     private Integer flag;
     private Integer index;
     private Integer lyric;
     private String author;
     private Double length;
-    private String create_by;
-    private LocalDateTime create_time;
-    private String update_by;
-    private LocalDateTime update_time;
-
+    private String createBy;
+    private LocalDateTime createTime;
+    private String updateBy;
+    private LocalDateTime updateTime;
 
 }

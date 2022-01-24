@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.xu.music.player.sql.SongEntity;
+
 /**
  * @author hyacinth
  */
@@ -59,7 +61,7 @@ public class Constant {
     /**
      * 播放列表
      */
-    public static LinkedList<String> MUSIC_PLAYER_SONGS_LIST = new LinkedList<>(); // 播放列表
+    public static LinkedList<SongEntity> MUSIC_PLAYER_SONGS_LIST = new LinkedList<>(); // 播放列表
 
     /**
      * 临时播放列表
@@ -93,7 +95,7 @@ public class Constant {
     /**
      * 正在播放歌曲索引
      */
-    public static int PLAYING_SONG_INDEX = 0; // 正在播放歌曲索引
+    public static SongEntity PLAYING_SONG_ENTITY = null; // 正在播放歌曲索引
 
     /**
      * 正在播放歌曲播放时长

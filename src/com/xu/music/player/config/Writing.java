@@ -72,7 +72,7 @@ public class Writing {
             Constant.MUSIC_PLAYER_SONGS_LIST.clear();
             for (String song : songs) {
                 bWriter.write(song);
-                Constant.MUSIC_PLAYER_SONGS_LIST.add(song);
+                //Constant.MUSIC_PLAYER_SONGS_LIST.add(song);
                 bWriter.newLine();
             }
             bWriter.flush();

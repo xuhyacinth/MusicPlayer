@@ -80,7 +80,7 @@ public class Controller implements Observer {
     }
 
     public void startLyricPlayer() {
-        int length = Integer.parseInt(Constant.PLAYING_SONG_NAME.split(Constant.MUSIC_PLAYER_SYSTEM_SPLIT)[3]);
+        int length = Constant.PLAYING_SONG_ENTITY.getLength().intValue();
         PlayerEntity.getBar().setMaximum(length);
         PlayerEntity.getBar().setSelection(0);
         if (lyricy != null) {
