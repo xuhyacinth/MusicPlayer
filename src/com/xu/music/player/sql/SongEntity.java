@@ -20,6 +20,7 @@ public class SongEntity {
     private Integer lyric;
     private String author;
     private Double length;
+
     private String createBy;
     private LocalDateTime createTime;
     private String updateBy;

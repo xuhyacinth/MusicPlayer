@@ -3,6 +3,7 @@ package com.xu.music.player.config;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
@@ -12,8 +13,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 
+import com.xu.music.player.sql.QueryWrapper;
 import com.xu.music.player.sql.SongEntity;
 import com.xu.music.player.system.Constant;
+
+import cn.hutool.core.collection.CollectionUtil;
 
 /**
  * @author Administrator
@@ -26,20 +30,25 @@ public class SongChooseWindow {
         dialog.open();
         String[] lists = dialog.getFileNames();
         String paths;
-        Constant.MUSIC_PLAYER_SONGS_TEMP_LIST.clear();
+        int index = getMaxIndex() + 1;
         for (int i = 0, len = lists.length; i < len; i++) {
             paths = lists[i];
             if (paths.toLowerCase().endsWith(".mp3") || paths.toLowerCase().endsWith(".flac") || paths.toLowerCase().endsWith(".wav") || paths.toLowerCase().endsWith(".pcm")) {
                 paths = dialog.getFilterPath() + File.separator + lists[i];
                 SongEntity entity = new SongEntity();
-                entity.setAuthor("hyacinth");
+
+                entity.setFlag(1);
+                entity.setIndex(index);
                 entity.setSongPath(paths);
-                entity.setAuthor(getSongInfo(paths, false));
-                entity.setName(getSongInfo(paths, true));
+                entity.setId((index + 1) + "");
+                entity.setCreateBy("hyacinth");
                 entity.setLyric(haveLyric(paths));
-                entity.setLyricPath(StringUtils.substring(paths, paths.lastIndexOf(".")) + ".lrc");
                 entity.setCreateTime(LocalDateTime.now());
-                Constant.MUSIC_PLAYER_SONGS_LIST.add(entity);
+                entity.setName(getSongInfo(paths, true));
+                entity.setLength((double) getSongLength(paths));
+                entity.setAuthor(getSongInfo(paths, false));
+                entity.setLyricPath(StringUtils.substring(paths, paths.lastIndexOf(".")) + ".lrc");
+
             }
         }
         return Constant.MUSIC_PLAYER_SONGS_TEMP_LIST;
@@ -73,6 +82,15 @@ public class SongChooseWindow {
         } else {
             return path.split(" - ")[0];
         }
+    }
+
+    private int getMaxIndex() {
+        QueryWrapper<SongEntity> wrapper = new QueryWrapper<>(SongEntity.class, "player");
+        List<SongEntity> entities = wrapper.last("order by id desc limit 1").list();
+        if (CollectionUtil.isEmpty(entities)) {
+            return entities.get(0).getIndex();
+        }
+        return 0;
     }
 
 }

@@ -470,6 +470,7 @@ public class MusicPlayer {
             SongChooseWindow choice = new SongChooseWindow();
             Toolkit.getDefaultToolkit().beep();
             choice.openChooseWindows(shell);
+            entities = wrapper.list();
         }
         initSongList(entities, table);
         getPlayingSong();

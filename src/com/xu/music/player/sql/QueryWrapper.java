@@ -52,7 +52,6 @@ public class QueryWrapper<T> {
         sql += CollectionUtil.isEmpty(condition) ? "" : condition.stream().collect(Collectors.joining(" "));
         sql += null == last ? "" : last;
         Helper helper = new Helper();
-        System.out.println(sql);
         return helper.queryBeans(sql, bean);
     }
 
