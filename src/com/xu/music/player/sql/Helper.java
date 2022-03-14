@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -244,9 +245,14 @@ public class Helper {
         connection = this.getConnection();
         int result = 0;
         try {
-            statement = connection.prepareStatement(sql);//预编译对象
-            setValues(statement, params);//设置参数
-            result = statement.executeUpdate();
+            if (null != params) {
+                statement = connection.prepareStatement(sql);//预编译对象
+                setValues(statement, params);//设置参数
+                result = statement.executeUpdate();
+            } else {
+                Statement statement = connection.createStatement();
+                result = statement.executeUpdate(sql);
+            }
         } catch (SQLException e) {
             try {
                 connection.rollback();  //出错回滚
@@ -270,9 +276,14 @@ public class Helper {
         connection = this.getConnection();
         int result = 0;
         try {
-            statement = connection.prepareStatement(sql);  //预编译对象
-            setValues(statement, params);    //设置参数
-            result = statement.executeUpdate();
+            if (null != params) {
+                statement = connection.prepareStatement(sql);//预编译对象
+                setValues(statement, params);//设置参数
+                result = statement.executeUpdate();
+            } else {
+                Statement statement = connection.createStatement();
+                result = statement.executeUpdate(sql);
+            }
         } catch (SQLException e) {
             try {
                 connection.rollback();  //出错回滚

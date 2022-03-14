@@ -15,6 +15,7 @@ import org.jaudiotagger.audio.AudioFileIO;
 
 import com.xu.music.player.sql.QueryWrapper;
 import com.xu.music.player.sql.SongEntity;
+import com.xu.music.player.sql.UpdateWrapper;
 import com.xu.music.player.system.Constant;
 
 import cn.hutool.core.collection.CollectionUtil;
@@ -24,7 +25,7 @@ import cn.hutool.core.collection.CollectionUtil;
  */
 public class SongChooseWindow {
 
-    public LinkedList<String> openChooseWindows(Shell shell) {
+    public LinkedList<String> openChooseWindows(Shell shell) throws Exception {
         FileDialog dialog = new FileDialog(shell, SWT.OPEN | SWT.MULTI);
         dialog.setFilterNames(new String[]{"*.mp3", "*.MP3", "*.wav", "*.WAV", "*.flac", "*.FLAC", "*.pcm", "*.PCM"});
         dialog.open();
@@ -35,8 +36,8 @@ public class SongChooseWindow {
             paths = lists[i];
             if (paths.toLowerCase().endsWith(".mp3") || paths.toLowerCase().endsWith(".flac") || paths.toLowerCase().endsWith(".wav") || paths.toLowerCase().endsWith(".pcm")) {
                 paths = dialog.getFilterPath() + File.separator + lists[i];
-                SongEntity entity = new SongEntity();
 
+                SongEntity entity = new SongEntity();
                 entity.setFlag(1);
                 entity.setIndex(index);
                 entity.setSongPath(paths);
@@ -49,6 +50,8 @@ public class SongChooseWindow {
                 entity.setAuthor(getSongInfo(paths, false));
                 entity.setLyricPath(StringUtils.substring(paths, paths.lastIndexOf(".")) + ".lrc");
 
+                UpdateWrapper wrapper = new UpdateWrapper<>(entity, "info");
+                wrapper.insert();
             }
         }
         return Constant.MUSIC_PLAYER_SONGS_TEMP_LIST;

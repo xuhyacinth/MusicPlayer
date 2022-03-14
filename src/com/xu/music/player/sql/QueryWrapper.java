@@ -11,48 +11,48 @@ import cn.hutool.core.collection.CollectionUtil;
 /**
  * @author Administrator
  */
-public class QueryWrapper<T> {
-
-    private Class<T> bean;
-
-    private String last;
-
-    private String table;
-
-    private String[] field;
-
-    private List<String> condition = new LinkedList<>();
+public class QueryWrapper<T> extends BasicWrapper {
 
     public QueryWrapper() {
     }
 
     public QueryWrapper(Class<T> bean, String table, String... field) {
-        this.bean = bean;
-        this.table = table;
-        this.field = (null == field || field.length <= 0) ? new String[]{"*"} : field;
+        super.bean = bean;
+        super.table = table;
+        super.field = (null == field || field.length <= 0) ? new String[]{"*"} : field;
+    }
+
+    public List<T> list() {
+        String sql = "select " + Arrays.asList(super.field).stream().collect(Collectors.joining(",")) + " from " + super.table + " where 1 = 1 ";
+        sql += CollectionUtil.isEmpty(super.condition) ? "" : super.condition.stream().collect(Collectors.joining(" "));
+        sql += null == super.last ? "" : super.last;
+        Helper helper = new Helper();
+        return helper.queryBeans(sql, super.bean);
     }
 
     public QueryWrapper eq(String filed, Object value) {
-        this.condition.add(" and " + filed + " = " + value);
-        return this;
-    }
-
-    public QueryWrapper like(String filed, Object value) {
-        this.condition.add(" and " + filed + " = " + value);
+        super.condition.add(" and " + filed + " = " + value);
         return this;
     }
 
     public QueryWrapper last(String value) {
-        this.last = " " + value;
+        super.last = " " + value;
         return this;
     }
 
-    public List<T> list() {
-        String sql = "select " + Arrays.asList(field).stream().collect(Collectors.joining(",")) + " from " + table + " where 1 = 1 ";
-        sql += CollectionUtil.isEmpty(condition) ? "" : condition.stream().collect(Collectors.joining(" "));
-        sql += null == last ? "" : last;
-        Helper helper = new Helper();
-        return helper.queryBeans(sql, bean);
+    public QueryWrapper like(String filed, Object value) {
+        super.condition.add(" and " + filed + " like %" + value + "%");
+        return this;
+    }
+
+    public QueryWrapper likeLeft(String filed, Object value) {
+        super.condition.add(" and " + filed + " like %" + value + "%");
+        return this;
+    }
+
+    public QueryWrapper likeRight(String filed, Object value) {
+        super.condition.add(" and " + filed + " like %" + value + "%");
+        return this;
     }
 
 }
