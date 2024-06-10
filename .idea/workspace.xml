@@ -34,9 +34,10 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Kotlin.TestKt.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/SourceCode/Kotlin/MusicPlayer/src/main/kotlin/com/xu/music/player"
+    "last_opened_file_path": "D:/SourceCode/Intellij/MusicPlayer"
   }
 }]]></component>
   <component name="RecentsManager">
