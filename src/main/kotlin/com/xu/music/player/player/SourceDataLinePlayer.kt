@@ -51,15 +51,6 @@ class SourceDataLinePlayer private constructor() : Player {
     @Volatile
     private var playing = false
 
-    fun put(v: Double) {
-        synchronized(deque) {
-            deque.add(v)
-            if (deque.size > Constant.SPECTRUM_TOTAL_NUMBER) {
-                deque.removeFirst()
-            }
-        }
-    }
-
     @Throws(Exception::class)
     override fun load(url: URL?) {
         load(AudioSystem.getAudioInputStream(url))
@@ -189,25 +180,36 @@ class SourceDataLinePlayer private constructor() : Player {
      * @since V1.0.0.0
      */
     private fun setSpectrum(rate: Float, channels: Int, buff: ByteArray) {
-        if (channels == 2) { // 立体声
+        // 立体声
+        if (channels == 2) {
             if (rate == 16f) {
                 put(((buff[1].toInt() shl 8) or (buff[0].toInt() and 0xFF)).toDouble()) // 左声道
                 put(((buff[3].toInt() shl 8) or (buff[2].toInt() and 0xFF)).toDouble()) // 右声道
-            } else {
-                put(buff[0].toDouble()) // 左声道
-                put(buff[2].toDouble()) // 左声道
-                put(buff[1].toDouble()) // 右声道
-                put(buff[3].toDouble()) // 右声道
+                return
             }
-        } else { // 单声道
-            if (rate == 16f) {
-                put(((buff[1].toInt() shl 8) or (buff[0].toInt() and 0xFF)).toDouble())
-                put(((buff[3].toInt() shl 8) or (buff[2].toInt() and 0xFF)).toDouble())
-            } else {
-                put(buff[0].toDouble())
-                put(buff[1].toDouble())
-                put(buff[2].toDouble())
-                put(buff[3].toDouble())
+            put(buff[0].toDouble()) // 左声道
+            put(buff[2].toDouble()) // 左声道
+            put(buff[1].toDouble()) // 右声道
+            put(buff[3].toDouble()) // 右声道
+            return
+        }
+        // 单声道
+        if (rate == 16f) {
+            put(((buff[1].toInt() shl 8) or (buff[0].toInt() and 0xFF)).toDouble())
+            put(((buff[3].toInt() shl 8) or (buff[2].toInt() and 0xFF)).toDouble())
+            return
+        }
+        put(buff[0].toDouble())
+        put(buff[1].toDouble())
+        put(buff[2].toDouble())
+        put(buff[3].toDouble())
+    }
+
+    private fun put(v: Double) {
+        synchronized(deque) {
+            deque.add(v)
+            if (deque.size > Constant.SPECTRUM_TOTAL_NUMBER) {
+                deque.removeFirst()
             }
         }
     }

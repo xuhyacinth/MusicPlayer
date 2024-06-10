@@ -5,17 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f380424e-7dbb-4760-b1c0-4b556a4ca250" name="Changes" comment="dev:&#10;sql">
-      <change afterPath="$PROJECT_DIR$/sqlite/db/MusicPlayer.db" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sqlite/sqlite-tools-linux-x64-3460000/sqldiff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sqlite/sqlite-tools-linux-x64-3460000/sqlite3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sqlite/sqlite-tools-linux-x64-3460000/sqlite3_analyzer" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sqlite/sqlite-tools-osx-x64-3460000/sqldiff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sqlite/sqlite-tools-osx-x64-3460000/sqlite3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sqlite/sqlite-tools-osx-x64-3460000/sqlite3_analyzer" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sqlite/sqlite-tools-win-x64-3460000/sqldiff.exe" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sqlite/sqlite-tools-win-x64-3460000/sqlite3.exe" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sqlite/sqlite-tools-win-x64-3460000/sqlite3_analyzer.exe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/hander/DataBaseError.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/hander/MusicPlayerError.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/sql/SQLiteHelper.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/utils/CommUtils.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/utils/ResourceManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/utils/SysType.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/wrapper/InsertWrapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/wrapper/QueryWrapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/wrapper/UpdateWrapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/5/3/5311daf8f7eaa7994ba3eb718df2b01a6d0693ac" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/5/3/5311daf8f7eaa7994ba3eb718df2b01a6d0693ac" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/index.pb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/player/ClipPlayer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/player/ClipPlayer.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/player/SourceDataLinePlayer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/player/SourceDataLinePlayer.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/player/Test.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/player/Test.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/wrapper/BasicWrapper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/wrapper/BasicWrapper.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,18 +39,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "guidestars"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;guidestars&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/xuhyacinth/MusicPlayer.git",
-    "accountId": "cb59c321-02c4-4509-90a8-4d633100f2db"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/xuhyacinth/MusicPlayer.git&quot;,
+    &quot;accountId&quot;: &quot;cb59c321-02c4-4509-90a8-4d633100f2db&quot;
   }
-}]]></component>
+}</component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
@@ -65,8 +72,9 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SONARLINT_PRECOMMIT_ANALYSIS": "true",
     "git-widget-placeholder": "Feature-V1.0.0.0",
+    "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/SourceCode/Intellij/MusicPlayer",
+    "last_opened_file_path": "D:/SourceCode/Intellij/MusicPlayer/src/main/kotlin/com/xu/music/player/wrapper",
     "project.structure.last.edited": "Artifacts",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.46666667"
@@ -74,12 +82,16 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\SourceCode\Intellij\MusicPlayer\src\main\kotlin\com\xu\music\player\wrapper" />
+      <recent name="D:\SourceCode\Intellij\MusicPlayer\src\main\kotlin\com\xu\music\player\utils" />
+      <recent name="D:\SourceCode\Intellij\MusicPlayer\src\main\kotlin\com\xu\music\player" />
       <recent name="D:\SourceCode\Intellij\MusicPlayer" />
       <recent name="D:\SourceCode\Kotlin\MusicPlayer\src\main\kotlin\com\xu\music\player" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="com.xu.music.player.sql" />
       <recent name="com.xu.music.player.wrapper" />
+      <recent name="com.xu.music.player.sql" />
+      <recent name="com.xu.music.player.utils" />
       <recent name="com.xu.music.player.player" />
     </key>
   </component>
@@ -122,8 +134,27 @@
       <option name="project" value="LOCAL" />
       <updated>1718006305984</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="dev:&#10;sql">
+      <option name="closed" value="true" />
+      <created>1718006552229</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1718006552229</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="dev:&#10;init" />

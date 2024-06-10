@@ -55,28 +55,23 @@ class ClipPlayer private constructor() : Player {
         val name = file!!.name
         if (CharSequenceUtil.endWithIgnoreCase(name, ".mp3")) {
             var stream = MpegAudioFileReader().getAudioInputStream(file)
-
             var format = stream.format
             format = AudioFormat(
                 Encoding.PCM_SIGNED, format.sampleRate, 16, format.channels,
                 format.channels * 2, format.sampleRate, false
             )
-
             stream = AudioSystem.getAudioInputStream(format, stream)
             load(stream)
             return
         }
         if (CharSequenceUtil.endWithIgnoreCase(name, ".flac")) {
             var stream = AudioSystem.getAudioInputStream(file)
-
             var format = stream.format
             format = AudioFormat(
                 Encoding.PCM_SIGNED, format.sampleRate, 16, format.channels,
                 format.channels * 2, format.sampleRate, false
             )
-
             stream = AudioSystem.getAudioInputStream(format, stream)
-
             load(stream)
             return
         }
@@ -91,12 +86,10 @@ class ClipPlayer private constructor() : Player {
     @Throws(Exception::class)
     override fun load(stream: AudioInputStream?) {
         val info = Info(Clip::class.java, stream!!.format, AudioSystem.NOT_SPECIFIED)
-
         this.clip = AudioSystem.getLine(info) as Clip
         clip!!.addLineListener { event: LineEvent ->
             println(event.type.toString() + "\t" + event.framePosition)
         }
-
         clip!!.open(stream)
         if (clip!!.isControlSupported(Type.MASTER_GAIN)) {
             control = clip!!.getControl(Type.MASTER_GAIN) as FloatControl
