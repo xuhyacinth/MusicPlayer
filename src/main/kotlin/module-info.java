@@ -14,6 +14,7 @@ module com.xu.music.player.musicplayer {
     requires java.desktop;
     requires cn.hutool;
     requires mp3spi;
+    requires java.sql;
 
     opens com.xu.music.player to javafx.fxml;
     exports com.xu.music.player;

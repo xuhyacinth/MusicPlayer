@@ -41,3 +41,13 @@ G.idea/sonarlint/issuestore/4/4/442292b8a7efeabbe4cc176709b833b1792140ec,8\6\86
 Q.idea/sonarlint/securityhotspotstore/1/4/14afa4f444041169985364a110ed361fe19213eb,d\e\de450c7421b149b06d13837299d16bd4ec5bd502
 Å
 Q.idea/sonarlint/securityhotspotstore/8/b/8bcae52c7f5067fb59f29467a29f9b20ae54141b,4\4\44ca351311a9bf21080237652da605cb67c08683
+m
+=src/main/kotlin/com/xu/music/player/wrapper/BasicWrapper.java,c\6\c6a3dd4c731c68e8de77b0627a6472402b3a94d5
+c
+3src/main/kotlin/com/xu/music/player/sql/Helper.java,6\d\6ddcb073496c3950de94af505fcc012962883107
+a
+1src/main/kotlin/com/xu/music/player/sql/Helper.kt,d\6\d6b8a00a8c6cab83ecc6ac99c2ba02f054182745
+h
+8src/main/kotlin/com/xu/music/player/constant/Constant.kt,1\a\1a3547c7572c9113217f6d565714935fc2b10800
+k
+;src/main/kotlin/com/xu/music/player/wrapper/BasicWrapper.kt,9\3\93b0ab8c3bca50189804b3fe8c9da4492a50559d

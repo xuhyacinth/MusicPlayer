@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f380424e-7dbb-4760-b1c0-4b556a4ca250" name="Changes" comment="" />
+    <list default="true" id="f380424e-7dbb-4760-b1c0-4b556a4ca250" name="Changes" comment="dev:&#10;init">
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/sql/Helper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/wrapper/BasicWrapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/index.pb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/module-info.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -17,6 +23,21 @@
       </list>
     </option>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "guidestars"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/xuhyacinth/MusicPlayer.git",
+    "accountId": "cb59c321-02c4-4509-90a8-4d633100f2db"
+  }
+}]]></component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
@@ -24,9 +45,9 @@
       </MavenGeneralSettings>
     </option>
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 1
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
   <component name="ProjectId" id="2hg7ydezRJjfFKbELdPD9Ri763d" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -36,8 +57,13 @@
   "keyToString": {
     "Kotlin.TestKt.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SONARLINT_PRECOMMIT_ANALYSIS": "true",
+    "git-widget-placeholder": "Feature-V1.0.0.0",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/SourceCode/Intellij/MusicPlayer"
+    "last_opened_file_path": "D:/SourceCode/Intellij/MusicPlayer",
+    "project.structure.last.edited": "Artifacts",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.46666667"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -71,6 +97,19 @@
       <option name="presentableId" value="Default" />
       <updated>1718004121598</updated>
     </task>
+    <task id="LOCAL-00001" summary="dev:&#10;init">
+      <option name="closed" value="true" />
+      <created>1718005941416</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1718005941416</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="dev:&#10;init" />
+    <option name="LAST_COMMIT_MESSAGE" value="dev:&#10;init" />
   </component>
 </project>

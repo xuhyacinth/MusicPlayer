@@ -1,7 +1,6 @@
-package com.xu.music.player.constant;
+package com.xu.music.player.constant
 
-import java.io.Serializable;
-
+import java.io.Serializable
 
 /**
  * 常量类
@@ -9,11 +8,6 @@ import java.io.Serializable;
  * @date 2024年6月10日15点30分
  * @since V1.0.0.0
  */
-public class Constant implements Serializable {
-
-    public static final int SPECTRUM_TOTAL_NUMBER = 100;
-
-    private Constant() {
-
-    }
+object Constant : Serializable {
+    const val SPECTRUM_TOTAL_NUMBER: Int = 100
 }
