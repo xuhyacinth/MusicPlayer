@@ -10,13 +10,5 @@
         <module name="MusicPlayer" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="MusicPlayer" target="1.8" />
-    </bytecodeTargetLevel>
-  </component>
-  <component name="JavacSettings">
-    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="MusicPlayer" options="-extdirs E:\SourceCode\Idea\MusicPlayer/lib" />
-    </option>
   </component>
 </project>
