@@ -4,12 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f380424e-7dbb-4760-b1c0-4b556a4ca250" name="Changes" comment="dev:&#10;init">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/sql/Helper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/wrapper/BasicWrapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/index.pb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/module-info.java" afterDir="false" />
+    <list default="true" id="f380424e-7dbb-4760-b1c0-4b556a4ca250" name="Changes" comment="dev:&#10;sql">
+      <change afterPath="$PROJECT_DIR$/sqlite/db/MusicPlayer.db" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sqlite/sqlite-tools-linux-x64-3460000/sqldiff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sqlite/sqlite-tools-linux-x64-3460000/sqlite3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sqlite/sqlite-tools-linux-x64-3460000/sqlite3_analyzer" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sqlite/sqlite-tools-osx-x64-3460000/sqldiff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sqlite/sqlite-tools-osx-x64-3460000/sqlite3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sqlite/sqlite-tools-osx-x64-3460000/sqlite3_analyzer" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sqlite/sqlite-tools-win-x64-3460000/sqldiff.exe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sqlite/sqlite-tools-win-x64-3460000/sqlite3.exe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sqlite/sqlite-tools-win-x64-3460000/sqlite3_analyzer.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,9 +74,12 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\SourceCode\Intellij\MusicPlayer" />
       <recent name="D:\SourceCode\Kotlin\MusicPlayer\src\main\kotlin\com\xu\music\player" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.xu.music.player.sql" />
+      <recent name="com.xu.music.player.wrapper" />
       <recent name="com.xu.music.player.player" />
     </key>
   </component>
@@ -105,11 +114,20 @@
       <option name="project" value="LOCAL" />
       <updated>1718005941416</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="dev:&#10;sql">
+      <option name="closed" value="true" />
+      <created>1718006305984</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1718006305984</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="dev:&#10;init" />
-    <option name="LAST_COMMIT_MESSAGE" value="dev:&#10;init" />
+    <MESSAGE value="dev:&#10;sql" />
+    <option name="LAST_COMMIT_MESSAGE" value="dev:&#10;sql" />
   </component>
 </project>
