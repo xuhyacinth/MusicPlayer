@@ -6,6 +6,10 @@ import com.xu.music.player.player.SourceDataLinePlayer;
 import com.xu.music.player.wrapper.QueryWrapper;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 public class Test {
 
@@ -16,7 +20,7 @@ public class Test {
         System.out.println("---------");
         Thread.sleep(15000);
         player.pause();
-        Thread.sleep(1000);
+        Thread.sleep(2000);
         player.resume(0);
     }
 

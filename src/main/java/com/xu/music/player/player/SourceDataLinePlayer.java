@@ -8,15 +8,12 @@ import java.io.File;
 import java.net.URL;
 import javazoom.spi.mpeg.sampled.file.MpegAudioFileReader;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.FloatControl;
-import javax.sound.sampled.SourceDataLine;
-
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import javax.sound.sampled.*;
 
 /**
  * 音频播放
@@ -56,7 +53,7 @@ public class SourceDataLinePlayer implements Player {
      */
     private volatile boolean playing = false;
 
-    private Thread thread;
+    private static final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     private SourceDataLinePlayer() {
     }
@@ -79,19 +76,11 @@ public class SourceDataLinePlayer implements Player {
         String name = file.getName();
         if (CharSequenceUtil.endWithIgnoreCase(name, ".mp3")) {
             AudioInputStream stream = new MpegAudioFileReader().getAudioInputStream(file);
-            AudioFormat format = stream.getFormat();
-            format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, format.getSampleRate(), 16, format.getChannels(),
-                    format.getChannels() * 2, format.getSampleRate(), false);
-            stream = AudioSystem.getAudioInputStream(format, stream);
             load(stream);
             return;
         }
         if (CharSequenceUtil.endWithIgnoreCase(name, ".flac")) {
             AudioInputStream stream = AudioSystem.getAudioInputStream(file);
-            AudioFormat format = stream.getFormat();
-            format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, format.getSampleRate(), 16, format.getChannels(),
-                    format.getChannels() * 2, format.getSampleRate(), false);
-            stream = AudioSystem.getAudioInputStream(format, stream);
             load(stream);
             return;
         }
@@ -105,6 +94,10 @@ public class SourceDataLinePlayer implements Player {
 
     @Override
     public void load(AudioInputStream stream) throws Exception {
+        AudioFormat format = stream.getFormat();
+        format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, format.getSampleRate(), 16, format.getChannels(),
+                format.getChannels() * 2, format.getSampleRate(), false);
+        stream = AudioSystem.getAudioInputStream(format, stream);
         DataLine.Info info = new DataLine.Info(SourceDataLine.class, stream.getFormat(), AudioSystem.NOT_SPECIFIED);
         data = (SourceDataLine) AudioSystem.getLine(info);
         data.open(stream.getFormat());
@@ -165,17 +158,15 @@ public class SourceDataLinePlayer implements Player {
         if (null == this.audio || null == this.data) {
             return;
         }
-        thread = new Thread(this::start);
-        thread.start();
+        executor.submit(this::start);
     }
 
     @Override
     public void stop() {
-        thread.interrupt();
+        this.playing = false;
         if (null == this.audio || null == this.data) {
             return;
         }
-        this.playing = false;
         this.data.stop();
         IoUtil.close(this.audio);
         IoUtil.close(this.data);
