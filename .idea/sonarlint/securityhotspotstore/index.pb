@@ -57,3 +57,10 @@ m
 =src/main/kotlin/com/xu/music/player/wrapper/QueryWrapper.java,0\4\043d88405e22b65c0172179d92d26ef8e5e47b50
 n
 >src/main/kotlin/com/xu/music/player/wrapper/UpdateWrapper.java,b\0\b098f429729d3bddad5a8e330dda3b5787639d30
+:
+
+.gitignore,a\5\a5cc2925ca8258af241be7e5b0381edf30266302
+S
+#.idea/sonarlint/issuestore/index.pb,9\f\9fe84ebb15faf917b7def6236dba604453cc61e0
+]
+-.idea/sonarlint/securityhotspotstore/index.pb,8\8\88a9255124c95bdc913197c120a8d560edc59c8e
