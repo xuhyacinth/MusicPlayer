@@ -26,21 +26,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a89d772d-fcb5-4853-8767-787c6a9fef8d" name="默认更改列表" comment="优化播放">
+    <list default="true" id="a89d772d-fcb5-4853-8767-787c6a9fef8d" name="默认更改列表" comment="修改代码">
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/4/3/437b24f68035641d0f40d141519f85adcb1842d9" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/4/3/437b24f68035641d0f40d141519f85adcb1842d9" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/4/4/442292b8a7efeabbe4cc176709b833b1792140ec" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/4/8/48c5906c21f76016986ef395f797369eb5e306a1" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/4/8/48c5906c21f76016986ef395f797369eb5e306a1" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/7/c/7cd345332665e47372bd8cd17d44015d1fba28c0" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/7/c/7cd345332665e47372bd8cd17d44015d1fba28c0" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/f/7/f76f9977caba9955e0b38c69c2a13042791d6dd6" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/f/7/f76f9977caba9955e0b38c69c2a13042791d6dd6" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/index.pb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/ClipPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/ClipPlayer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/SourceDataLinePlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/SourceDataLinePlayer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/sql/NewHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/sql/NewHelper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/BasicWrapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/BasicWrapper.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -229,7 +217,15 @@
       <option name="project" value="LOCAL" />
       <updated>1718098364599</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="修改代码">
+      <option name="closed" value="true" />
+      <created>1718099170060</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1718099170060</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -276,7 +272,8 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="dev:&#10;修改分支名称" />
     <MESSAGE value="优化播放" />
-    <option name="LAST_COMMIT_MESSAGE" value="优化播放" />
+    <MESSAGE value="修改代码" />
+    <option name="LAST_COMMIT_MESSAGE" value="修改代码" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
