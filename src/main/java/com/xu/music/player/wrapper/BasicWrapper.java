@@ -1,6 +1,7 @@
 package com.xu.music.player.wrapper;
 
 import cn.hutool.core.util.StrUtil;
+import com.xu.music.player.utils.Utils;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -63,10 +64,10 @@ public class BasicWrapper<T> {
                 return "null";
             }
             if (item instanceof Date) {
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                SimpleDateFormat format = new SimpleDateFormat(Utils.FORMAT_DATE_TIME);
                 return "'" + format.format(item) + "'";
             } else if (item instanceof LocalDateTime) {
-                DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                DateTimeFormatter format = DateTimeFormatter.ofPattern(Utils.FORMAT_DATE_TIME);
                 return "'" + format.format((LocalDateTime) item) + "'";
             } else if (item instanceof String) {
                 return "'" + item + "'";
@@ -88,10 +89,10 @@ public class BasicWrapper<T> {
             return "null";
         }
         if (value instanceof Date) {
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat format = new SimpleDateFormat(Utils.FORMAT_DATE_TIME);
             return "'" + format.format(value) + "'";
         } else if (value instanceof LocalDateTime) {
-            DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            DateTimeFormatter format = DateTimeFormatter.ofPattern(Utils.FORMAT_DATE_TIME);
             return "'" + format.format((LocalDateTime) value) + "'";
         } else if (value instanceof String) {
             return "'" + value + "'";

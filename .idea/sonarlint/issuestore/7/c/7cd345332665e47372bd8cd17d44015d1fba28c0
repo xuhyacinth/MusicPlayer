@@ -1,19 +1,2 @@
 
-m	java:S106"+Replace this use of System.out by a logger.(¦œß®8’ö´€2J$56aa0991-898a-40da-a0ad-f0290cb2cca7
-w
-java:S1128"4Remove this unused import 'cn.hutool.json.JSONUtil'.( «ı¢8ˆ‘â´€2J$538df163-9d74-47c5-b360-1f907662a61a
-Š
-java:S1128"BRemove this unused import 'com.xu.music.player.entity.SongEntity'.(ùûî‡ıÿÿÿÿ8ˆ‘â´€2J$c90b27c1-8a54-44e3-b82a-26a8ad7c8cf4
-ˆ
-java:S1128"ERemove this unused import 'com.xu.music.player.wrapper.QueryWrapper'.(ÔÄÊõ8ˆ‘â´€2J$9cd987a9-3cca-4f41-bcc6-df19743836a0
-s
-java:S1128"+Remove this unused import 'java.util.List'.(Õë±Äøÿÿÿÿ8ˆ‘â´€2J$fbbb0af4-2d1d-4eef-a32a-79a3f7681e3f
-‰
-java:S1128	"ARemove this unused import 'java.util.concurrent.ExecutorService'.(æ÷–£ùÿÿÿÿ8Úˆö´€2J$947a915d-9aa5-4d56-af97-a9bc0a9124ac
-ƒ
-java:S1128
-";Remove this unused import 'java.util.concurrent.Executors'.(äåÒÛÿÿÿÿÿ8Úˆö´€2J$f3ecd902-4e06-439a-a521-9a94f0a58a89
-€
-java:S1128"8Remove this unused import 'java.util.concurrent.Future'.(á¬øíıÿÿÿÿ8Úˆö´€2J$132db1de-47f1-45cd-9956-fbdc5a6be800
-}
-java:S1128":Remove this unused import 'java.util.concurrent.TimeUnit'.(Æ™ş8Úˆö´€2J$81353cd2-6cdc-4822-aaea-c410942aef90
+m	java:S106"+Replace this use of System.out by a logger.(¦œß®8Í¸¬µ€2J$c5331e15-58ef-434f-8acd-8f52346677b9

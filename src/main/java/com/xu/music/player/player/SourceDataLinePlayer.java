@@ -8,12 +8,17 @@ import java.io.File;
 import java.net.URL;
 import javazoom.spi.mpeg.sampled.file.MpegAudioFileReader;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.SourceDataLine;
+
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import javax.sound.sampled.*;
 
 /**
  * 音频播放
@@ -27,43 +32,33 @@ public class SourceDataLinePlayer implements Player {
      * 频谱
      */
     private static final Deque<Double> deque = new LinkedList<>();
-
+    private static final ExecutorService executor = Executors.newSingleThreadExecutor();
     /**
      * SourceDataLine
      */
     private SourceDataLine data = null;
-
     /**
      * AudioInputStream
      */
     private AudioInputStream audio = null;
-
     /**
      * FloatControl
      */
     private FloatControl control = null;
-
     /**
      * 暂停
      */
     private volatile boolean paused = false;
-
     /**
      * 播放
      */
     private volatile boolean playing = false;
-
-    private static final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     private SourceDataLinePlayer() {
     }
 
     public static SourceDataLinePlayer createPlayer() {
         return SingletonHolder.player;
-    }
-
-    private static class SingletonHolder {
-        private static final SourceDataLinePlayer player = new SourceDataLinePlayer();
     }
 
     @Override
@@ -231,6 +226,10 @@ public class SourceDataLinePlayer implements Player {
                 deque.removeFirst();
             }
         }
+    }
+
+    private static class SingletonHolder {
+        private static final SourceDataLinePlayer player = new SourceDataLinePlayer();
     }
 
 }

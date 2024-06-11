@@ -1,74 +1,74 @@
 
-n	java:S117Í"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‘Š™£8ƒÑ¢ª€2
-s	java:S117×"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(÷¸ÎÀÿÿÿÿÿ8ƒÑ¢ª€2
-m	java:S117Ú"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(×„¸$8ƒÑ¢ª€2
+n	java:S117Í"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‘Š™£8ºº¬µ€2
+s	java:S117×"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(÷¸ÎÀÿÿÿÿÿ8ºº¬µ€2
+m	java:S117Ú"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(×„¸$8ºº¬µ€2
 p
-java:S11047"SMake playing a static final constant or non-public and provide accessors if needed.(ñ–Êù8ƒÑ¢ª€2
+java:S11047"SMake playing a static final constant or non-public and provide accessors if needed.(ñ–Êù8»º¬µ€2
 R
-java:S3740ú"/Provide the parametrized type for this generic.(˜†‡¶şÿÿÿÿ8‰Ñ¢ª€2
+java:S3740ú"/Provide the parametrized type for this generic.(˜†‡¶şÿÿÿÿ8Áº¬µ€2
 j
-java:S1192…"LDefine a constant instead of duplicating this literal "MusicPlayer" 5 times.(øÖï¯8‹Ñ¢ª€2
+java:S1192…"LDefine a constant instead of duplicating this literal "MusicPlayer" 5 times.(øÖï¯8Áº¬µ€2
 ‰
-java:S1192"fDefine a constant instead of duplicating this literal "/com/xu/music/player/image/exit-1.png" 3 times.(íÆ§şÿÿÿÿ8‹Ñ¢ª€2
+java:S1192"fDefine a constant instead of duplicating this literal "/com/xu/music/player/image/exit-1.png" 3 times.(íÆ§şÿÿÿÿ8Áº¬µ€2
 „
-java:S1192¡"fDefine a constant instead of duplicating this literal "/com/xu/music/player/image/mini-1.png" 3 times.(½ÛÛ 8‹Ñ¢ª€2
+java:S1192¡"fDefine a constant instead of duplicating this literal "/com/xu/music/player/image/mini-1.png" 3 times.(½ÛÛ 8Áº¬µ€2
 ‡
-java:S1192õ"dDefine a constant instead of duplicating this literal "/com/xu/music/player/image/stop.png" 3 times.(Íï÷Íûÿÿÿÿ8‹Ñ¢ª€2
+java:S1192õ"dDefine a constant instead of duplicating this literal "/com/xu/music/player/image/stop.png" 3 times.(Íï÷Íûÿÿÿÿ8Âº¬µ€2
 F
-java:S1659C"$Declare "clickY" on a separate line.(¡æ¦Ğıÿÿÿÿ8Ñ¢ª€2
+java:S1659C"$Declare "clickY" on a separate line.(¡æ¦Ğıÿÿÿÿ8Äº¬µ€2
 p
-java:S1450?"SRemove the "foot" field and declare it as a local variable in the relevant methods.(µ–ŠÒ8Ñ¢ª€2
+java:S1450?"SRemove the "foot" field and declare it as a local variable in the relevant methods.(µ–ŠÒ8Åº¬µ€2
 w
-java:S1450="URemove the "lyrics" field and declare it as a local variable in the relevant methods.(Ü¤€üÿÿÿÿ8Ñ¢ª€2
+java:S1450="URemove the "lyrics" field and declare it as a local variable in the relevant methods.(Ü¤€üÿÿÿÿ8Æº¬µ€2
 s
-java:S14504"WRemove the "merchant" field and declare it as a local variable in the relevant methods.(ŠÙ™(8Ñ¢ª€2
+java:S14504"WRemove the "merchant" field and declare it as a local variable in the relevant methods.(ŠÙ™(8Æº¬µ€2
 t
-java:S1450@"WRemove the "progress" field and declare it as a local variable in the relevant methods.(Ùôéª8Ñ¢ª€2
+java:S1450@"WRemove the "progress" field and declare it as a local variable in the relevant methods.(Ùôéª8Æº¬µ€2
 z
-java:S14505"XRemove the "remainder" field and declare it as a local variable in the relevant methods.(ñ¬ İÿÿÿÿÿ8Ñ¢ª€2
+java:S14505"XRemove the "remainder" field and declare it as a local variable in the relevant methods.(ñ¬ İÿÿÿÿÿ8Æº¬µ€2
 v
-java:S1450D"YRemove the "timeLabel2" field and declare it as a local variable in the relevant methods.(›Ÿ­¯8Ñ¢ª€2
+java:S1450D"YRemove the "timeLabel2" field and declare it as a local variable in the relevant methods.(›Ÿ­¯8Æº¬µ€2
 t
-java:S1450>"RRemove the "top" field and declare it as a local variable in the relevant methods.(‚ßêâıÿÿÿÿ8Ñ¢ª€2
-^	java:S125¬"<This block of commented-out lines of code should be removed.(Äÿÿÿÿÿ8›Ñ¢ª€2
+java:S1450>"RRemove the "top" field and declare it as a local variable in the relevant methods.(‚ßêâıÿÿÿÿ8Çº¬µ€2
+^	java:S125¬"<This block of commented-out lines of code should be removed.(Äÿÿÿÿÿ8Óº¬µ€2
 P
-java:S1135ï"2Complete the task associated to this TODO comment.(ÓñàÍ8ŸÑ¢ª€2
+java:S1135ï"2Complete the task associated to this TODO comment.(ÓñàÍ8Öº¬µ€2
 P
-java:S1135ó"2Complete the task associated to this TODO comment.(ÓñàÍ8ŸÑ¢ª€2
+java:S1135ó"2Complete the task associated to this TODO comment.(ÓñàÍ8Öº¬µ€2
 <
-java:S2119’"Save and re-use this "Random".(¼ä¹´8²Ñ¢ª€2
+java:S2119’"Save and re-use this "Random".(¼ä¹´8åº¬µ€2
 T
-java:S2696”"6Make the enclosing method "static" or remove this set.(ÿ†“ä8´Ñ¢ª€2
-^	java:S125¹"<This block of commented-out lines of code should be removed.(«íÄ¶ÿÿÿÿÿ8·Ñ¢ª€2
+java:S2696”"6Make the enclosing method "static" or remove this set.(ÿ†“ä8åº¬µ€2
+^	java:S125¹"<This block of commented-out lines of code should be removed.(«íÄ¶ÿÿÿÿÿ8éº¬µ€2
 P
-java:S1135Å"2Complete the task associated to this TODO comment.(Üğ£Å8¸Ñ¢ª€2
+java:S1135Å"2Complete the task associated to this TODO comment.(Üğ£Å8êº¬µ€2
 P
-java:S1135İ"2Complete the task associated to this TODO comment.(Üğ£Å8¸Ñ¢ª€2
+java:S1135İ"2Complete the task associated to this TODO comment.(Üğ£Å8ëº¬µ€2
 T
-java:S2696ã"6Make the enclosing method "static" or remove this set.(üª»Â8¸Ñ¢ª€2
+java:S2696ã"6Make the enclosing method "static" or remove this set.(üª»Â8ëº¬µ€2
 N
-java:S1172ù"+Remove this unused method parameter "next".(ß¬É¨øÿÿÿÿ8¸Ñ¢ª€2
+java:S1172ù"+Remove this unused method parameter "next".(ß¬É¨øÿÿÿÿ8îº¬µ€2
 Y
-java:S2696‹"6Make the enclosing method "static" or remove this set.(¹¬ÓÆøÿÿÿÿ8ºÑ¢ª€2
+java:S2696‹"6Make the enclosing method "static" or remove this set.(¹¬ÓÆøÿÿÿÿ8îº¬µ€2
 T
-java:S2696"6Make the enclosing method "static" or remove this set.(Šç¦Š8»Ñ¢ª€2
-Y	java:S125“"<This block of commented-out lines of code should be removed.(’º—ñ8¼Ñ¢ª€2
+java:S2696"6Make the enclosing method "static" or remove this set.(Šç¦Š8îº¬µ€2
+Y	java:S125“"<This block of commented-out lines of code should be removed.(’º—ñ8ïº¬µ€2
 P
-java:S1135¶"2Complete the task associated to this TODO comment.(Üğ£Å8¼Ñ¢ª€2
+java:S1135¶"2Complete the task associated to this TODO comment.(Üğ£Å8ïº¬µ€2
 P
-java:S1135Ò"2Complete the task associated to this TODO comment.(Üğ£Å8¿Ñ¢ª€2
+java:S1135Ò"2Complete the task associated to this TODO comment.(Üğ£Å8ñº¬µ€2
 P
-java:S1135ã"2Complete the task associated to this TODO comment.(Üğ£Å8ÀÑ¢ª€2
+java:S1135ã"2Complete the task associated to this TODO comment.(Üğ£Å8òº¬µ€2
 x
-java:S3923è"[Remove this conditional structure or edit its code blocks so that they're not all the same.(‰¡¿a8ÀÑ¢ª€2
+java:S3923è"[Remove this conditional structure or edit its code blocks so that they're not all the same.(‰¡¿a8òº¬µ€2
 \
-java:S1854ÿ"9Remove this useless assignment to local variable "index".(ø‚÷«ıÿÿÿÿ8ÁÑ¢ª€2
+java:S1854ÿ"9Remove this useless assignment to local variable "index".(ø‚÷«ıÿÿÿÿ8òº¬µ€2
 P
-java:S1135ú"2Complete the task associated to this TODO comment.(Üğ£Å8ÁÑ¢ª€2
+java:S1135ú"2Complete the task associated to this TODO comment.(Üğ£Å8òº¬µ€2
 M
-java:S1481ÿ"*Remove this unused "index" local variable.(ø‚÷«ıÿÿÿÿ8ÂÑ¢ª€2
-^	java:S125€"<This block of commented-out lines of code should be removed.(»ıÁöùÿÿÿÿ8ÂÑ¢ª€2
+java:S1481ÿ"*Remove this unused "index" local variable.(ø‚÷«ıÿÿÿÿ8óº¬µ€2
+^	java:S125€"<This block of commented-out lines of code should be removed.(»ıÁöùÿÿÿÿ8óº¬µ€2
 P
-java:S1135‰"2Complete the task associated to this TODO comment.(Üğ£Å8ÄÑ¢ª€2
+java:S1135‰"2Complete the task associated to this TODO comment.(Üğ£Å8óº¬µ€2
 Y
-java:S2696’"6Make the enclosing method "static" or remove this set.(÷¸¸øÿÿÿÿ8ÅÑ¢ª€2
+java:S2696’"6Make the enclosing method "static" or remove this set.(÷¸¸øÿÿÿÿ8óº¬µ€2

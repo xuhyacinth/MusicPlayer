@@ -27,16 +27,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a89d772d-fcb5-4853-8767-787c6a9fef8d" name="默认更改列表" comment="优化播放">
-      <change afterPath="$PROJECT_DIR$/.idea/git_toolbox_prj.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/f/7/f76f9977caba9955e0b38c69c2a13042791d6dd6" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/f/7/f76f9977caba9955e0b38c69c2a13042791d6dd6" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/4/3/437b24f68035641d0f40d141519f85adcb1842d9" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/4/3/437b24f68035641d0f40d141519f85adcb1842d9" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/4/4/442292b8a7efeabbe4cc176709b833b1792140ec" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/4/8/48c5906c21f76016986ef395f797369eb5e306a1" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/4/8/48c5906c21f76016986ef395f797369eb5e306a1" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/7/c/7cd345332665e47372bd8cd17d44015d1fba28c0" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/7/c/7cd345332665e47372bd8cd17d44015d1fba28c0" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/f/7/f76f9977caba9955e0b38c69c2a13042791d6dd6" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/f/7/f76f9977caba9955e0b38c69c2a13042791d6dd6" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/index.pb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/ClipPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/ClipPlayer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/SourceDataLinePlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/SourceDataLinePlayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/sql/NewHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/sql/NewHelper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/BasicWrapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/BasicWrapper.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -217,7 +221,15 @@
       <option name="project" value="LOCAL" />
       <updated>1718078286477</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="优化播放">
+      <option name="closed" value="true" />
+      <created>1718098364599</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1718098364599</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -271,7 +283,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/xu/music/player/player/SourceDataLinePlayer.java</url>
-          <line>130</line>
+          <line>125</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>

@@ -1,6 +1,6 @@
 
-Û
-java:S6548"˜A Singleton implementation was detected. Make sure the use of the Singleton pattern is required and the implementation is the right one for the context.(ú°æn8„øÃ«€2J$082739af-e995-459f-bb15-844d0aff9376
 o
-java:S1602^",Remove useless curly braces around statement(™­Áˆ8ˆøÃ«€2J$31e8b2e8-2b05-4cf2-aa0f-07520ae19139
-r	java:S106_"+Replace this use of System.out by a logger.( ¶¥ûøÿÿÿÿ8ˆøÃ«€2J$507cb4d3-b918-4bae-a5f3-65eff8089b44
+java:S1602Z",Remove useless curly braces around statement(™­Áˆ8•»¬µ€2J$742c515d-9fc7-47cb-bccf-e6a1b7b35601
+r	java:S106["+Replace this use of System.out by a logger.( ¶¥ûøÿÿÿÿ8•»¬µ€2J$5e90c900-8a21-4c07-b29f-66f6ebf21840
+Û
+java:S6548"˜A Singleton implementation was detected. Make sure the use of the Singleton pattern is required and the implementation is the right one for the context.(ú°æn8Ž»¬µ€2J$227920cc-de67-4802-81a0-e2ece9d52d6c

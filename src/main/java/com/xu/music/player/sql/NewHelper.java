@@ -100,24 +100,20 @@ public class NewHelper implements Helper {
 
     @Override
     public int update(String sql, Object... params) {
-        try {
-            Connection conn = this.getConn();
+        try (Connection conn = this.getConn()) {
             if (ArrayUtil.isEmpty(params)) {
                 try (Statement state = conn.createStatement()) {
                     return state.executeUpdate(sql);
                 } catch (SQLException e) {
                     conn.rollback();
-                } finally {
-                    IoUtil.close(conn);
                 }
             }
+
             try (PreparedStatement state = conn.prepareStatement(sql)) {
                 setValues(state, params);
                 return state.executeUpdate(sql);
             } catch (SQLException e) {
                 conn.rollback();
-            } finally {
-                IoUtil.close(conn);
             }
         } catch (Exception e) {
             throw new DataBaseError(e.getMessage());
