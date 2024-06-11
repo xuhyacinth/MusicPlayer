@@ -1,7 +1,10 @@
 
-
-java:S1854"9Remove this useless assignment to local variable "value".(›âë¯üÿÿÿÿ8–¸µ‚ÿ1J$38cf1fc2-b87a-4dde-836b-a348f3b99e27
-r
-java:S1481"*Remove this unused "value" local variable.(›âë¯üÿÿÿÿ8—¸µ‚ÿ1J$a5a73b70-b5bb-458d-b596-966717bb5b68
-ƒ	java:S125"<This block of commented-out lines of code should be removed.(®şäîûÿÿÿÿ8—¸µ‚ÿ1J$91e68578-24f3-4773-9013-5d5c948b62bd
-m	java:S106"+Replace this use of System.out by a logger.(ì™¹8¹Í¶ƒÿ1J$4971acd0-2ce9-4456-b209-a100aeed3d43
+m	java:S106"+Replace this use of System.out by a logger.(¦œß®8ªşµ«€2J$45786ba2-c680-459b-a823-b542b6699026
+w
+java:S1128"4Remove this unused import 'cn.hutool.json.JSONUtil'.( «ı¢8«şµ«€2J$79b20be3-0fd2-418e-b894-4fe911d3a7db
+Š
+java:S1128"BRemove this unused import 'com.xu.music.player.entity.SongEntity'.(ùûî‡ıÿÿÿÿ8«şµ«€2J$6519bbd6-1317-4ad7-8634-dfa87133ec99
+ˆ
+java:S1128"ERemove this unused import 'com.xu.music.player.wrapper.QueryWrapper'.(ÔÄÊõ8«şµ«€2J$f2d0675e-5995-4dad-a212-6514c84c8a35
+s
+java:S1128"+Remove this unused import 'java.util.List'.(Õë±Äøÿÿÿÿ8«şµ«€2J$e60cf6dc-6ea4-4bd8-8c8c-005469611767

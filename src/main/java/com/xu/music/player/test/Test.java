@@ -2,25 +2,22 @@ package com.xu.music.player.test;
 
 import cn.hutool.json.JSONUtil;
 import com.xu.music.player.entity.SongEntity;
+import com.xu.music.player.player.SourceDataLinePlayer;
 import com.xu.music.player.wrapper.QueryWrapper;
 
 import java.util.List;
 
 public class Test {
 
-    public static void main(String[] args) {
-        SongEntity value = new SongEntity();
-//        System.out.println(value.getClass().getSimpleName());
-//        value.setId("111111");
-//        value.setName("vvvvvvvvv");
-//        value.setCreateTime(new Date());
-//
-//        InsertWrapper<SongEntity> add = new InsertWrapper<>(value, "song");
-//        add.insert();
-
-        QueryWrapper<SongEntity> select = new QueryWrapper<>(SongEntity.class, "song");
-        List<SongEntity> v = select.last("limit 1").list();
-        System.out.println(JSONUtil.toJsonPrettyStr(v));
+    public static void main(String[] args) throws Exception {
+        SourceDataLinePlayer player = SourceDataLinePlayer.createPlayer();
+        player.load("D:\\Kugou\\梦涵 - 加减乘除.mp3");
+        player.play();
+        System.out.println("---------");
+        Thread.sleep(15000);
+        player.pause();
+        Thread.sleep(1000);
+        player.resume(0);
     }
 
 }

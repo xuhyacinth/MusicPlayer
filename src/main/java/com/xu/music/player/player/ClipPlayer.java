@@ -49,6 +49,10 @@ public class ClipPlayer implements Player {
         return SingletonHolder.player;
     }
 
+    private static class SingletonHolder {
+        private static final ClipPlayer player = new ClipPlayer();
+    }
+
     @Override
     public void load(URL url) throws Exception {
         load(AudioSystem.getAudioInputStream(url));
@@ -59,24 +63,19 @@ public class ClipPlayer implements Player {
         String name = file.getName();
         if (CharSequenceUtil.endWithIgnoreCase(name, ".mp3")) {
             AudioInputStream stream = new MpegAudioFileReader().getAudioInputStream(file);
-
             AudioFormat format = stream.getFormat();
             format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, format.getSampleRate(), 16, format.getChannels(),
                     format.getChannels() * 2, format.getSampleRate(), false);
-
             stream = AudioSystem.getAudioInputStream(format, stream);
             load(stream);
             return;
         }
         if (CharSequenceUtil.endWithIgnoreCase(name, ".flac")) {
             AudioInputStream stream = AudioSystem.getAudioInputStream(file);
-
             AudioFormat format = stream.getFormat();
             format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, format.getSampleRate(), 16, format.getChannels(),
                     format.getChannels() * 2, format.getSampleRate(), false);
-
             stream = AudioSystem.getAudioInputStream(format, stream);
-
             load(stream);
             return;
         }
@@ -91,12 +90,10 @@ public class ClipPlayer implements Player {
     @Override
     public void load(AudioInputStream stream) throws Exception {
         DataLine.Info info = new DataLine.Info(Clip.class, stream.getFormat(), AudioSystem.NOT_SPECIFIED);
-
         this.clip = (Clip) AudioSystem.getLine(info);
         this.clip.addLineListener(event -> {
             System.out.println(event.getType() + "\t" + event.getFramePosition());
         });
-
         this.clip.open(stream);
         if (this.clip.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
             control = (FloatControl) this.clip.getControl(FloatControl.Type.MASTER_GAIN);
@@ -116,15 +113,15 @@ public class ClipPlayer implements Player {
     @Override
     public void pause() {
         if (this.clip != null && this.clip.isRunning()) {
-            paused = true;
-            position = this.clip.getMicrosecondPosition();
+            this.paused = true;
+            this.position = this.clip.getMicrosecondPosition();
             this.clip.stop();
         }
     }
 
     @Override
     public void resume(long duration) {
-        if (this.clip != null && paused) {
+        if (this.clip != null && this.paused) {
             paused = false;
             this.position = (0 == duration) ? position : duration;
             this.clip.setMicrosecondPosition(position);
@@ -150,17 +147,13 @@ public class ClipPlayer implements Player {
 
     @Override
     public void volume(float volume) {
-        if (null == control) {
+        if (null == this.control) {
             return;
         }
-        if (volume < control.getMinimum() || volume > control.getMaximum()) {
+        if (volume < this.control.getMinimum() || volume > this.control.getMaximum()) {
             return;
         }
-        control.setValue(volume);
-    }
-
-    private static class SingletonHolder {
-        private static final ClipPlayer player = new ClipPlayer();
+        this.control.setValue(volume);
     }
 
 }
