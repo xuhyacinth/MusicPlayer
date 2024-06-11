@@ -1,100 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="AnalysisUIOptions">
-    <option name="SPLITTER_PROPORTION" value="0.3750985" />
-    <option name="GROUP_BY_SEVERITY" value="true" />
-  </component>
-  <component name="BranchesTreeState">
-    <expand>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
-    </expand>
-    <select />
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a89d772d-fcb5-4853-8767-787c6a9fef8d" name="默认更改列表" comment="默认更改列表">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="73cf8499-afc0-4364-a8d8-95c634a6d517" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="CodeStyleSettingsInfer">
-    <option name="done" value="true" />
-  </component>
-  <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/MusicPlayer$_MusicPlayer__2_.ic" NAME="所有在 MusicPlayer (2) Coverage Results" MODIFIED="1577935457655" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-  </component>
-  <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-    <option name="PUSH_TAGS">
-      <GitPushTagMode />
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
     </option>
   </component>
-  <component name="ProjectCodeStyleSettingsMigration">
-    <option name="version" value="1" />
-  </component>
-  <component name="ProjectId" id="1VriSz5MgnMxERnAwkWjOFV8vHE" />
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="2hSJDZwoI2krxjmXIPBhXAhXA9v" />
   <component name="ProjectViewState">
-    <option name="flattenPackages" value="true" />
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
-    <option name="showMembers" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1578016995891" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src" />
-    <property name="node.js.detected.package.eslint" value="true" />
-    <property name="node.js.detected.package.tslint" value="true" />
-    <property name="node.js.path.for.package.eslint" value="project" />
-    <property name="node.js.path.for.package.tslint" value="project" />
-    <property name="node.js.selected.package.eslint" value="(autodetect)" />
-    <property name="node.js.selected.package.tslint" value="(autodetect)" />
-    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
-    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="project.structure.last.edited" value="模块" />
-    <property name="project.structure.proportion" value="0.15" />
-    <property name="project.structure.side.proportion" value="0.3460972" />
-    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Spring EL" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.MusicChooseWindow.executor": "Run",
+    "Application.MusicPlayer.executor": "Run",
+    "Application.Test.executor": "Run",
+    "Maven. [org.apache.maven.plugins:maven-archetype-plugin:RELEASE:generate].executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "E:/SourceCode/Server/MusicPlayer",
+    "project.structure.last.edited": "Libraries",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.sourceCode.Java"
+  }
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="E:\SourceCode\Intellij\MusicPlayer\src" />
+      <recent name="E:\SourceCode\Learn\MusicPlayer\src\main\java\com\xu\music\player" />
+      <recent name="E:\SourceCode\Learn\MusicPlayer\src\main\java\com\xu\music\player\fft" />
+      <recent name="E:\SourceCode\Learn\MusicPlayer\lib" />
+      <recent name="E:\SourceCode\Learn\MusicPlayer\src\main\java\com\xu\player\sql" />
+      <recent name="E:\SourceCode\Learn\MusicPlayer\src\main\java\com\xu\player\player" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\SourceCode\Learn\MusicPlayer" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.xu.music.player.main" />
+      <recent name="com.xu.player.hander" />
+      <recent name="com.xu.player.sql" />
+      <recent name="com.xu.player.window" />
+      <recent name="com.xu.player.player" />
     </key>
   </component>
-  <component name="RunManager" selected="应用程序.MusicPlayer (1)">
-    <configuration name="FFT" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.xu.musicplayer.fft.FFT" />
-      <module name="MusicPlayer" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.xu.musicplayer.fft.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="MusicPlayer (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Application.MusicPlayer">
+    <configuration name="MusicPlayer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.xu.music.player.main.MusicPlayer" />
       <module name="MusicPlayer" />
       <extension name="coverage">
@@ -107,12 +74,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="MusicPlayer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.xu.musicplayer.main.MusicPlayer" />
+    <configuration name="SongChoose" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.xu.player.window.SongChoose" />
       <module name="MusicPlayer" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.xu.musicplayer.main.*" />
+          <option name="PATTERN" value="com.xu.player.window.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -120,127 +87,52 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="所有在 MusicPlayer (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="Test" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.xu.player.test.Test" />
       <module name="MusicPlayer" />
-      <option name="PACKAGE_NAME" value="" />
-      <option name="TEST_OBJECT" value="package" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="所有在 MusicPlayer (2)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="MusicPlayer" />
-      <option name="PACKAGE_NAME" value="" />
-      <option name="TEST_OBJECT" value="package" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.xu.player.hander.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="应用程序.MusicPlayer (1)" />
-        <item itemvalue="JUnit.所有在 MusicPlayer (2)" />
-        <item itemvalue="JUnit.所有在 MusicPlayer (1)" />
+        <item itemvalue="Application.MusicPlayer" />
+        <item itemvalue="Application.Test" />
+        <item itemvalue="Application.SongChoose" />
       </list>
     </recent_temporary>
   </component>
-  <component name="SvnConfiguration">
-    <configuration />
-  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <created>1577784976581</created>
+      <changelist id="73cf8499-afc0-4364-a8d8-95c634a6d517" name="Changes" comment="" />
+      <created>1717581426070</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1577784976581</updated>
-      <workItem from="1577784987751" duration="634000" />
-      <workItem from="1577786082185" duration="3513000" />
-      <workItem from="1577935839167" duration="1475000" />
-      <workItem from="1577937595655" duration="541000" />
-      <workItem from="1578016550635" duration="479000" />
-      <workItem from="1578017634245" duration="306000" />
-      <workItem from="1578018564663" duration="80000" />
-      <workItem from="1578018702318" duration="38000" />
-      <workItem from="1578018791386" duration="2772000" />
-      <workItem from="1578022475861" duration="390000" />
-      <workItem from="1578554461801" duration="950000" />
-      <workItem from="1578622266602" duration="74000" />
-      <workItem from="1578646587602" duration="1946000" />
-      <workItem from="1578648748609" duration="299000" />
-      <workItem from="1578669673460" duration="746000" />
-      <workItem from="1578670638483" duration="917000" />
-      <workItem from="1578751115425" duration="339000" />
-      <workItem from="1589727180341" duration="123000" />
-      <workItem from="1589729168108" duration="92000" />
-      <workItem from="1589809835110" duration="2491000" />
-      <workItem from="1589896974350" duration="1060000" />
-      <workItem from="1589986755908" duration="12000" />
+      <updated>1717581426070</updated>
     </task>
     <servers />
   </component>
-  <component name="TestHistory">
-    <history-entry file="所有在_MusicPlayer - 2020.01.02 at 11h 11m 40s.xml">
-      <configuration name="所有在 MusicPlayer" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="所有在_MusicPlayer_(1) - 2020.01.02 at 11h 12m 40s.xml">
-      <configuration name="所有在 MusicPlayer (1)" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="所有在_MusicPlayer_(2) - 2020.01.02 at 11h 24m 29s.xml">
-      <configuration name="所有在 MusicPlayer (2)" configurationId="JUnit" />
-    </history-entry>
-  </component>
-  <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="2" />
-  </component>
-  <component name="Vcs.Log.History.Properties">
-    <option name="COLUMN_ORDER">
-      <list>
-        <option value="0" />
-        <option value="2" />
-        <option value="3" />
-        <option value="1" />
-      </list>
-    </option>
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="1">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-    <option name="oldMeFiltersMigrated" value="true" />
-  </component>
-  <component name="VcsManagerConfiguration">
-    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="712" y="391" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1589721776356">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="712" y="391" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.1040@0.0.1920.1040" timestamp="1589721776356" />
-    <state width="1879" height="281" key="GridCell.Tab.0.bottom" timestamp="1589900008348">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1879" height="281" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1589900008348" />
-    <state width="1879" height="281" key="GridCell.Tab.0.center" timestamp="1589900008348">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1879" height="281" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1589900008348" />
-    <state width="1879" height="281" key="GridCell.Tab.0.left" timestamp="1589900008348">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1879" height="281" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1589900008348" />
-    <state width="1879" height="281" key="GridCell.Tab.0.right" timestamp="1589900008348">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1879" height="281" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1589900008348" />
-    <state x="690" y="282" key="extract.method.dialog" timestamp="1589812103274">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="690" y="282" key="extract.method.dialog/0.0.1920.1040@0.0.1920.1040" timestamp="1589812103274" />
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/xu/music/player/sql/NewHelper.java</url>
+          <line>103</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/InsertWrapper.java</url>
+          <line>54</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

@@ -1,0 +1,7 @@
+
+
+java:S1854"9Remove this useless assignment to local variable "value".(›βλ―όÿÿÿÿ8–Έµ‚ÿ1J$38cf1fc2-b87a-4dde-836b-a348f3b99e27
+r
+java:S1481"*Remove this unused "value" local variable.(›βλ―όÿÿÿÿ8—Έµ‚ÿ1J$a5a73b70-b5bb-458d-b596-966717bb5b68
+ƒ	java:S125"<This block of commented-out lines of code should be removed.(®ώδξϋÿÿÿÿ8—Έµ‚ÿ1J$91e68578-24f3-4773-9013-5d5c948b62bd
+m	java:S106"+Replace this use of System.out by a logger.(μ™Ή8ΉΝ¶ƒÿ1J$4971acd0-2ce9-4456-b209-a100aeed3d43
