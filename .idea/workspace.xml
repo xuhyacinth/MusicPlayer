@@ -27,8 +27,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a89d772d-fcb5-4853-8767-787c6a9fef8d" name="默认更改列表" comment="修改代码">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/git_toolbox_blame.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/SwtDraw.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/com_ibm_icu_64_2_0_v20190507_1337.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/hander/DataBaseError.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/hander/DataBaseError.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/main/MusicPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/main/MusicPlayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/ClipPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/ClipPlayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/SourceDataLinePlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/SdlPlayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/sql/NewHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/sql/NewHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/sql/SystemType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/sql/SysType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/Test.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,6 +49,13 @@
   </component>
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/MusicPlayer$_MusicPlayer__2_.ic" NAME="所有在 MusicPlayer (2) Coverage Results" MODIFIED="1577935457655" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -85,20 +101,21 @@
     <option name="showLibraryContents" value="true" />
     <option name="showMembers" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.Test.executor&quot;: &quot;Run&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;SONARLINT_PRECOMMIT_ANALYSIS&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;SWT-V1.0.0.0&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/SourceCode/Test/MusicPlayer&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.21034482&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.SwtDraw.executor": "Debug",
+    "Application.Test.executor": "Run",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "SONARLINT_PRECOMMIT_ANALYSIS": "true",
+    "git-widget-placeholder": "SWT-V1.0.0.0",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "E:/SourceCode/Server/MusicPlayer/lib/org.osgi.core-6.0.0.jar",
+    "project.structure.last.edited": "Libraries",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.4183908"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\SourceCode\Intellij\MusicPlayer\src" />
@@ -118,12 +135,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="MusicPlayer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.xu.musicplayer.main.MusicPlayer" />
+    <configuration name="SwtDraw" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.xu.music.player.player.SwtDraw" />
       <module name="MusicPlayer" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.xu.musicplayer.main.*" />
+          <option name="PATTERN" value="com.xu.music.player.player.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -163,6 +180,7 @@
     <recent_temporary>
       <list>
         <item itemvalue="Application.Test" />
+        <item itemvalue="Application.SwtDraw" />
         <item itemvalue="JUnit.所有在 MusicPlayer (2)" />
         <item itemvalue="JUnit.所有在 MusicPlayer (1)" />
       </list>
@@ -273,17 +291,7 @@
     <MESSAGE value="dev:&#10;修改分支名称" />
     <MESSAGE value="优化播放" />
     <MESSAGE value="修改代码" />
-    <option name="LAST_COMMIT_MESSAGE" value="修改代码" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/xu/music/player/player/SourceDataLinePlayer.java</url>
-          <line>125</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="dev:&#10;增加测试文件" />
+    <option name="LAST_COMMIT_MESSAGE" value="dev:&#10;增加测试文件" />
   </component>
 </project>

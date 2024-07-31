@@ -1,9 +1,10 @@
 package com.xu.music.player.player;
 
-import cn.hutool.core.text.CharSequenceUtil;
 import java.io.File;
 import java.net.URL;
 import javazoom.spi.mpeg.sampled.file.MpegAudioFileReader;
+
+import cn.hutool.core.text.CharSequenceUtil;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -13,8 +14,9 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.FloatControl;
 
 /**
- * 音频播放
+ * Clip 音频播放
  *
+ * @author hyacinth
  * @date 2024年6月4日19点07分
  * @since SWT-V1.0.0.0
  */
@@ -33,12 +35,12 @@ public class ClipPlayer implements Player {
     /**
      * 播放位置
      */
-    private volatile long position = 0;
+    private static volatile long position = 0;
 
     /**
      * 暂停
      */
-    private volatile boolean paused = false;
+    private static volatile boolean paused = false;
 
 
     private ClipPlayer() {
@@ -119,7 +121,7 @@ public class ClipPlayer implements Player {
     public void resume(long duration) {
         if (this.clip != null && this.paused) {
             paused = false;
-            this.position = (0 == duration) ? position : duration;
+            position = (0 == duration) ? position : duration;
             this.clip.setMicrosecondPosition(position);
             this.clip.start();
         }
@@ -146,9 +148,11 @@ public class ClipPlayer implements Player {
         if (null == this.control) {
             return;
         }
+
         if (volume < this.control.getMinimum() || volume > this.control.getMaximum()) {
             return;
         }
+
         this.control.setValue(volume);
     }
 

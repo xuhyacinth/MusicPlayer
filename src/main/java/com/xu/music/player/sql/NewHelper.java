@@ -48,7 +48,7 @@ public class NewHelper implements Helper {
     static {
         try {
             String path;
-            switch (SystemType.getSystemMainType().type) {
+            switch (SysType.getSystemMainType().type) {
                 case 2:
                 case 3:
                     path = new File(MAC_OS).getCanonicalPath();

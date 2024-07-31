@@ -1,12 +1,15 @@
 package com.xu.music.player.player;
 
-import cn.hutool.core.io.IoUtil;
-import cn.hutool.core.text.CharSequenceUtil;
-import com.xu.music.player.constant.Constant;
-import com.xu.music.player.hander.MusicPlayerError;
 import java.io.File;
 import java.net.URL;
 import javazoom.spi.mpeg.sampled.file.MpegAudioFileReader;
+
+import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.text.CharSequenceUtil;
+
+import com.xu.music.player.constant.Constant;
+import com.xu.music.player.hander.DataBaseError;
+import com.xu.music.player.hander.MusicPlayerError;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -21,74 +24,103 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * 音频播放
+ * SourceDataLine 音频播放
  *
+ * @author hyacinth
  * @date 2024年6月4日19点07分
  * @since SWT-V1.0.0.0
  */
-public class SourceDataLinePlayer implements Player {
+public class SdlPlayer implements Player {
 
     /**
      * 频谱
      */
-    private static final Deque<Double> deque = new LinkedList<>();
-    private static final ExecutorService executor = Executors.newSingleThreadExecutor();
+    public static final Deque<Double> DEQUE = new LinkedList<>();
+    private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(1);
+
     /**
      * SourceDataLine
      */
     private SourceDataLine data = null;
+
     /**
      * AudioInputStream
      */
     private AudioInputStream audio = null;
+
     /**
      * FloatControl
      */
     private FloatControl control = null;
+
     /**
      * 暂停
      */
     private volatile boolean paused = false;
+
     /**
      * 播放
      */
     private volatile boolean playing = false;
 
-    private SourceDataLinePlayer() {
+    private SdlPlayer() {
+
     }
 
-    public static SourceDataLinePlayer createPlayer() {
-        return SingletonHolder.player;
+    public static SdlPlayer createPlayer() {
+        return SingletonHolder.PLAYER;
     }
 
     @Override
     public void load(URL url) throws Exception {
+        if (this.playing) {
+            stop();
+        }
+
         load(AudioSystem.getAudioInputStream(url));
     }
 
     @Override
     public void load(File file) throws Exception {
+        if (this.playing) {
+            stop();
+        }
+
+        if (!file.exists()) {
+            throw new DataBaseError("File does not exist");
+        }
+
         String name = file.getName();
         if (CharSequenceUtil.endWithIgnoreCase(name, ".mp3")) {
             AudioInputStream stream = new MpegAudioFileReader().getAudioInputStream(file);
             load(stream);
             return;
         }
+
         if (CharSequenceUtil.endWithIgnoreCase(name, ".flac")) {
             AudioInputStream stream = AudioSystem.getAudioInputStream(file);
             load(stream);
             return;
         }
+
         load(AudioSystem.getAudioInputStream(file));
     }
 
     @Override
     public void load(String path) throws Exception {
+        if (this.playing) {
+            stop();
+        }
+
         load(new File(path));
     }
 
     @Override
     public void load(AudioInputStream stream) throws Exception {
+        if (this.playing) {
+            stop();
+        }
+
         AudioFormat format = stream.getFormat();
         format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, format.getSampleRate(), 16, format.getChannels(),
                 format.getChannels() * 2, format.getSampleRate(), false);
@@ -101,11 +133,19 @@ public class SourceDataLinePlayer implements Player {
 
     @Override
     public void load(AudioFormat.Encoding encoding, AudioInputStream stream) throws Exception {
+        if (this.playing) {
+            stop();
+        }
+
         load(AudioSystem.getAudioInputStream(encoding, stream));
     }
 
     @Override
     public void load(AudioFormat format, AudioInputStream stream) throws Exception {
+        if (this.playing) {
+            stop();
+        }
+
         load(AudioSystem.getAudioInputStream(format, stream));
     }
 
@@ -129,6 +169,7 @@ public class SourceDataLinePlayer implements Player {
             if (this.data.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
                 control = (FloatControl) this.data.getControl(FloatControl.Type.MASTER_GAIN);
             }
+
             byte[] buff = new byte[4];
             int channels = this.audio.getFormat().getChannels();
             float rate = this.audio.getFormat().getSampleRate();
@@ -150,10 +191,15 @@ public class SourceDataLinePlayer implements Player {
 
     @Override
     public void play() throws Exception {
+        if (this.playing) {
+            return;
+        }
+
         if (null == this.audio || null == this.data) {
             return;
         }
-        executor.submit(this::start);
+
+        EXECUTOR.submit(this::start);
     }
 
     @Override
@@ -220,16 +266,16 @@ public class SourceDataLinePlayer implements Player {
      * @since SWT-V1.0.0.0
      */
     public void put(double v) {
-        synchronized (deque) {
-            deque.add(v);
-            if (deque.size() > Constant.SPECTRUM_TOTAL_NUMBER) {
-                deque.removeFirst();
+        synchronized (DEQUE) {
+            DEQUE.add(v);
+            if (DEQUE.size() > Constant.SPECTRUM_TOTAL_NUMBER) {
+                DEQUE.removeFirst();
             }
         }
     }
 
     private static class SingletonHolder {
-        private static final SourceDataLinePlayer player = new SourceDataLinePlayer();
+        private static final SdlPlayer PLAYER = new SdlPlayer();
     }
 
 }

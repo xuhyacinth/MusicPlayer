@@ -5,7 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.xu.music.player.constant.Constant;
 import com.xu.music.player.entity.SongEntity;
 import com.xu.music.player.player.Player;
-import com.xu.music.player.player.SourceDataLinePlayer;
+import com.xu.music.player.player.SdlPlayer;
 import com.xu.music.player.tray.MusicPlayerTray;
 import com.xu.music.player.utils.ResourceManager;
 import com.xu.music.player.window.SongChoose;
@@ -137,7 +137,7 @@ public class MusicPlayer {
         shell.setBackgroundMode(SWT.INHERIT_DEFAULT);
 
         // 初始化播放器
-        player = SourceDataLinePlayer.createPlayer();
+        player = SdlPlayer.createPlayer();
 
         // 托盘引入
         tray = display.getSystemTray();

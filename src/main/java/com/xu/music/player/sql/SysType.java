@@ -12,7 +12,7 @@ import java.util.Locale;
  * @date 2024年6月4日19点07分
  * @since SWT-V1.0.0.0
  */
-public enum SystemType {
+public enum SysType {
 
     WINDOWS(1, "Windows"), MAC_OS(2, "Mac OS"), AIX(10, "AIX"),
     LINUX(4, "Linux"), OS2(5, "OS/2"), SOLARIS(6, "Solaris"),
@@ -25,64 +25,64 @@ public enum SystemType {
     public final int type;
     public final String name;
 
-    SystemType(int type, String name) {
+    SysType(int type, String name) {
         this.type = type;
         this.name = name;
     }
 
-    public static SystemType getSystemType() {
+    public static SysType getSystemType() {
         String type = System.getProperty("os.name").toLowerCase(Locale.ROOT);
         if (StrUtil.equals("digital", "unix")) {
-            return SystemType.DIGITAL_UNIX;
+            return SysType.DIGITAL_UNIX;
         } else if (StrUtil.containsAny(type, "mac", "os") && !StrUtil.equals(type, "x")) {
-            return SystemType.MAC_OS;
+            return SysType.MAC_OS;
         } else if (StrUtil.containsAny(type, "mac", "os") && StrUtil.equals(type, "x")) {
-            return SystemType.MAC_OS_X;
+            return SysType.MAC_OS_X;
         }
         switch (type) {
             case "linux":
-                return SystemType.LINUX;
+                return SysType.LINUX;
             case "windows":
-                return SystemType.WINDOWS;
+                return SysType.WINDOWS;
             case "os/2":
-                return SystemType.OS2;
+                return SysType.OS2;
             case "solaris":
-                return SystemType.SOLARIS;
+                return SysType.SOLARIS;
             case "sunos":
-                return SystemType.SUN_OS;
+                return SysType.SUN_OS;
             case "mpe/ix":
-                return SystemType.MPEIX;
+                return SysType.MPEIX;
             case "hp-ux":
-                return SystemType.HP_UX;
+                return SysType.HP_UX;
             case "aix":
-                return SystemType.AIX;
+                return SysType.AIX;
             case "os/390":
-                return SystemType.OS390;
+                return SysType.OS390;
             case "freebsd":
-                return SystemType.FREE_BSD;
+                return SysType.FREE_BSD;
             case "irix":
-                return SystemType.IRIX;
+                return SysType.IRIX;
             case "netware":
-                return SystemType.NET_WARE;
+                return SysType.NET_WARE;
             case "osf1":
-                return SystemType.OSF1;
+                return SysType.OSF1;
             case "openvms":
-                return SystemType.OPEN_VMS;
+                return SysType.OPEN_VMS;
             default:
-                return SystemType.OTHERS;
+                return SysType.OTHERS;
         }
     }
 
-    public static SystemType getSystemMainType() {
-        SystemType type = getSystemType();
+    public static SysType getSystemMainType() {
+        SysType type = getSystemType();
         if (type.type == 1) {
-            return SystemType.WINDOWS;
+            return SysType.WINDOWS;
         } else if (type.type >= 2 && type.type <= 3) {
-            return SystemType.MAC_OS;
+            return SysType.MAC_OS;
         } else if (type.type >= 5 && type.type <= 17) {
-            return SystemType.LINUX;
+            return SysType.LINUX;
         } else {
-            return SystemType.OTHERS;
+            return SysType.OTHERS;
         }
     }
 
