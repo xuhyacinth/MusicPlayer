@@ -64,3 +64,7 @@ S
 #.idea/sonarlint/issuestore/index.pb,9\f\9fe84ebb15faf917b7def6236dba604453cc61e0
 ]
 -.idea/sonarlint/securityhotspotstore/index.pb,8\8\88a9255124c95bdc913197c120a8d560edc59c8e
+l
+<src/main/kotlin/com/xu/music/player/MusicPlayerController.kt,1\3\137d71e115d1bcda5a1e381f7a8867ee8b041be0
+b
+2src/main/kotlin/com/xu/music/player/MusicPlayer.kt,d\e\de83dc3bc7614e5a8246609245d3dab81ddb43a6

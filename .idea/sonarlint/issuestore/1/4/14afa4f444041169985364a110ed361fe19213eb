@@ -1,0 +1,7 @@
+
+pkotlin:S117
+"SRename this local variable to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(›“£8î•Ûï…2
+qkotlin:S117"SRename this local variable to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(ß‹¤×8î•Ûï…2
+Ekotlin:S1481"&Remove this unused "A" local variable.(ß‹¤×8ï•Ûï…2
+Nkotlin:S1481
+"0Remove this unused "length_null" local variable.(›“£8ï•Ûï…2

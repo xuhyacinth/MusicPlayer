@@ -8,9 +8,11 @@ import javafx.stage.Stage
 class HelloApplication : Application() {
     override fun start(stage: Stage) {
         val fxmlLoader = FXMLLoader(HelloApplication::class.java.getResource("music-player.fxml"))
-        val scene = Scene(fxmlLoader.load(), 320.0, 240.0)
+        val scene = Scene(fxmlLoader.load(), 1000.0, 600.0)
         stage.title = "Hello!"
         stage.scene = scene
+        var v = MusicPlayerController()
+        v.start(stage)
         stage.show()
     }
 }
