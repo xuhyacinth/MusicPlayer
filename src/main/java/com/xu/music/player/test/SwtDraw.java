@@ -1,6 +1,9 @@
-package com.xu.music.player.player;
+package com.xu.music.player.test;
 
 import cn.hutool.core.collection.CollUtil;
+
+import com.xu.music.player.player.SdlFftPlayer;
+import com.xu.music.player.player.Player;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -42,7 +45,7 @@ public class SwtDraw {
      */
     public void play() {
         try {
-            Player player = FftSdlPlayer.create();
+            Player player = SdlFftPlayer.create();
             player.load("C:\\Users\\xuyq\\Music\\Beyond - 长城（粤语）.flac");
             player.play();
         } catch (Exception e) {
@@ -132,13 +135,13 @@ public class SwtDraw {
      * @since V1.0.0.0
      */
     public void updateData() {
-        if (CollUtil.isEmpty(FftSdlPlayer.TRANS) || FftSdlPlayer.TRANS.isEmpty()) {
+        if (CollUtil.isEmpty(SdlFftPlayer.TRANS) || SdlFftPlayer.TRANS.isEmpty()) {
             return;
         }
 
         spectrum.clear();
-        for (int i = 0, len = FftSdlPlayer.TRANS.size(); i < len; i++) {
-            Double v = FftSdlPlayer.TRANS.peek();
+        for (int i = 0, len = SdlFftPlayer.TRANS.size(); i < len; i++) {
+            Double v = SdlFftPlayer.TRANS.peek();
             if (null == v) {
                 continue;
             }

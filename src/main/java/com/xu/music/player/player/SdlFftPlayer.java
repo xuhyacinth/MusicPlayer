@@ -35,7 +35,7 @@ import org.apache.commons.math3.transform.TransformType;
  * @date 2024年6月4日19点07分
  * @since SWT-V1.0.0.0
  */
-public class FftSdlPlayer implements Player {
+public class SdlFftPlayer implements Player {
 
     /**
      * 原始数据
@@ -82,15 +82,15 @@ public class FftSdlPlayer implements Player {
      */
     private volatile boolean playing = false;
 
-    private FftSdlPlayer() {
+    private SdlFftPlayer() {
     }
 
-    public static FftSdlPlayer create() {
+    public static SdlFftPlayer create() {
         return SingletonHolder.PLAYER;
     }
 
     private static class SingletonHolder {
-        private static final FftSdlPlayer PLAYER = new FftSdlPlayer();
+        private static final SdlFftPlayer PLAYER = new SdlFftPlayer();
     }
 
     @Override
