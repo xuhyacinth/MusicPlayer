@@ -68,10 +68,17 @@
             <version>3.127.0</version>
         </dependency>
 
-        <!-- SWT Linux -->
+        <!-- SWT Linux/64 -->
         <dependency>
             <groupId>org.eclipse.platform</groupId>
             <artifactId>org.eclipse.swt.gtk.linux.x86_64</artifactId>
+            <version>3.127.0</version>
+        </dependency>
+
+        <!-- SWT Linux/ppc64le -->
+        <dependency>
+            <groupId>org.eclipse.platform</groupId>
+            <artifactId>org.eclipse.swt.gtk.linux.ppc64le</artifactId>
             <version>3.127.0</version>
         </dependency>
 
