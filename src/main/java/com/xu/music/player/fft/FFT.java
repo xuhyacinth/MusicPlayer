@@ -132,7 +132,7 @@ public class FFT {
      * @return
      */
     public static Complex[] convolve(Complex[] x, Complex[] y) {
-        Complex zero = new Complex(0, 0);
+        Complex zero = new Complex(0D, 0D);
         // 2n次数界，高阶系数为0.
         Complex[] a = new Complex[2 * x.length];
         System.arraycopy(x, 0, a, 0, x.length);

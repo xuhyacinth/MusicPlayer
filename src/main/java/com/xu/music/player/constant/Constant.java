@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class Constant implements Serializable {
 
-    public static final int SPECTRUM_TOTAL_NUMBER = 100;
+    public static final int SPECTRUM_TOTAL_NUMBER = 128;
     /**
      * 用户文件夹
      */

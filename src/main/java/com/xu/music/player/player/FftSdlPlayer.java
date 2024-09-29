@@ -23,7 +23,10 @@ import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.apache.commons.math3.complex.Complex;
+import org.apache.commons.math3.transform.DftNormalization;
 import org.apache.commons.math3.transform.FastFourierTransformer;
+import org.apache.commons.math3.transform.TransformType;
 
 /**
  * SourceDataLine 音频播放
@@ -32,17 +35,27 @@ import org.apache.commons.math3.transform.FastFourierTransformer;
  * @date 2024年6月4日19点07分
  * @since SWT-V1.0.0.0
  */
-public class SdlPlayer implements Player {
+public class FftSdlPlayer implements Player {
+
+    /**
+     * 原始数据
+     */
+    public static final Deque<Double> SRC = new LinkedList<>();
 
     /**
      * 频谱
      */
-    public static final Deque<Double> SRC = new LinkedList<>();
+    public static final Deque<Double> TRANS = new LinkedList<>();
 
     /**
      * 线程池
      */
     private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(1);
+
+    /**
+     * FFT
+     */
+    private final FastFourierTransformer fft = new FastFourierTransformer(DftNormalization.STANDARD);
 
     /**
      * SourceDataLine
@@ -69,15 +82,15 @@ public class SdlPlayer implements Player {
      */
     private volatile boolean playing = false;
 
-    private SdlPlayer() {
+    private FftSdlPlayer() {
     }
 
-    public static SdlPlayer create() {
+    public static FftSdlPlayer create() {
         return SingletonHolder.PLAYER;
     }
 
     private static class SingletonHolder {
-        private static final SdlPlayer PLAYER = new SdlPlayer();
+        private static final FftSdlPlayer PLAYER = new FftSdlPlayer();
     }
 
     @Override
@@ -239,56 +252,50 @@ public class SdlPlayer implements Player {
             return;
         }
 
+        // Stereo
         if (channels == 2) {
-            // Stereo
-            processStereoBuff(buff, sample);
+            if (sample == 16) {
+                short left = (short) ((buff[1] << 8) | (buff[0] & 0xFF));
+                short right = (short) ((buff[3] << 8) | (buff[2] & 0xFF));
+                putSrc((left + right) / 2.0 / 32768.0);
+                return;
+            }
+
+            // Assuming 8-bit samples
+            double left = (buff[0] & 0xFF) / 128.0 - 1.0;
+            double right = (buff[1] & 0xFF) / 128.0 - 1.0;
+            putSrc((left + right) / 2.0);
             return;
         }
 
         // Mono
-        processMonoBuff(buff, sample);
-    }
-
-    private void processStereoBuff(byte[] buff, int sample) {
         if (sample == 16) {
-            // Left channel
-            put(convert16(buff, 0));
-            // Right channel
-            put(convert16(buff, 2));
+            putSrc((short) ((buff[1] << 8) | (buff[0] & 0xFF)) / 32768.0);
             return;
         }
 
-        // Left channel
-        put(convert8(buff[0]));
-        // Right channel
-        put(convert8(buff[1]));
+        // Assuming 8-bit samples
+        putSrc((buff[0] & 0xFF) / 128.0 - 1.0);
     }
 
-    private void processMonoBuff(byte[] buff, int sample) {
-        if (sample == 16) {
-            put(convert16(buff, 0));
-            put(convert16(buff, 2));
-            return;
-        }
-
-        for (byte b : buff) {
-            put(b & 0xFF);
+    private void putDst(double value) {
+        TRANS.add(value);
+        if (TRANS.size() > Constant.SPECTRUM_TOTAL_NUMBER) {
+            TRANS.removeFirst();
         }
     }
 
-    private double convert16(byte[] buff, int offset) {
-        return (short) ((buff[offset + 1] << 8) | (buff[offset] & 0xFF));
-    }
-
-    private double convert8(byte sample) {
-        return (sample & 0xFF) / 128.0 - 1.0;
-    }
-
-    private void put(double value) {
+    private void putSrc(double value) {
         synchronized (SRC) {
             SRC.add(value);
             if (SRC.size() > Constant.SPECTRUM_TOTAL_NUMBER) {
                 SRC.removeFirst();
+
+                Complex[] complex = fft.transform(SRC.stream().mapToDouble(Double::doubleValue).toArray(), TransformType.FORWARD);
+
+                for (int i = 0; i < Constant.SPECTRUM_TOTAL_NUMBER; i++) {
+                    putDst(complex[i].abs());
+                }
             }
         }
     }

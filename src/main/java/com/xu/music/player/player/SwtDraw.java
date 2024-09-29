@@ -1,14 +1,12 @@
 package com.xu.music.player.player;
 
-import java.io.File;
-
 import cn.hutool.core.collection.CollUtil;
 
-import com.xu.music.player.fft.Complex;
-import com.xu.music.player.fft.FFT;
-
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -18,10 +16,6 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * @author hyacinth
@@ -36,7 +30,7 @@ public class SwtDraw {
 
     private final Random random = new Random();
 
-    private final List<Integer> spectrum = new LinkedList<>();
+    private List<Integer> spectrum = new LinkedList<>();
 
     public static void main(String[] args) {
         SwtDraw test = new SwtDraw();
@@ -48,8 +42,8 @@ public class SwtDraw {
      */
     public void play() {
         try {
-            Player player = SdlPlayer.createPlayer();
-            player.load("D:\\Kugou\\KugouMusic\\梦涵 - 加减乘除.mp3");
+            Player player = FftSdlPlayer.create();
+            player.load("C:\\Users\\xuyq\\Music\\Beyond - 长城（粤语）.flac");
             player.play();
         } catch (Exception e) {
 
@@ -138,25 +132,18 @@ public class SwtDraw {
      * @since V1.0.0.0
      */
     public void updateData() {
-        spectrum.clear();
-        if (CollUtil.isEmpty(SdlPlayer.DEQUE)) {
+        if (CollUtil.isEmpty(FftSdlPlayer.TRANS) || FftSdlPlayer.TRANS.isEmpty()) {
             return;
         }
 
-        Complex[] x = new Complex[SdlPlayer.DEQUE.size()];
-        for (int i = 0; i < x.length; i++) {
-            try {
-                x[i] = new Complex(SdlPlayer.DEQUE.pop(), 0);
-            } catch (Exception e) {
-                x[i] = new Complex(0, 0);
+        spectrum.clear();
+        for (int i = 0, len = FftSdlPlayer.TRANS.size(); i < len; i++) {
+            Double v = FftSdlPlayer.TRANS.peek();
+            if (null == v) {
+                continue;
             }
+            spectrum.add(Math.abs(v.intValue()));
         }
-
-        Double[] value = FFT.array(x);
-        for (double v : value) {
-            spectrum.add((int) v);
-        }
-
     }
 
     /**

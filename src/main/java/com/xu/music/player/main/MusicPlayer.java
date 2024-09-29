@@ -137,7 +137,7 @@ public class MusicPlayer {
         shell.setBackgroundMode(SWT.INHERIT_DEFAULT);
 
         // 初始化播放器
-        player = SdlPlayer.createPlayer();
+        player = SdlPlayer.create();
 
         // 托盘引入
         tray = display.getSystemTray();
