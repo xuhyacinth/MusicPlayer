@@ -33,7 +33,7 @@ public class SwtDraw {
 
     private final Random random = new Random();
 
-    private List<Integer> spectrum = new LinkedList<>();
+    private final List<Integer> spectrum = new LinkedList<>();
 
     public static void main(String[] args) {
         SwtDraw test = new SwtDraw();

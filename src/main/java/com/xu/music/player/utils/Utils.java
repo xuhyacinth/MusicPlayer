@@ -12,6 +12,8 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import lombok.extern.slf4j.Slf4j;
 
+import cn.hutool.core.util.StrUtil;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -76,7 +78,23 @@ public class Utils {
         return message;
     }
 
-    public static void choose(Shell shell){}
+    public static String format(int time) {
+        if (time < 10) {
+            return StrUtil.format("00:0{}", time);
+        }
+
+        if (time < 60) {
+            return StrUtil.format("00:{}", time);
+        }
+
+        int merchant = time / 60;
+        int remainder = time % 60;
+
+        String pre = merchant > 9 ? String.valueOf(merchant) : StrUtil.format("0{}", merchant);
+        String tail = remainder > 9 ? String.valueOf(remainder) : StrUtil.format("0{}", remainder);
+
+        return StrUtil.format("{}:{}", pre, tail);
+    }
 
     /**
      * 时间日期转换字符串

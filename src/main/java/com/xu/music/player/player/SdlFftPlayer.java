@@ -238,6 +238,7 @@ public class SdlFftPlayer implements Player {
         if (null == this.audio || null == this.data) {
             return;
         }
+
         this.data.stop();
         IoUtil.close(this.audio);
         IoUtil.close(this.data);
@@ -248,9 +249,11 @@ public class SdlFftPlayer implements Player {
         if (null == control) {
             return;
         }
+
         if (volume < control.getMinimum() || volume > control.getMaximum()) {
             return;
         }
+
         control.setValue(volume);
     }
 

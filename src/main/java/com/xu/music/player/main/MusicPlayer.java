@@ -1,6 +1,7 @@
 package com.xu.music.player.main;
 
 import java.awt.*;
+import java.security.SecureRandom;
 import lombok.extern.slf4j.Slf4j;
 
 import cn.hutool.core.collection.CollUtil;
@@ -9,17 +10,18 @@ import cn.hutool.core.util.StrUtil;
 import com.xu.music.player.constant.Constant;
 import com.xu.music.player.entity.SongEntity;
 import com.xu.music.player.player.Player;
-import com.xu.music.player.player.SdlPlayer;
+import com.xu.music.player.player.SdlFftPlayer;
 import com.xu.music.player.tray.MusicPlayerTray;
 import com.xu.music.player.utils.ResourceManager;
 import com.xu.music.player.utils.Utils;
 import com.xu.music.player.window.SongChoose;
 import com.xu.music.player.wrapper.QueryWrapper;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.stream.IntStream;
 
 import org.eclipse.swt.SWT;
@@ -31,6 +33,7 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackAdapter;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -54,67 +57,48 @@ import org.eclipse.swt.widgets.Tray;
 @Slf4j
 public class MusicPlayer {
 
-    private static int merchant = 0;
-    private static int remainder = 0;
-    private static String format = "";
-    public boolean playing = true; // 播放按钮
+    private final List<Integer> spectrum = new LinkedList<>();
+
+    private static Timer TIMER = new Timer(true);
+
+    private final SecureRandom random = new SecureRandom();
+
+    private double position;
+
+    // 播放按钮
+    public boolean playing = true;
     protected Shell shell;
-    private Player player = null; // 播放器
+    // 播放器
+    private Player player = null;
     private Display display;
-    private Tray tray; // 播放器托盘
+    // 播放器托盘
+    private Tray tray;
     private Table lists;
     private Table lyrics;
     private Composite top;
-    private Composite foot; // 频谱面板
-    private ProgressBar progress; // 进度条
+    // 频谱面板
+    private Composite foot;
+    // 进度条
+    private ProgressBar progress;
     private Label timeLabel1;
-
-    private int clickX, clickY; // 界面移动
+    // 界面移动
+    private int clickX, clickY;
     private Label timeLabel2;
-
-    private boolean chose = true; // 双击播放
+    // 双击播放
+    private boolean chose = true;
     private Label start;
-    //private ControllerServer server = new ControllerServer(); // 歌词及频谱
-    private boolean click = false; // 界面移动
+    // 界面移动
+    private boolean click = false;
 
-    /**
-     * Launch the application.
-     *
-     * @param args
-     */
     public static void main(String[] args) {
         try {
             MusicPlayer window = new MusicPlayer();
             window.open();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("播放异常！", e);
         }
     }
 
-    private static String format(int time) {
-        merchant = time / 60;
-        remainder = time % 60;
-        if (time < 10) {
-            format = "00:0" + time;
-        } else if (time < 60) {
-            format = "00:" + time;
-        } else {
-            if (merchant < 10 && remainder < 10) {
-                format = "0" + merchant + ":0" + remainder;
-            } else if (merchant < 10 && remainder < 60) {
-                format = "0" + merchant + ":" + remainder;
-            } else if (merchant >= 10 && remainder < 10) {
-                format = merchant + ":0" + remainder;
-            } else if (merchant >= 10 && remainder < 60) {
-                format = merchant + ":0" + remainder;
-            }
-        }
-        return format;
-    }
-
-    /**
-     * Open the window.
-     */
     public void open() {
         display = Display.getDefault();
         createContents();
@@ -142,7 +126,7 @@ public class MusicPlayer {
         shell.setBackgroundMode(SWT.INHERIT_DEFAULT);
 
         // 初始化播放器
-        player = SdlPlayer.create();
+        player = SdlFftPlayer.create();
 
         // 托盘引入
         tray = display.getSystemTray();
@@ -333,7 +317,7 @@ public class MusicPlayer {
             @Override
             public void mouseUp(MouseEvent e) {
                 exit.setImage(Utils.getImage("exit-1.png"));
-                exitMusicPlayer();
+                exit();
             }
         });
         exit.addMouseTrackListener(new MouseTrackAdapter() {
@@ -406,11 +390,27 @@ public class MusicPlayer {
         foot.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseDoubleClick(MouseEvent e) {
-                Color color = Constant.MUSIC_PLAYER_COLORS.get(new Random().nextInt(Constant.MUSIC_PLAYER_COLORS.size()));
+                org.eclipse.swt.graphics.Color color = Constant.COLORS.get(new Random().nextInt(Constant.COLORS.size()));
                 if (color != Constant.SPECTRUM_BACKGROUND_COLOR) {
                     Constant.SPECTRUM_FOREGROUND_COLOR = color;
                 }
             }
+        });
+
+        // 添加绘图监听器
+        foot.addPaintListener(listener -> {
+            GC gc = listener.gc;
+
+            int width = listener.width;
+            int height = listener.height;
+            int length = width / 25;
+
+            if (spectrum.size() >= length) {
+                for (int i = 0; i < length; i++) {
+                    draw(gc, i * 26, height, 26, spectrum.get(i));
+                }
+            }
+
         });
 
         sashForm.addControlListener(new ControlAdapter() {
@@ -465,7 +465,6 @@ public class MusicPlayer {
         }
 
         initTable(list, table);
-        getPlayingSong();
     }
 
     private void initTable(List<SongEntity> list, Table table) {
@@ -515,111 +514,101 @@ public class MusicPlayer {
             log.error("选择歌曲播放异常！", e);
         }
 
+        spectrum(foot, timeLabel2);
+        updateListsColor(lists, Constant.PLAYING_SONG);
+    }
+
+    private void spectrum(Composite comp, Label label) {
+        TIMER.cancel();
+        position = 0;
+        TIMER = new Timer(true);
+        TIMER.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                display.asyncExec(() -> {
+                    // 频谱面板
+                    if (!comp.isDisposed()) {
+                        update();
+                        comp.redraw();
+                    }
+                    // 进度条
+                    progress.setSelection((int) position / 100);
+                    // 实时播放时间
+                    label.setText(Utils.format((int) position));
+                });
+            }
+        }, 0, 100);
     }
 
     /**
-     * Java MusicPlayer 改变选中歌曲的颜色
+     * Composite 绘画
      *
-     * @param table
-     * @param entity
-     * @return void
-     * @Author: hyacinth
-     * @Title: updatePlayerSongListsColor
-     * @Description: TODO
-     * @date: 2019年12月26日 下午7:40:10
+     * @param gc     GC
+     * @param x      x坐标
+     * @param y      y坐标
+     * @param width  宽度
+     * @param height 高度
+     * @date 2024年2月2日19点27分
+     * @since V1.0.0.0
      */
-    private void updateSongListsColor(Table table, SongEntity entity) {
+    private void draw(GC gc, int x, int y, int width, int height) {
+        // 设置条形的颜色
+        org.eclipse.swt.graphics.Color color = new org.eclipse.swt.graphics.Color(display, random.nextInt(255), random.nextInt(255), random.nextInt(255));
+        gc.setBackground(color);
+        // 绘制条形
+        org.eclipse.swt.graphics.Rectangle draw = new org.eclipse.swt.graphics.Rectangle(x, y, width, -height);
+        gc.fillRectangle(draw);
+        // 释放颜色资源
+        color.dispose();
+    }
+
+    /**
+     * 模拟 更新绘画的数据
+     *
+     * @date 2024年2月2日19点27分
+     * @since V1.0.0.0
+     */
+    public void update() {
+        if (CollUtil.isEmpty(SdlFftPlayer.TRANS) || SdlFftPlayer.TRANS.isEmpty()) {
+            return;
+        }
+        position += 0.1;
+        spectrum.clear();
+        for (int i = 0, len = SdlFftPlayer.TRANS.size(); i < len; i++) {
+            Double v = SdlFftPlayer.TRANS.peek();
+            if (null == v) {
+                continue;
+            }
+            spectrum.add(Math.abs(v.intValue()));
+        }
+    }
+
+    private void updateListsColor(Table table, SongEntity entity) {
         start.setImage(Utils.getImage("start.png"));
-        timeLabel1.setText(format(entity.getLength().intValue()));
+        timeLabel1.setText(Utils.format(entity.getLength().intValue()));
+
         TableItem[] items = table.getItems();
-        for (int i = 0; i < items.length; i++) {
-            if (StrUtil.equals(entity.getId(), items[i].getText(0))) {
-                items[i].setBackground(ResourceManager.getColor(SWT.COLOR_GRAY));
+        for (TableItem item : items) {
+            if (StrUtil.equals(entity.getId(), item.getText(0))) {
+                item.setBackground(ResourceManager.getColor(SWT.COLOR_GRAY));
             } else {
-                items[i].setBackground(ResourceManager.getColor(SWT.COLOR_WHITE));
+                item.setBackground(ResourceManager.getColor(SWT.COLOR_WHITE));
             }
         }
+
         if (entity.getIndex() <= 7) {
             table.setTopIndex(entity.getIndex());
         } else {
             table.setTopIndex(entity.getIndex() - 7);
         }
-        setMusicPlayerPlayingSong(entity.getId());
+
     }
 
-    /**
-     * Java MusicPlayer 退出音乐播放器
-     *
-     * @return void
-     * @Author: hyacinth
-     * @Title: exitMusicPlayer
-     * @Description: TODO
-     * @date: 2019年12月26日 下午7:57:12
-     */
-    private void exitMusicPlayer() {
+    private void exit() {
         tray.dispose();
         System.exit(0);
         player.stop();
         shell.dispose();
-    }
-
-    /**
-     * Java MusicPlayer 将正在播放的歌曲存在注册表中
-     *
-     * @param index
-     * @return void
-     * @Author: hyacinth
-     * @Title: setMusicPlayerPlayingSong
-     * @Description: TODO
-     * @date: 2019年12月29日 下午2:57:30
-     */
-    private void setMusicPlayerPlayingSong(String index) {
-        Preferences preferences = Preferences.userNodeForPackage(MusicPlayer.class);
-        if (preferences.get("MusicPlayer", null) == null) {
-            preferences.put("MusicPlayer", index);
-        } else {
-            preferences.put("MusicPlayer", index);
-        }
-        try {
-            preferences.flush();
-        } catch (BackingStoreException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Java MusicPlayer 读取上次播放器退出前播放的歌曲
-     *
-     * @return void
-     * @Author: hyacinth
-     * @Title: readMusicPlayerPlayingSong
-     * @Description: TODO
-     * @date: 2019年12月29日 下午2:58:24
-     */
-    private void getPlayingSong() {
-        Preferences preferences = Preferences.userNodeForPackage(MusicPlayer.class);
-        String index = preferences.get("MusicPlayer", null);
-//        nextSong(Integer.parseInt(index), true);
-    }
-
-    /**
-     * Java MusicPlayer 暂停播放(未实现)
-     *
-     * @return void
-     * @Author: hyacinth
-     * @Title: stopMusicPlayer
-     * @Description: TODO
-     * @date: 2019年12月26日 下午7:47:41
-     */
-    public void stopMusicPlayer() {
-        try {
-            player.stop();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        Constant.MUSIC_PLAYER_PLAYING_STATE = false;
-        start.setImage(Utils.getImage("stop.png"));
-        updateSongListsColor(lists, Constant.PLAYING_SONG);
     }
 
 }

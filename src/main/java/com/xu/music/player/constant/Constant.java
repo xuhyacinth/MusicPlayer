@@ -1,6 +1,5 @@
 package com.xu.music.player.constant;
 
-import java.awt.*;
 import java.io.File;
 import java.io.Serializable;
 
@@ -11,6 +10,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import org.eclipse.swt.graphics.Color;
 
 /**
  * 常量类
@@ -74,10 +75,11 @@ public class Constant implements Serializable {
      */
     public static final String MUSIC_PLAYER_DOWNLOAD_PATH = SYSTEM_USER_HOME + File.separator + ".MusicPlayer" + File.separator + "download" + File.separator; // 文件下载路径
     private static final long serialVersionUID = 1L;
+
     /**
      * 播放器颜色
      */
-    public static List<Color> MUSIC_PLAYER_COLORS = new ArrayList<>(); //播放器颜色
+    public static List<Color> COLORS = new ArrayList<>();
 
     /**
      * 歌词
@@ -112,11 +114,13 @@ public class Constant implements Serializable {
     /**
      * 频谱 背景颜色
      */
-    public static volatile Color SPECTRUM_BACKGROUND_COLOR = Color.WHITE; // 频谱 背景颜色
+    public static volatile Color SPECTRUM_BACKGROUND_COLOR =
+            new Color(255, 255, 255); // 频谱 背景颜色
     /**
      * 频谱 前景颜色
      */
-    public static volatile Color SPECTRUM_FOREGROUND_COLOR = Color.BLUE; // 频谱 前景颜色
+    public static volatile Color SPECTRUM_FOREGROUND_COLOR =
+            new Color(0, 0, 255); // 频谱 前景颜色
     /**
      * 频谱 整个频谱的宽度
      */
@@ -159,19 +163,19 @@ public class Constant implements Serializable {
     public static volatile long MUSIC_PLAYER_DOWNLOAD_FILE_SIZE_PER_THREAD = 10 * 1024 * 1024; // 文件下载 每个线程下载10M
 
     static {
-        MUSIC_PLAYER_COLORS.add(Color.BLACK);
-        MUSIC_PLAYER_COLORS.add(Color.BLUE);
-        MUSIC_PLAYER_COLORS.add(Color.CYAN);
-        MUSIC_PLAYER_COLORS.add(Color.DARK_GRAY);
-        MUSIC_PLAYER_COLORS.add(Color.GRAY);
-        MUSIC_PLAYER_COLORS.add(Color.GREEN);
-        MUSIC_PLAYER_COLORS.add(Color.LIGHT_GRAY);
-        MUSIC_PLAYER_COLORS.add(Color.MAGENTA);
-        MUSIC_PLAYER_COLORS.add(Color.ORANGE);
-        MUSIC_PLAYER_COLORS.add(Color.PINK);
-        MUSIC_PLAYER_COLORS.add(Color.RED);
-        MUSIC_PLAYER_COLORS.add(Color.WHITE);
-        MUSIC_PLAYER_COLORS.add(Color.YELLOW);
+        COLORS.add(new Color(255, 255, 255));
+        COLORS.add(new Color(192, 192, 192));
+        COLORS.add(new Color(128, 128, 128));
+        COLORS.add(new Color(64, 64, 64));
+        COLORS.add(new Color(0, 0, 0));
+        COLORS.add(new Color(255, 0, 0));
+        COLORS.add(new Color(255, 175, 175));
+        COLORS.add(new Color(255, 200, 0));
+        COLORS.add(new Color(255, 255, 0));
+        COLORS.add(new Color(0, 255, 0));
+        COLORS.add(new Color(255, 0, 255));
+        COLORS.add(new Color(0, 255, 255));
+        COLORS.add(new Color(0, 0, 255));
     }
 
     private Constant() {

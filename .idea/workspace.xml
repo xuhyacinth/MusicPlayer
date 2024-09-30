@@ -4,24 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d80f8f9d-1d6c-42ec-878e-b4abc86527ba" name="Changes" comment="dev:&#10;1、增加忽略文件">
-      <change afterPath="$PROJECT_DIR$/song/Beyond - 长城（国语）.flac" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/song/Beyond - 长城（粤语）.flac" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/AudioLength.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/AudioPlaybackProgress.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/SineWaveSynth.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+    <list default="true" id="d80f8f9d-1d6c-42ec-878e-b4abc86527ba" name="Changes" comment="dev:&#10;1、优化代码">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sqlite/db/MusicPlayer.db" beforeDir="false" afterPath="$PROJECT_DIR$/sqlite/db/MusicPlayer.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/constant/Constant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/constant/Constant.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/main/MusicPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/main/MusicPlayer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/ClipPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/ClipPlayer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/Player.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/SdlFftPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/SdlFftPlayer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/SdlPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/SdlPlayer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/SwtDraw.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/SwtDraw.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/utils/ResourceManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/utils/ResourceManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/utils/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/utils/Utils.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -92,14 +81,14 @@
     "Application.AudioLength.executor": "Run",
     "Application.AudioPlaybackProgress.executor": "Run",
     "Application.MusicPlayer (1).executor": "Run",
-    "Application.MusicPlayer.executor": "Debug",
+    "Application.MusicPlayer.executor": "Run",
     "Application.SineWaveSynth.executor": "Run",
     "Application.SwtDraw.executor": "Run",
     "Application.Test.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "SWT-V1.0.0.0",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "E:/SourceCode/Eclipse/MusicPlayer/song",
+    "last_opened_file_path": "E:/SourceCode/Init/MusicPlayer",
     "project.structure.last.edited": "Libraries",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.3643678",
@@ -114,7 +103,7 @@
       <recent name="com.xu.music.player.player" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.SwtDraw">
+  <component name="RunManager" selected="Application.MusicPlayer">
     <configuration name="MusicPlayer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.xu.music.player.main.MusicPlayer" />
       <module name="MusicPlayer" />
@@ -154,8 +143,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.SwtDraw" />
         <item itemvalue="Application.MusicPlayer" />
+        <item itemvalue="Application.SwtDraw" />
       </list>
     </recent_temporary>
   </component>
@@ -208,7 +197,15 @@
       <option name="project" value="LOCAL" />
       <updated>1727602224564</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="dev:&#10;1、优化代码">
+      <option name="closed" value="true" />
+      <created>1727678572396</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1727678572396</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -217,6 +214,7 @@
     <MESSAGE value="dev:&#10;1、移除未使用依赖" />
     <MESSAGE value="dev:&#10;1、修改文件名称" />
     <MESSAGE value="dev:&#10;1、增加忽略文件" />
-    <option name="LAST_COMMIT_MESSAGE" value="dev:&#10;1、增加忽略文件" />
+    <MESSAGE value="dev:&#10;1、优化代码" />
+    <option name="LAST_COMMIT_MESSAGE" value="dev:&#10;1、优化代码" />
   </component>
 </project>
