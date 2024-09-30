@@ -1,6 +1,6 @@
 package com.xu.music.player.tray;
 
-import com.xu.music.player.utils.ResourceManager;
+import com.xu.music.player.utils.Utils;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -37,7 +37,7 @@ public class MusicPlayerTray {
         } else {
             TrayItem item = new TrayItem(tray, SWT.NONE);
             item.setToolTipText("登录");
-            item.setImage(ResourceManager.getImage(MusicPlayerTray.class, "/com/xu/music/player/image/main.png"));
+            item.setImage(Utils.getImage("main.png"));
             menu = new Menu(shell, SWT.POP_UP);
             item.addListener(SWT.MenuDetect, arg0 -> menu.setVisible(true));
             // 放大
@@ -59,7 +59,8 @@ public class MusicPlayerTray {
                 }
             });
             // 关闭
-            new MenuItem(menu, SWT.SEPARATOR);//横线
+            //横线
+            new MenuItem(menu, SWT.SEPARATOR);
             MenuItem close = new MenuItem(menu, SWT.PUSH);
             close.setText("关闭");
             close.addSelectionListener(new SelectionAdapter() {

@@ -1,4 +1,4 @@
-package com.xu.music.player.test;
+package com.xu.music.player;
 
 import java.io.File;
 import java.io.IOException;

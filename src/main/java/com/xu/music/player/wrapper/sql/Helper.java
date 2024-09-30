@@ -1,4 +1,4 @@
-package com.xu.music.player.sql;
+package com.xu.music.player.wrapper.sql;
 
 import java.util.List;
 import java.util.Map;

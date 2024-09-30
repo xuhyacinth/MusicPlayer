@@ -1,4 +1,4 @@
-package com.xu.music.player.sql;
+package com.xu.music.player.wrapper.sql;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.IoUtil;

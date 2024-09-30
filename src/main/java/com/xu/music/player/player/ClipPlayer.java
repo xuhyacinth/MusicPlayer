@@ -35,12 +35,12 @@ public class ClipPlayer implements Player {
     /**
      * 播放位置
      */
-    private static volatile long position = 0;
+    private volatile long position = 0;
 
     /**
      * 暂停
      */
-    private static volatile boolean paused = false;
+    private volatile boolean paused = false;
 
 
     private ClipPlayer() {
@@ -115,15 +115,15 @@ public class ClipPlayer implements Player {
     @Override
     public void pause() {
         if (this.clip != null && this.clip.isRunning()) {
-            this.paused = true;
-            this.position = this.clip.getMicrosecondPosition();
+            paused = true;
+            position = this.clip.getMicrosecondPosition();
             this.clip.stop();
         }
     }
 
     @Override
     public void resume(long duration) {
-        if (this.clip != null && this.paused) {
+        if (this.clip != null && paused) {
             paused = false;
             position = (0 == duration) ? position : duration;
             this.clip.setMicrosecondPosition(position);

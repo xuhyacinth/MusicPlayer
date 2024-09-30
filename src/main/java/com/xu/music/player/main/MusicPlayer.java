@@ -12,7 +12,6 @@ import com.xu.music.player.entity.SongEntity;
 import com.xu.music.player.player.Player;
 import com.xu.music.player.player.SdlFftPlayer;
 import com.xu.music.player.tray.MusicPlayerTray;
-import com.xu.music.player.utils.ResourceManager;
 import com.xu.music.player.utils.Utils;
 import com.xu.music.player.window.SongChoose;
 import com.xu.music.player.wrapper.QueryWrapper;
@@ -250,12 +249,12 @@ public class MusicPlayer {
         progress.setMinimum(0);
 
         timeLabel1 = new Label(foot, SWT.NONE);
-        timeLabel1.setFont(ResourceManager.getFont("Consolas", 9, SWT.NORMAL));
+        timeLabel1.setFont(Utils.getFont("Consolas", 9, SWT.NORMAL));
         timeLabel1.setEnabled(false);
         timeLabel1.setBounds(238, 4, 73, 20);
 
         timeLabel2 = new Label(foot, SWT.RIGHT);
-        timeLabel2.setFont(ResourceManager.getFont("Consolas", 9, SWT.NORMAL));
+        timeLabel2.setFont(Utils.getFont("Consolas", 9, SWT.NORMAL));
         timeLabel2.setEnabled(false);
         timeLabel2.setBounds(775, 4, 73, 20);
 
@@ -508,6 +507,7 @@ public class MusicPlayer {
         }
 
         Constant.PLAYING_SONG = Constant.PLAYING_LIST.get(Constant.PLAYING_INDEX);
+        Constant.PLAYING_SONG_LENGTH = Constant.PLAYING_SONG.getLength();
         try {
             player.load(Constant.PLAYING_SONG.getSongPath());
             player.play();
@@ -542,17 +542,6 @@ public class MusicPlayer {
         }, 0, 100);
     }
 
-    /**
-     * Composite 绘画
-     *
-     * @param gc     GC
-     * @param x      x坐标
-     * @param y      y坐标
-     * @param width  宽度
-     * @param height 高度
-     * @date 2024年2月2日19点27分
-     * @since V1.0.0.0
-     */
     private void draw(GC gc, int x, int y, int width, int height) {
         // 设置条形的颜色
         org.eclipse.swt.graphics.Color color = new org.eclipse.swt.graphics.Color(display, random.nextInt(255), random.nextInt(255), random.nextInt(255));
@@ -564,12 +553,6 @@ public class MusicPlayer {
         color.dispose();
     }
 
-    /**
-     * 模拟 更新绘画的数据
-     *
-     * @date 2024年2月2日19点27分
-     * @since V1.0.0.0
-     */
     public void update() {
         if (CollUtil.isEmpty(SdlFftPlayer.TRANS) || SdlFftPlayer.TRANS.isEmpty()) {
             return;
@@ -592,9 +575,9 @@ public class MusicPlayer {
         TableItem[] items = table.getItems();
         for (TableItem item : items) {
             if (StrUtil.equals(entity.getId(), item.getText(0))) {
-                item.setBackground(ResourceManager.getColor(SWT.COLOR_GRAY));
+                item.setBackground(Utils.getColor(SWT.COLOR_GRAY));
             } else {
-                item.setBackground(ResourceManager.getColor(SWT.COLOR_WHITE));
+                item.setBackground(Utils.getColor(SWT.COLOR_WHITE));
             }
         }
 

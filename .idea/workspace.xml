@@ -1,17 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="GROUP_BY_SEVERITY" value="true" />
+  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d80f8f9d-1d6c-42ec-878e-b4abc86527ba" name="Changes" comment="dev:&#10;1、优化代码">
+    <list default="true" id="d80f8f9d-1d6c-42ec-878e-b4abc86527ba" name="Changes" comment="dev:&#10;1、优化代码5">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sqlite/db/MusicPlayer.db" beforeDir="false" afterPath="$PROJECT_DIR$/sqlite/db/MusicPlayer.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/constant/Constant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/constant/Constant.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/fft/Complex.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/fft/Complex.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/fft/FFT.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/fft/FFT.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/main/MusicPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/main/MusicPlayer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/SdlFftPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/SdlFftPlayer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/SwtDraw.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/SwtDraw.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/ClipPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/ClipPlayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/sql/Helper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/sql/Helper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/sql/NewHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/sql/NewHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/sql/SysType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/sql/SysType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/AudioLength.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/xu/music/player/AudioLength.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/AudioPlaybackProgress.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/xu/music/player/AudioPlaybackProgress.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/SineWaveSynth.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/xu/music/player/SineWaveSynth.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/tray/MusicPlayerTray.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/tray/MusicPlayerTray.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/utils/ResourceManager.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/utils/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/utils/Utils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/InsertWrapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/InsertWrapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/QueryWrapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/QueryWrapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/UpdateWrapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/UpdateWrapper.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,28 +90,31 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.AudioLength.executor": "Run",
-    "Application.AudioPlaybackProgress.executor": "Run",
-    "Application.MusicPlayer (1).executor": "Run",
-    "Application.MusicPlayer.executor": "Run",
-    "Application.SineWaveSynth.executor": "Run",
-    "Application.SwtDraw.executor": "Run",
-    "Application.Test.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "SWT-V1.0.0.0",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "E:/SourceCode/Init/MusicPlayer",
-    "project.structure.last.edited": "Libraries",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.3643678",
-    "settings.editor.selected.configurable": "MavenSettings"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.AudioLength.executor&quot;: &quot;Run&quot;,
+    &quot;Application.AudioPlaybackProgress.executor&quot;: &quot;Run&quot;,
+    &quot;Application.MusicPlayer (1).executor&quot;: &quot;Run&quot;,
+    &quot;Application.MusicPlayer.executor&quot;: &quot;Debug&quot;,
+    &quot;Application.SineWaveSynth.executor&quot;: &quot;Run&quot;,
+    &quot;Application.SwtDraw.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Test.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;SWT-V1.0.0.0&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;E:/SourceCode/Init/MusicPlayer&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.3643678&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;MavenSettings&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\SourceCode\Eclipse\MusicPlayer\song" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="com.xu.music.player" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="com.xu.music.player.player" />
@@ -122,7 +139,7 @@
       <module name="MusicPlayer" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.xu.music.player.test.*" />
+          <option name="PATTERN" value="com.xu.music.player.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -205,7 +222,23 @@
       <option name="project" value="LOCAL" />
       <updated>1727678572396</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="dev:&#10;1、优化代码4">
+      <option name="closed" value="true" />
+      <created>1727683601459</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1727683601459</updated>
+    </task>
+    <task id="LOCAL-00008" summary="dev:&#10;1、优化代码5">
+      <option name="closed" value="true" />
+      <created>1727685710045</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1727685710045</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -215,6 +248,8 @@
     <MESSAGE value="dev:&#10;1、修改文件名称" />
     <MESSAGE value="dev:&#10;1、增加忽略文件" />
     <MESSAGE value="dev:&#10;1、优化代码" />
-    <option name="LAST_COMMIT_MESSAGE" value="dev:&#10;1、优化代码" />
+    <MESSAGE value="dev:&#10;1、优化代码4" />
+    <MESSAGE value="dev:&#10;1、优化代码5" />
+    <option name="LAST_COMMIT_MESSAGE" value="dev:&#10;1、优化代码5" />
   </component>
 </project>

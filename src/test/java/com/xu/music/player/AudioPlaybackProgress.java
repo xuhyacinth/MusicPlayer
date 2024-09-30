@@ -1,4 +1,4 @@
-package com.xu.music.player.test;
+package com.xu.music.player;
 
 import javax.sound.sampled.*;
 

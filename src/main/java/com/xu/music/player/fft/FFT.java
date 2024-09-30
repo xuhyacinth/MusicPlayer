@@ -45,7 +45,8 @@ public class FFT {
         Complex[] q = fft(even);
 
         // fft of odd terms
-        Complex[] odd = even; // reuse the array
+        // reuse the array
+        Complex[] odd = even;
         for (int k = 0; k < n / 2; k++) {
             odd[k] = x[2 * k + 1];
         }

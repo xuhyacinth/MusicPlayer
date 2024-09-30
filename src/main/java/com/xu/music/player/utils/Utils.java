@@ -19,6 +19,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Display;
@@ -34,13 +37,15 @@ import org.eclipse.swt.widgets.Shell;
 @Slf4j
 public class Utils {
 
+    private static final Map<String, Font> FONT = new HashMap<>();
     private static final Map<String, Image> CACHE = new HashMap<>();
+
     public static final String FORMAT_DATE = "yyyy-MM-dd";
     public static final String FORMAT_TIME = "HH:mm:ss";
     public static final String FORMAT_DATE_TIME = "yyyy-MM-dd HH:mm:ss";
 
     public static Image getImage(String name) {
-        Path path = Paths.get("src/main/java/com/xu/music/player/image/" + name);
+        Path path = Paths.get(StrUtil.format("src/main/java/com/xu/music/player/image/{}", name));
         if (!path.toFile().exists()) {
             return null;
         }
@@ -94,6 +99,50 @@ public class Utils {
         String tail = remainder > 9 ? String.valueOf(remainder) : StrUtil.format("0{}", remainder);
 
         return StrUtil.format("{}:{}", pre, tail);
+    }
+
+    public static Color getColor(int id) {
+        Display display = Display.getCurrent();
+        return display.getSystemColor(id);
+    }
+
+    public static Font getFont(String name, int height, int style) {
+        return getFont(name, height, style, false, false);
+    }
+
+    public static Font getFont(String name, int size, int style, boolean strikeout, boolean underline) {
+        String fontName = name + '|' + size + '|' + style + '|' + strikeout + '|' + underline;
+
+        Font font = FONT.get(fontName);
+        if (font == null) {
+            FontData fontData = new FontData(name, size, style);
+            if (strikeout || underline) {
+                try {
+                    //$NON-NLS-1$
+                    Class<?> logFontClass = Class.forName("org.eclipse.swt.internal.win32.LOGFONT");
+                    //$NON-NLS-1$
+                    Object logFont = FontData.class.getField("data").get(fontData);
+
+                    if (logFont != null) {
+                        if (strikeout) {
+                            //$NON-NLS-1$
+                            logFontClass.getField("lfStrikeOut").set(logFont, Byte.valueOf((byte) 1));
+                        }
+                        if (underline) {
+                            //$NON-NLS-1$
+                            logFontClass.getField("lfUnderline").set(logFont, Byte.valueOf((byte) 1));
+                        }
+                    }
+                } catch (Throwable e) {
+                    log.error("获取字体异常！", e);
+                }
+            }
+
+            font = new Font(Display.getCurrent(), fontData);
+            FONT.put(fontName, font);
+        }
+
+        return font;
     }
 
     /**

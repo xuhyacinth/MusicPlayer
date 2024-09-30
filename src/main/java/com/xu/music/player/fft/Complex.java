@@ -33,8 +33,10 @@ import java.util.Objects;
 
 public class Complex {
 
-    private final double re; // the real part
-    private final double im; // the imaginary part
+    // the real part
+    private final double re;
+    // the imaginary part
+    private final double im;
 
     // create a new object with the given real and imaginary parts
     public Complex(double real, double imag) {
@@ -97,7 +99,8 @@ public class Complex {
 
     // return a new Complex object whose value is (this + b)
     public Complex plus(Complex b) {
-        Complex a = this; // invoking object
+        // invoking object
+        Complex a = this;
         double real = a.re + b.re;
         double image = a.im + b.im;
         return new Complex(real, image);

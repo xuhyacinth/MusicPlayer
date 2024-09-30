@@ -2,8 +2,8 @@ package com.xu.music.player.wrapper;
 
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.xu.music.player.sql.Helper;
-import com.xu.music.player.sql.NewHelper;
+import com.xu.music.player.wrapper.sql.Helper;
+import com.xu.music.player.wrapper.sql.NewHelper;
 
 import java.util.List;
 
