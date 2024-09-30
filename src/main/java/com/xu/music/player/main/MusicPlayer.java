@@ -228,10 +228,12 @@ public class MusicPlayer {
                     // TODO:
                     start.setImage(Utils.getImage("start.png"));
                     playing = false;
+                    player.pause();
                 } else {
                     // TODO:
                     playing = true;
                     start.setImage(Utils.getImage("stop.png"));
+                    player.resume(0);
                 }
             }
         });
@@ -532,7 +534,7 @@ public class MusicPlayer {
                         comp.redraw();
                     }
                     // 进度条
-                    progress.setSelection((int) position / 100);
+                    progress.setSelection((int) ((int) position / (Constant.PLAYING_SONG.getLength() / 100)));
                     // 实时播放时间
                     label.setText(Utils.format((int) position));
                 });
