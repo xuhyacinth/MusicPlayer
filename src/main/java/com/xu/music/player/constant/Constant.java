@@ -1,23 +1,46 @@
 package com.xu.music.player.constant;
 
-import com.xu.music.player.entity.SongEntity;
 import java.awt.*;
 import java.io.File;
 import java.io.Serializable;
 
+import com.xu.music.player.entity.SongEntity;
+
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 常量类
  *
+ * @author hyacinth
  * @date 2024年6月4日19点07分
  * @since SWT-V1.0.0.0
  */
 public class Constant implements Serializable {
 
+    /**
+     * 频谱长度
+     */
     public static final int SPECTRUM_TOTAL_NUMBER = 128;
+
+    /**
+     * 播放列表
+     */
+    public static final Map<Integer, SongEntity> PLAYING_LIST = new LinkedHashMap<>();
+
+    /**
+     * 正在播放歌曲
+     */
+    public static SongEntity PLAYING_SONG = null;
+
+    /**
+     * 正在播放歌曲索引
+     */
+    public static Integer PLAYING_INDEX = null;
+
     /**
      * 用户文件夹
      */
@@ -55,16 +78,7 @@ public class Constant implements Serializable {
      * 播放器颜色
      */
     public static List<Color> MUSIC_PLAYER_COLORS = new ArrayList<>(); //播放器颜色
-    /**
-     * 播放列表
-     */
-    public static LinkedList<SongEntity> MUSIC_PLAYER_SONGS_LIST = new LinkedList<>(); // 播放列表
-    /**
-     * 临时播放列表
-     *
-     * @date 2020年1月10日12:54:08
-     */
-    public static LinkedList<String> MUSIC_PLAYER_SONGS_TEMP_LIST = new LinkedList<>(); // 临时播放列表
+
     /**
      * 歌词
      *
@@ -83,10 +97,6 @@ public class Constant implements Serializable {
      * 是否开启频谱
      */
     public static volatile boolean MUSIC_PLAYER_SYSTEM_START_SPECTRUM = true; // 是否开启频谱
-    /**
-     * 正在播放歌曲索引
-     */
-    public static SongEntity PLAYING_SONG_ENTITY = null; // 正在播放歌曲索引
     /**
      * 正在播放歌曲播放时长
      */

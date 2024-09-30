@@ -1,22 +1,26 @@
 package com.xu.music.player.main;
 
-import cn.hutool.core.collection.CollectionUtil;
+import java.awt.*;
+import lombok.extern.slf4j.Slf4j;
+
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+
 import com.xu.music.player.constant.Constant;
 import com.xu.music.player.entity.SongEntity;
 import com.xu.music.player.player.Player;
 import com.xu.music.player.player.SdlPlayer;
 import com.xu.music.player.tray.MusicPlayerTray;
 import com.xu.music.player.utils.ResourceManager;
+import com.xu.music.player.utils.Utils;
 import com.xu.music.player.window.SongChoose;
 import com.xu.music.player.wrapper.QueryWrapper;
-import java.awt.*;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+import java.util.stream.IntStream;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -47,6 +51,7 @@ import org.eclipse.swt.widgets.Tray;
  * @date 2024年6月4日19点07分
  * @since SWT-V1.0.0.0
  */
+@Slf4j
 public class MusicPlayer {
 
     private static int merchant = 0;
@@ -127,7 +132,7 @@ public class MusicPlayer {
      */
     protected void createContents() {
         shell = new Shell(SWT.NONE);
-        shell.setImage(ResourceManager.getImage(MusicPlayer.class, "/com/xu/music/player/image/main.png"));
+        shell.setImage(Utils.getImage("main.png"));
         shell.setSize(new Point(1000, 645));
         shell.setSize(900, 486);
         shell.setText("MusicPlayer");
@@ -154,11 +159,11 @@ public class MusicPlayer {
         top.setBackgroundMode(SWT.INHERIT_FORCE);
 
         Label exit = new Label(top, SWT.NONE);
-        exit.setImage(ResourceManager.getImage(MusicPlayer.class, "/com/xu/music/player/image/exit-1.png"));
+        exit.setImage(Utils.getImage("exit-1.png"));
         exit.setBounds(845, 10, 32, 32);
 
         Label mini = new Label(top, SWT.NONE);
-        mini.setImage(ResourceManager.getImage(MusicPlayer.class, "/com/xu/music/player/image/mini-1.png"));
+        mini.setImage(Utils.getImage("mini-1.png"));
         mini.setBounds(798, 10, 32, 32);
 
         Combo combo = new Combo(top, SWT.NONE);
@@ -174,13 +179,13 @@ public class MusicPlayer {
             // 	combo.add(song.getFilename());
             // }
             // combo.setListVisible(true);
-            combo.clearSelection();
-            for (int i = 0; i < Constant.MUSIC_PLAYER_SONGS_LIST.size(); i++) {
-                if (Constant.MUSIC_PLAYER_SONGS_LIST.get(i).getName().contains(combo.getText())) {
-                    combo.add(Constant.MUSIC_PLAYER_SONGS_LIST.get(i).getName());
-                }
-            }
-            combo.setListVisible(true);
+//            combo.clearSelection();
+//            for (int i = 0; i < Constant.MUSIC_PLAYER_SONGS_LIST.size(); i++) {
+//                if (Constant.MUSIC_PLAYER_SONGS_LIST.get(i).getName().contains(combo.getText())) {
+//                    combo.add(Constant.MUSIC_PLAYER_SONGS_LIST.get(i).getName());
+//                }
+//            }
+//            combo.setListVisible(true);
         });
         combo.setBounds(283, 21, 330, 25);
         combo.setVisible(false);
@@ -223,11 +228,11 @@ public class MusicPlayer {
         foot.setBackgroundMode(SWT.INHERIT_FORCE);
 
         Label prev = new Label(foot, SWT.NONE);
-        prev.setImage(ResourceManager.getImage(MusicPlayer.class, "/com/xu/music/player/image/lastsong-1.png"));
+        prev.setImage(Utils.getImage("lastsong-1.png"));
         prev.setBounds(33, 18, 32, 32);
 
         Label next = new Label(foot, SWT.NONE);
-        next.setImage(ResourceManager.getImage(MusicPlayer.class, "/com/xu/music/player/image/nextsong-1.png"));
+        next.setImage(Utils.getImage("nextsong-1.png"));
         next.setBounds(165, 18, 32, 32);
 
         start = new Label(foot, SWT.NONE);
@@ -237,24 +242,26 @@ public class MusicPlayer {
                 playing = Constant.MUSIC_PLAYER_PLAYING_STATE;
                 if (playing) {
                     // TODO:
-                    start.setImage(ResourceManager.getImage(MusicPlayer.class, "/com/xu/music/player/image/start.png"));
+                    start.setImage(Utils.getImage("start.png"));
                     playing = false;
                 } else {
                     // TODO:
                     playing = true;
-                    start.setImage(ResourceManager.getImage(MusicPlayer.class, "/com/xu/music/player/image/stop.png"));
+                    start.setImage(Utils.getImage("stop.png"));
                 }
             }
         });
-        start.setImage(ResourceManager.getImage(MusicPlayer.class, "/com/xu/music/player/image/stop.png"));
+        start.setImage(Utils.getImage("stop.png"));
         start.setBounds(98, 18, 32, 32);
 
         progress = new ProgressBar(foot, SWT.NONE);
         progress.setEnabled(false);
         progress.setBounds(238, 25, 610, 17);
-        progress.setMaximum(100);// 设置进度条的最大长度
+        // 设置进度条的最大长度
+        progress.setMaximum(100);
         progress.setSelection(0);
-        progress.setMinimum(0);// 设置进度的条最小程度
+        // 设置进度的条最小程度
+        progress.setMinimum(0);
 
         timeLabel1 = new Label(foot, SWT.NONE);
         timeLabel1.setFont(ResourceManager.getFont("Consolas", 9, SWT.NORMAL));
@@ -266,8 +273,8 @@ public class MusicPlayer {
         timeLabel2.setEnabled(false);
         timeLabel2.setBounds(775, 4, 73, 20);
 
-        sashForm.setWeights(new int[]{1, 5, 1});
-        sashForm1.setWeights(new int[]{156, 728});
+        sashForm.setWeights(1, 5, 1);
+        sashForm1.setWeights(156, 728);
 
         // 界面移动
         top.addMouseListener(new MouseAdapter() {
@@ -283,7 +290,7 @@ public class MusicPlayer {
                 click = false;
             }
         });
-        top.addMouseMoveListener(arg0 -> {// 当鼠标按下的时候执行这条语句
+        top.addMouseMoveListener(arg0 -> {
             if (click) {
                 shell.setLocation(shell.getLocation().x - clickX + arg0.x, shell.getLocation().y - clickY + arg0.y);
             }
@@ -293,12 +300,12 @@ public class MusicPlayer {
         mini.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseDown(MouseEvent e) {
-                mini.setImage(ResourceManager.getImage(MusicPlayer.class, "/com/xu/music/player/image/mini-2.png"));
+                mini.setImage(Utils.getImage("mini-2.png"));
             }
 
             @Override
             public void mouseUp(MouseEvent e) {
-                mini.setImage(ResourceManager.getImage(MusicPlayer.class, "/com/xu/music/player/image/mini-1.png"));
+                mini.setImage(Utils.getImage("mini-1.png"));
                 shell.setMinimized(true);
             }
         });
@@ -306,12 +313,12 @@ public class MusicPlayer {
         mini.addMouseTrackListener(new MouseTrackAdapter() {
             @Override
             public void mouseExit(MouseEvent e) {
-                mini.setImage(ResourceManager.getImage(MusicPlayer.class, "/com/xu/music/player/image/mini-1.png"));
+                mini.setImage(Utils.getImage("mini-1.png"));
             }
 
             @Override
             public void mouseHover(MouseEvent e) {
-                mini.setImage(ResourceManager.getImage(MusicPlayer.class, "/com/xu/music/player/image/mini-2.png"));
+                mini.setImage(Utils.getImage("mini-2.png"));
                 mini.setToolTipText("最小化");
             }
         });
@@ -320,24 +327,24 @@ public class MusicPlayer {
         exit.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseDown(MouseEvent e) {
-                exit.setImage(ResourceManager.getImage(MusicPlayer.class, "/com/xu/music/player/image/exit-2.png"));
+                exit.setImage(Utils.getImage("exit-2.png"));
             }
 
             @Override
             public void mouseUp(MouseEvent e) {
-                exit.setImage(ResourceManager.getImage(MusicPlayer.class, "/com/xu/music/player/image/exit-1.png"));
+                exit.setImage(Utils.getImage("exit-1.png"));
                 exitMusicPlayer();
             }
         });
         exit.addMouseTrackListener(new MouseTrackAdapter() {
             @Override
             public void mouseExit(MouseEvent e) {
-                exit.setImage(ResourceManager.getImage(MusicPlayer.class, "/com/xu/music/player/image/exit-1.png"));
+                exit.setImage(Utils.getImage("exit-1.png"));
             }
 
             @Override
             public void mouseHover(MouseEvent e) {
-                exit.setImage(ResourceManager.getImage(MusicPlayer.class, "/com/xu/music/player/image/exit-2.png"));
+                exit.setImage(Utils.getImage("exit-2.png"));
                 exit.setToolTipText("退出");
             }
         });
@@ -355,7 +362,7 @@ public class MusicPlayer {
                 if (chose) {
                     TableItem[] items = lists.getSelection();
                     String id = items[0].getText(0).trim();
-                    nextSong(id, true);// 下一曲
+                    choose(id, true);// 下一曲
                 }
             }
         });
@@ -364,13 +371,13 @@ public class MusicPlayer {
         prev.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseDown(MouseEvent e) {
-                prev.setImage(ResourceManager.getImage(MusicPlayer.class, "/com/xu/music/player/image/lastsong-2.png"));
+                prev.setImage(Utils.getImage("lastsong-2.png"));
             }
 
             @Override
             public void mouseUp(MouseEvent e) {
-                nextSong(null, false);// 上一曲
-                prev.setImage(ResourceManager.getImage(MusicPlayer.class, "/com/xu/music/player/image/lastsong-1.png"));
+                choose(null, false);// 上一曲
+                prev.setImage(Utils.getImage("lastsong-1.png"));
             }
         });
 
@@ -378,21 +385,21 @@ public class MusicPlayer {
         next.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseDown(MouseEvent e) {
-                next.setImage(ResourceManager.getImage(MusicPlayer.class, "/com/xu/music/player/image/nextsong-2.png"));
+                next.setImage(Utils.getImage("nextsong-2.png"));
             }
 
             @Override
             public void mouseUp(MouseEvent e) {
-                nextSong(null, true);// 下一曲
-                next.setImage(ResourceManager.getImage(MusicPlayer.class, "/com/xu/music/player/image/nextsong-1.png"));
+                choose(null, true);// 下一曲
+                next.setImage(Utils.getImage("nextsong-1.png"));
             }
         });
 
         foot.addControlListener(new ControlAdapter() {
             @Override
             public void controlResized(ControlEvent e) {
-                sashForm.setWeights(new int[]{1, 5, 1});
-                sashForm1.setWeights(new int[]{156, 728});
+                sashForm.setWeights(1, 5, 1);
+                sashForm1.setWeights(156, 728);
             }
         });
 
@@ -409,150 +416,105 @@ public class MusicPlayer {
         sashForm.addControlListener(new ControlAdapter() {
             @Override
             public void controlResized(ControlEvent e) {
-                sashForm.setWeights(new int[]{1, 5, 1});
-                sashForm1.setWeights(new int[]{156, 728});
+                sashForm.setWeights(1, 5, 1);
+                sashForm1.setWeights(156, 728);
             }
         });
 
         composite1.addControlListener(new ControlAdapter() {
             @Override
             public void controlResized(ControlEvent e) {
-                sashForm.setWeights(new int[]{1, 5, 1});
-                sashForm1.setWeights(new int[]{156, 728});
+                sashForm.setWeights(1, 5, 1);
+                sashForm1.setWeights(156, 728);
             }
         });
 
         composite2.addControlListener(new ControlAdapter() {
             @Override
             public void controlResized(ControlEvent e) {
-                sashForm.setWeights(new int[]{1, 5, 1});
-                sashForm1.setWeights(new int[]{156, 728});
+                sashForm.setWeights(1, 5, 1);
+                sashForm1.setWeights(156, 728);
             }
         });
 
         sashForm1.addControlListener(new ControlAdapter() {
             @Override
             public void controlResized(ControlEvent e) {
-                sashForm.setWeights(new int[]{1, 5, 1});
-                sashForm1.setWeights(new int[]{156, 728});
+                sashForm.setWeights(1, 5, 1);
+                sashForm1.setWeights(156, 728);
             }
         });
 
-        //initPlayer(shell, lists);
+        initPlayer(shell, lists);
 
     }
 
-    /**
-     * Java MusicPlayer 初始化音乐播放器
-     *
-     * @param shell
-     * @param table
-     * @return void
-     * @Author: hyacinth
-     * @Title: initMusicPlayer
-     * @Description: TODO
-     * @date: 2019年12月26日 下午7:20:00
-     */
     public void initPlayer(Shell shell, Table table) {
-        QueryWrapper<SongEntity> wrapper = new QueryWrapper<>(SongEntity.class, "player");
-        List<SongEntity> entities = wrapper.list();
-        if (CollectionUtil.isEmpty(entities)) {
+        QueryWrapper<SongEntity> wrapper = new QueryWrapper<>(SongEntity.class, "song");
+        List<SongEntity> list = wrapper.list();
+
+        if (CollUtil.isEmpty(list)) {
             SongChoose choice = new SongChoose();
             Toolkit.getDefaultToolkit().beep();
             choice.open(shell);
-            entities = wrapper.list();
+            list = wrapper.list();
         }
-        initSongList(entities, table);
+
+        if (CollUtil.isEmpty(list)) {
+            return;
+        }
+
+        initTable(list, table);
         getPlayingSong();
     }
 
-    /**
-     * Java MusicPlayer 更新播放歌曲列表
-     *
-     * @param entities
-     * @param table
-     * @return void
-     * @Author: hyacinth
-     * @Title: updatePlayerSongLists
-     * @Description: TODO
-     * @date: 2019年12月26日 下午7:20:33
-     */
-    private void initSongList(List<SongEntity> entities, Table table) {
+    private void initTable(List<SongEntity> list, Table table) {
         table.removeAll();
         TableItem item;
-        Constant.MUSIC_PLAYER_SONGS_LIST = new LinkedList<>(entities);
-        for (SongEntity entity : entities) {
+        IntStream.range(0, list.size()).forEach(i -> {
+            Constant.PLAYING_LIST.put(i, list.get(i));
+        });
+
+        int index = 0;
+        for (SongEntity entity : list) {
             item = new TableItem(table, SWT.NONE);
-            item.setText(new String[]{entity.getId(), entity.getName()});
+            item.setText(new String[]{String.valueOf(index), entity.getName()});
+            index++;
         }
     }
 
-    /**
-     * Java MusicPlayer 改变播放歌曲
-     * <table border="1" cellpadding="10">
-     * <tr><td colspan="2" align="center">changePlayingSong</td></tr>
-     * <tr><th align="center">Mode 输入参数</th><th align="center">参数解释</th></tr>
-     * <tr><td align="left">false</td><td align="left">上一曲</td></tr>
-     * <tr><td align="left">true</td><td align="left">下一曲</td></tr>
-     *
-     * @param id   歌曲索引
-     * @param next 切歌模式(上一曲/下一曲)
-     * @return void
-     * @Author: hyacinth
-     * @Title: nextSong
-     * @date: 2021年9月6日17点11分
-     */
-    private void nextSong(String id, boolean next) {
-        QueryWrapper wrapper = new QueryWrapper<>(SongEntity.class, "player");
-        List<SongEntity> list = wrapper.eq("id", id).list();
-        if (CollectionUtil.isEmpty(list)) {
-            Toolkit.getDefaultToolkit().beep();
-            MessageBox message = new MessageBox(shell, SWT.YES | SWT.ICON_WARNING | SWT.NO);
-            message.setText("提示");
-            message.setMessage("未发现歌曲，现在添加歌曲？");
-            if (message.open() == SWT.YES) {
+    private void choose(String index, boolean next) {
+        if (CollUtil.isEmpty(Constant.PLAYING_LIST)) {
+            MessageBox msg = Utils.tips(shell, null, "未发现歌曲，现在添加歌曲？");
+            if (msg.open() == SWT.YES) {
                 initPlayer(shell, lists);
             } else {
-                Toolkit.getDefaultToolkit().beep();
-                message = new MessageBox(shell, SWT.OK | SWT.ICON_ERROR);
-                message.setText("提示");
-                message.setMessage("你将不能播放歌曲。");
-                message.open();
+                Utils.tips(shell, null, "未发现歌曲，不能播放歌曲。").open();
+                return;
             }
         }
-        Constant.PLAYING_SONG_ENTITY = list.get(0);
+
+        if (StrUtil.isNotBlank(index)) {
+            Constant.PLAYING_INDEX = Integer.parseInt(index);
+        } else {
+            Constant.PLAYING_INDEX += next ? 1 : -1;
+            if (Constant.PLAYING_INDEX > Constant.PLAYING_LIST.size() - 1) {
+                Constant.PLAYING_INDEX = 0;
+            }
+            if (Constant.PLAYING_INDEX < 0) {
+                Constant.PLAYING_INDEX = Constant.PLAYING_LIST.size() + 1;
+            }
+        }
+
+        Constant.PLAYING_SONG = Constant.PLAYING_LIST.get(Constant.PLAYING_INDEX);
         try {
-            player.load(Constant.PLAYING_SONG_ENTITY.getSongPath());
+            player.load(Constant.PLAYING_SONG.getSongPath());
             player.play();
             Constant.MUSIC_PLAYER_PLAYING_STATE = true;
-        } catch (Exception e1) {
-            e1.printStackTrace();
+        } catch (Exception e) {
+            log.error("选择歌曲播放异常！", e);
         }
-//        Constant.PLAYING_SONG_HAVE_LYRIC = false;
-//        if (Constant.PLAYING_SONG_ENTITY.getLyric() == 1 && StringUtils.isNotBlank(Constant.PLAYING_SONG_ENTITY.getLyricPath())) {
-//            Constant.PLAYING_SONG_HAVE_LYRIC = true;
-//            LoadLocalLyric lyric = new LoadLocalLyric();
-//            lyric.lyric(Constant.PLAYING_SONG_ENTITY.getLyricPath());
-//            lyrics.removeAll();
-//            System.out.println(JSONUtil.toJsonStr(Constant.PLAYING_SONG_LYRIC));
-//            if (Constant.PLAYING_SONG_LYRIC != null && Constant.PLAYING_SONG_LYRIC.size() > 0) {
-//                TableItem item;
-//                for (int i = 0, len = Constant.PLAYING_SONG_LYRIC.size() + 8; i < len; i++) {
-//                    item = new TableItem(lyrics, SWT.NONE);
-//                    if (i < len - 8) {
-//                        item.setText(new String[]{"", Constant.PLAYING_SONG_LYRIC.get(i).split(Constant.MUSIC_PLAYER_SYSTEM_SPLIT)[1]});
-//                    }
-//                }
-//                PlayerEntity.setBar(progress);
-//                PlayerEntity.setText(timeLabel2);
-//                PlayerEntity.setSong(Constant.PLAYING_SONG_NAME);
-//                PlayerEntity.setTable(lyrics);
-//            }
-//            PlayerEntity.setSpectrum(foot);
-//            server.endLyricPlayer(new Controller());
-//            server.startLyricPlayer(new Controller());
-//        }
-//        updateSongListsColor(lists, Constant.PLAYING_SONG_ENTITY);
+
     }
 
     /**
@@ -567,7 +529,7 @@ public class MusicPlayer {
      * @date: 2019年12月26日 下午7:40:10
      */
     private void updateSongListsColor(Table table, SongEntity entity) {
-        start.setImage(ResourceManager.getImage(MusicPlayer.class, "/com/xu/music/player/image/start.png"));
+        start.setImage(Utils.getImage("start.png"));
         timeLabel1.setText(format(entity.getLength().intValue()));
         TableItem[] items = table.getItems();
         for (int i = 0; i < items.length; i++) {
@@ -656,8 +618,8 @@ public class MusicPlayer {
             e.printStackTrace();
         }
         Constant.MUSIC_PLAYER_PLAYING_STATE = false;
-        start.setImage(ResourceManager.getImage(MusicPlayer.class, "/com/xu/music/player/image/stop.png"));
-        updateSongListsColor(lists, Constant.PLAYING_SONG_ENTITY);
+        start.setImage(Utils.getImage("stop.png"));
+        updateSongListsColor(lists, Constant.PLAYING_SONG);
     }
 
 }

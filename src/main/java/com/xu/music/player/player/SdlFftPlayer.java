@@ -3,6 +3,7 @@ package com.xu.music.player.player;
 import java.io.File;
 import java.net.URL;
 import javazoom.spi.mpeg.sampled.file.MpegAudioFileReader;
+import lombok.extern.slf4j.Slf4j;
 
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.text.CharSequenceUtil;
@@ -35,6 +36,7 @@ import org.apache.commons.math3.transform.TransformType;
  * @date 2024年6月4日19点07分
  * @since SWT-V1.0.0.0
  */
+@Slf4j
 public class SdlFftPlayer implements Player {
 
     /**
@@ -66,6 +68,11 @@ public class SdlFftPlayer implements Player {
      * AudioInputStream
      */
     private AudioInputStream audio = null;
+
+    /**
+     * 音频时长
+     */
+    private double duration = 0.0D;
 
     /**
      * FloatControl
@@ -192,6 +199,7 @@ public class SdlFftPlayer implements Player {
                 control = (FloatControl) this.data.getControl(FloatControl.Type.MASTER_GAIN);
             }
 
+            this.duration = getAudioDuration(this.audio, this.audio.getFormat());
             byte[] buff = new byte[4];
             int channels = this.audio.getFormat().getChannels();
             float rate = this.audio.getFormat().getSampleRate();
@@ -246,6 +254,27 @@ public class SdlFftPlayer implements Player {
         control.setValue(volume);
     }
 
+    @Override
+    public double position() {
+        return data.getFramePosition();
+    }
+
+    @Override
+    public double duration() {
+        return this.duration;
+    }
+
+    /**
+     * 计算音频时长
+     *
+     * @param audio  音频流
+     * @param format 音频格式
+     * @return 音频时长
+     * @date 2019年10月31日19:06:39
+     */
+    public static double getAudioDuration(AudioInputStream audio, AudioFormat format) {
+        return audio.getFrameLength() * format.getFrameSize() / (format.getSampleRate() * format.getChannels() * (format.getSampleSizeInBits() / 8.0));
+    }
 
     private void setSpectrum(byte[] buff, int channels, int sample) {
         if (buff.length != 4) {

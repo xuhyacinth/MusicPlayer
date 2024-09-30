@@ -13,6 +13,8 @@ package com.xu.music.player.utils;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -175,7 +177,7 @@ public class ResourceManager {
         Image image = m_imageMap.get(path);
         if (image == null) {
             try {
-                image = getImage(new FileInputStream(path));
+                image = getImage(Files.newInputStream(Paths.get(path)));
                 m_imageMap.put(path, image);
             } catch (Exception e) {
                 image = getMissingImage();
@@ -204,7 +206,8 @@ public class ResourceManager {
 //                m_imageMap.put(key, image);
 //            }
 //        }
-        return getImage("src" + path);
+
+        return getImage("src/main/java/" + path);
     }
 
     /**

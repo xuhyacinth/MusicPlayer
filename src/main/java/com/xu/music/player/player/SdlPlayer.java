@@ -60,6 +60,11 @@ public class SdlPlayer implements Player {
     private FloatControl control = null;
 
     /**
+     * 音频时长
+     */
+    private double duration = 0.0D;
+
+    /**
      * 暂停
      */
     private volatile boolean paused = false;
@@ -179,6 +184,7 @@ public class SdlPlayer implements Player {
                 control = (FloatControl) this.data.getControl(FloatControl.Type.MASTER_GAIN);
             }
 
+            this.duration = getAudioDuration(this.audio, this.audio.getFormat());
             byte[] buff = new byte[4];
             int channels = this.audio.getFormat().getChannels();
             float rate = this.audio.getFormat().getSampleRate();
@@ -233,6 +239,27 @@ public class SdlPlayer implements Player {
         control.setValue(volume);
     }
 
+    @Override
+    public double position() {
+        return data.getFramePosition();
+    }
+
+    @Override
+    public double duration() {
+        return this.duration;
+    }
+
+    /**
+     * 计算音频时长
+     *
+     * @param audio  音频流
+     * @param format 音频格式
+     * @return 音频时长
+     * @date 2019年10月31日19:06:39
+     */
+    public static double getAudioDuration(AudioInputStream audio, AudioFormat format) {
+        return audio.getFrameLength() * format.getFrameSize() / (format.getSampleRate() * format.getChannels() * (format.getSampleSizeInBits() / 8.0));
+    }
 
     private void setSpectrum(byte[] buff, int channels, int sample) {
         if (buff.length != 4) {

@@ -4,14 +4,37 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d80f8f9d-1d6c-42ec-878e-b4abc86527ba" name="Changes" comment="dev:&#10;1、修改文件名称">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="d80f8f9d-1d6c-42ec-878e-b4abc86527ba" name="Changes" comment="dev:&#10;1、增加忽略文件">
+      <change afterPath="$PROJECT_DIR$/song/Beyond - 长城（国语）.flac" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/song/Beyond - 长城（粤语）.flac" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/AudioLength.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/AudioPlaybackProgress.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/SineWaveSynth.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sqlite/db/MusicPlayer.db" beforeDir="false" afterPath="$PROJECT_DIR$/sqlite/db/MusicPlayer.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/constant/Constant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/constant/Constant.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/main/MusicPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/main/MusicPlayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/ClipPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/ClipPlayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/Player.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/SdlFftPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/SdlFftPlayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/SdlPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/SdlPlayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/SwtDraw.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/SwtDraw.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/utils/ResourceManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/utils/ResourceManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/utils/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/utils/Utils.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -66,13 +89,17 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Application.MusicPlayer.executor": "Run",
+    "Application.AudioLength.executor": "Run",
+    "Application.AudioPlaybackProgress.executor": "Run",
+    "Application.MusicPlayer (1).executor": "Run",
+    "Application.MusicPlayer.executor": "Debug",
+    "Application.SineWaveSynth.executor": "Run",
     "Application.SwtDraw.executor": "Run",
     "Application.Test.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "SWT-V1.0.0.0",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "E:/SourceCode/Eclipse/MusicPlayer/lib/org.osgi.core-6.0.0.jar",
+    "last_opened_file_path": "E:/SourceCode/Eclipse/MusicPlayer/song",
     "project.structure.last.edited": "Libraries",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.3643678",
@@ -80,6 +107,9 @@
   }
 }]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\SourceCode\Eclipse\MusicPlayer\song" />
+    </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="com.xu.music.player.player" />
     </key>
@@ -111,19 +141,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.xu.music.player.test.Test" />
-      <module name="MusicPlayer" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.xu.music.player.test.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration default="true" type="JetRunConfigurationType">
       <method v="2">
         <option name="Make" enabled="true" />
@@ -139,7 +156,6 @@
       <list>
         <item itemvalue="Application.SwtDraw" />
         <item itemvalue="Application.MusicPlayer" />
-        <item itemvalue="Application.Test" />
       </list>
     </recent_temporary>
   </component>
@@ -184,7 +200,15 @@
       <option name="project" value="LOCAL" />
       <updated>1727600594333</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="dev:&#10;1、增加忽略文件">
+      <option name="closed" value="true" />
+      <created>1727602224564</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1727602224564</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -192,6 +216,7 @@
     <MESSAGE value="dev:&#10;1、增加Linux支持" />
     <MESSAGE value="dev:&#10;1、移除未使用依赖" />
     <MESSAGE value="dev:&#10;1、修改文件名称" />
-    <option name="LAST_COMMIT_MESSAGE" value="dev:&#10;1、修改文件名称" />
+    <MESSAGE value="dev:&#10;1、增加忽略文件" />
+    <option name="LAST_COMMIT_MESSAGE" value="dev:&#10;1、增加忽略文件" />
   </component>
 </project>

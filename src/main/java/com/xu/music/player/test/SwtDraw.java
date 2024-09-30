@@ -46,7 +46,7 @@ public class SwtDraw {
     public void play() {
         try {
             Player player = SdlFftPlayer.create();
-            player.load("C:\\Users\\xuyq\\Music\\Beyond - 长城（粤语）.flac");
+            player.load("song/Beyond - 长城（粤语）.flac");
             player.play();
         } catch (Exception e) {
 

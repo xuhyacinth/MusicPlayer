@@ -2,9 +2,29 @@
 <project version="4">
   <component name="RemoteRepositoriesConfiguration">
     <remote-repository>
+      <option name="id" value="swt" />
+      <option name="name" value="swt" />
+      <option name="url" value="http://maven-eclipse.github.io/maven" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="central" />
       <option name="name" value="Central Repository" />
       <option name="url" value="https://maven.aliyun.com/nexus/content/groups/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="jface" />
+      <option name="name" value="jface" />
+      <option name="url" value="http://www.jabylon.org/maven/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="central" />
+      <option name="url" value="https://maven.aliyun.com/nexus/content/groups/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="eclipse-releases" />
+      <option name="name" value="eclipse-releases" />
+      <option name="url" value="https://repo.eclipse.org/content/groups/releases/" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="central" />

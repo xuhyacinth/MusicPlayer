@@ -108,4 +108,20 @@ public interface Player {
      */
     void volume(float volume);
 
+    /**
+     * 获取音频播放位置
+     *
+     * @return 播放位置
+     * @date 2019年10月31日19:06:39
+     */
+    double position();
+
+    /**
+     * 获取音频总时长
+     *
+     * @return 音频总时长
+     * @date 2019年10月31日19:06:39
+     */
+    double duration();
+
 }

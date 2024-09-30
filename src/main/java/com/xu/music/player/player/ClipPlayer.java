@@ -51,6 +51,10 @@ public class ClipPlayer implements Player {
         return SingletonHolder.player;
     }
 
+    private static class SingletonHolder {
+        private static final ClipPlayer player = new ClipPlayer();
+    }
+
     @Override
     public void load(URL url) throws Exception {
         load(AudioSystem.getAudioInputStream(url));
@@ -156,8 +160,14 @@ public class ClipPlayer implements Player {
         this.control.setValue(volume);
     }
 
-    private static class SingletonHolder {
-        private static final ClipPlayer player = new ClipPlayer();
+    @Override
+    public double position() {
+        return 0;
+    }
+
+    @Override
+    public double duration() {
+        return 0;
     }
 
 }
