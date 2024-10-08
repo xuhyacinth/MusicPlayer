@@ -8,24 +8,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d80f8f9d-1d6c-42ec-878e-b4abc86527ba" name="Changes" comment="dev:&#10;1、优化代码5">
+      <change afterPath="$PROJECT_DIR$/song/张敬轩 - 酷爱.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/song/梦涵 - 加减乘除.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/TikaCore.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/constant/Constant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/constant/Constant.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/fft/Complex.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/fft/Complex.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/fft/FFT.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/fft/FFT.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/main/MusicPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/main/MusicPlayer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/ClipPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/ClipPlayer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/sql/Helper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/sql/Helper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/sql/NewHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/sql/NewHelper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/sql/SysType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/sql/SysType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/AudioLength.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/xu/music/player/AudioLength.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/AudioPlaybackProgress.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/xu/music/player/AudioPlaybackProgress.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/SineWaveSynth.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/xu/music/player/SineWaveSynth.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/tray/MusicPlayerTray.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/tray/MusicPlayerTray.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/utils/ResourceManager.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/utils/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/utils/Utils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/InsertWrapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/InsertWrapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/QueryWrapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/QueryWrapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/UpdateWrapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/UpdateWrapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,7 +29,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="main" />
+        <entry key="$PROJECT_DIR$" value="idea" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -90,25 +77,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.AudioLength.executor&quot;: &quot;Run&quot;,
-    &quot;Application.AudioPlaybackProgress.executor&quot;: &quot;Run&quot;,
-    &quot;Application.MusicPlayer (1).executor&quot;: &quot;Run&quot;,
-    &quot;Application.MusicPlayer.executor&quot;: &quot;Debug&quot;,
-    &quot;Application.SineWaveSynth.executor&quot;: &quot;Run&quot;,
-    &quot;Application.SwtDraw.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Test.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;SWT-V1.0.0.0&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/SourceCode/Init/MusicPlayer&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.3643678&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;MavenSettings&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.AudioLength.executor": "Run",
+    "Application.AudioPlaybackProgress.executor": "Run",
+    "Application.MusicPlayer (1).executor": "Run",
+    "Application.MusicPlayer.executor": "Debug",
+    "Application.SineWaveSynth.executor": "Run",
+    "Application.SwtDraw.executor": "Run",
+    "Application.Test.executor": "Run",
+    "Application.TikaCore.executor": "Run",
+    "Maven.MusicPlayer [clean].executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "SWT-V1.0.0.0",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "E:/SourceCode/Eclipse/MusicPlayer/song",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "MavenSettings"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\SourceCode\Eclipse\MusicPlayer\song" />
@@ -120,7 +109,7 @@
       <recent name="com.xu.music.player.player" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.MusicPlayer">
+  <component name="RunManager" selected="Application.TikaCore">
     <configuration name="MusicPlayer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.xu.music.player.main.MusicPlayer" />
       <module name="MusicPlayer" />
@@ -147,6 +136,19 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="TikaCore" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.xu.music.player.test.TikaCore" />
+      <module name="MusicPlayer" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.xu.music.player.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration default="true" type="JetRunConfigurationType">
       <method v="2">
         <option name="Make" enabled="true" />
@@ -160,6 +162,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.TikaCore" />
+        <item itemvalue="Application.SwtDraw" />
+        <item itemvalue="Application.MusicPlayer" />
         <item itemvalue="Application.MusicPlayer" />
         <item itemvalue="Application.SwtDraw" />
       </list>
@@ -250,6 +255,18 @@
     <MESSAGE value="dev:&#10;1、优化代码" />
     <MESSAGE value="dev:&#10;1、优化代码4" />
     <MESSAGE value="dev:&#10;1、优化代码5" />
-    <option name="LAST_COMMIT_MESSAGE" value="dev:&#10;1、优化代码5" />
+    <MESSAGE value="默认更改列表" />
+    <option name="LAST_COMMIT_MESSAGE" value="默认更改列表" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar://$MAVEN_REPOSITORY$/com/googlecode/soundlibs/mp3spi/1.9.5.4/mp3spi-1.9.5.4-sources.jar!/javazoom/spi/mpeg/sampled/file/tag/IcyInputStream.java</url>
+          <line>126</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
