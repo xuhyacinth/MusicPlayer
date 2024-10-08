@@ -1,6 +1,5 @@
 package com.xu.music.player.test;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -9,6 +8,9 @@ import javax.sound.sampled.AudioSystem;
 
 import java.util.Map;
 
+/**
+ * @author hyacinth
+ */
 public class TikaCore {
 
     public static void main(String[] args) throws Exception {
