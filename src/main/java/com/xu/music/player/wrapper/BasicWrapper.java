@@ -1,10 +1,12 @@
 package com.xu.music.player.wrapper;
 
-import cn.hutool.core.util.StrUtil;
-import com.xu.music.player.utils.Utils;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+import cn.hutool.core.util.StrUtil;
+
+import com.xu.music.player.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
  * 基础类
  *
  * @param <T>
+ * @author hyacinth
  * @date 2024年6月4日19点07分
  * @since SWT-V1.0.0.0
  */
@@ -88,6 +91,7 @@ public class BasicWrapper<T> {
         if (null == value) {
             return "null";
         }
+
         if (value instanceof Date) {
             SimpleDateFormat format = new SimpleDateFormat(Utils.FORMAT_DATE_TIME);
             return "'" + format.format(value) + "'";
@@ -97,7 +101,8 @@ public class BasicWrapper<T> {
         } else if (value instanceof String) {
             return "'" + value + "'";
         }
-        return (String) value;
+
+        return String.valueOf(value);
     }
 
     /**

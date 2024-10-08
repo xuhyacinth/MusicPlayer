@@ -1,11 +1,13 @@
 package com.xu.music.player.wrapper;
 
+import java.lang.reflect.Field;
+
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
+
 import com.xu.music.player.hander.DataBaseError;
 import com.xu.music.player.wrapper.sql.Helper;
 import com.xu.music.player.wrapper.sql.NewHelper;
-import java.lang.reflect.Field;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -14,6 +16,7 @@ import java.util.List;
  * 更新
  *
  * @param <T>
+ * @author hyacinth
  * @date 2024年6月4日19点07分
  * @since SWT-V1.0.0.0
  */

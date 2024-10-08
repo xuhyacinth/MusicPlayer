@@ -1,5 +1,7 @@
 package com.xu.music.player.test;
 
+import lombok.extern.slf4j.Slf4j;
+
 import cn.hutool.core.collection.CollUtil;
 
 import com.xu.music.player.player.SdlFftPlayer;
@@ -23,6 +25,7 @@ import org.eclipse.swt.widgets.Shell;
 /**
  * @author hyacinth
  */
+@Slf4j
 public class SwtDraw {
 
     private Shell shell = null;
@@ -49,7 +52,7 @@ public class SwtDraw {
             player.load("song/Beyond - 长城（粤语）.flac");
             player.play();
         } catch (Exception e) {
-
+            log.error("异常", e);
         }
     }
 

@@ -7,11 +7,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d80f8f9d-1d6c-42ec-878e-b4abc86527ba" name="Changes" comment="dev:&#10;1、优化代码7">
-      <change afterPath="$PROJECT_DIR$/src/main/resources/logback-spring.xml" afterDir="false" />
+    <list default="true" id="d80f8f9d-1d6c-42ec-878e-b4abc86527ba" name="Changes" comment="dev:&#10;1、优化代码8">
+      <change afterPath="$PROJECT_DIR$/qodana.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/main/MusicPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/main/MusicPlayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/fft/Complex.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/fft/FFT.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/ClipPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/ClipPlayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/SwtDraw.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/SwtDraw.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/BasicWrapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/BasicWrapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/InsertWrapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/InsertWrapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/QueryWrapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/QueryWrapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/UpdateWrapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/UpdateWrapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/sql/NewHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/sql/NewHelper.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,6 +75,9 @@
       </MavenGeneralSettings>
     </option>
   </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
 }</component>
@@ -81,7 +91,7 @@
     "Application.AudioLength.executor": "Run",
     "Application.AudioPlaybackProgress.executor": "Run",
     "Application.MusicPlayer (1).executor": "Run",
-    "Application.MusicPlayer.executor": "Run",
+    "Application.MusicPlayer.executor": "Debug",
     "Application.SineWaveSynth.executor": "Run",
     "Application.SwtDraw.executor": "Run",
     "Application.Test.executor": "Run",
@@ -94,9 +104,26 @@
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "MavenSettings"
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
 }]]></component>
+  <component name="QodanaHighlightedReportService">
+    <option name="localRunNotPublishedPersistedInfo">
+      <LocalReportPersistedInfo>
+        <option name="path" value="C:\Users\xuyq\AppData\Local\Temp\qodana_output\qodana.sarif.json" />
+        <option name="reportGuid" value="eb1e36b7-8c28-4660-8d2d-b077f1ffd20b" />
+        <option name="reportName" value="MusicPlayer/qodana/2024-10-08" />
+      </LocalReportPersistedInfo>
+    </option>
+  </component>
+  <component name="QodanaIsSelectedPersistenceService">
+    <option name="selectedOrLoading" value="true" />
+  </component>
+  <component name="QodanaReportsService">
+    <option name="descriptions">
+      <ReportDescription localRun="true" path="C:\Users\xuyq\AppData\Local\Temp\qodana_output\qodana.sarif.json" reportGuid="eb1e36b7-8c28-4660-8d2d-b077f1ffd20b" reportId="MusicPlayer/qodana/2024-10-08" />
+    </option>
+  </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\SourceCode\Eclipse\MusicPlayer\src\main\resources" />
@@ -259,7 +286,15 @@
       <option name="project" value="LOCAL" />
       <updated>1728356124349</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="dev:&#10;1、优化代码8">
+      <option name="closed" value="true" />
+      <created>1728356842461</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1728356842461</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -274,7 +309,8 @@
     <MESSAGE value="默认更改列表" />
     <MESSAGE value="dev:&#10;1、优化代码6" />
     <MESSAGE value="dev:&#10;1、优化代码7" />
-    <option name="LAST_COMMIT_MESSAGE" value="dev:&#10;1、优化代码7" />
+    <MESSAGE value="dev:&#10;1、优化代码8" />
+    <option name="LAST_COMMIT_MESSAGE" value="dev:&#10;1、优化代码8" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

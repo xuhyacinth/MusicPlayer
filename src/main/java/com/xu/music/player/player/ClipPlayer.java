@@ -125,8 +125,8 @@ public class ClipPlayer implements Player {
     public void resume(long duration) {
         if (this.clip != null && paused) {
             paused = false;
-            position = (0 == duration) ? position : duration;
-            this.clip.setMicrosecondPosition(position);
+            this.position = (0 == duration) ? this.position : duration;
+            this.clip.setMicrosecondPosition(this.position);
             this.clip.start();
         }
     }
@@ -162,7 +162,7 @@ public class ClipPlayer implements Player {
 
     @Override
     public double position() {
-        return 0;
+        return this.position;
     }
 
     @Override

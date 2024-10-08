@@ -1,15 +1,17 @@
 package com.xu.music.player.wrapper.sql;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.lang.reflect.Field;
+
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
+
 import com.xu.music.player.hander.DataBaseError;
 import com.xu.music.player.utils.Utils;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.lang.reflect.Field;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -304,7 +306,7 @@ public class NewHelper implements Helper {
             }
             byte[] bt = new byte[(int) blob.length()];
             BufferedInputStream stream = new BufferedInputStream(blob.getBinaryStream());
-            stream.read(bt);
+            stream.read(bt, 0, bt.length);
             IoUtil.close(stream);
             return bt;
         } catch (Exception e) {
