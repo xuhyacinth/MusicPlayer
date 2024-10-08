@@ -7,10 +7,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d80f8f9d-1d6c-42ec-878e-b4abc86527ba" name="Changes" comment="dev:&#10;1、优化代码6">
+    <list default="true" id="d80f8f9d-1d6c-42ec-878e-b4abc86527ba" name="Changes" comment="dev:&#10;1、优化代码7">
+      <change afterPath="$PROJECT_DIR$/src/main/resources/logback-spring.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/TikaCore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/TikaCore.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/main/MusicPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/main/MusicPlayer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,29 +76,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.AudioLength.executor&quot;: &quot;Run&quot;,
-    &quot;Application.AudioPlaybackProgress.executor&quot;: &quot;Run&quot;,
-    &quot;Application.MusicPlayer (1).executor&quot;: &quot;Run&quot;,
-    &quot;Application.MusicPlayer.executor&quot;: &quot;Debug&quot;,
-    &quot;Application.SineWaveSynth.executor&quot;: &quot;Run&quot;,
-    &quot;Application.SwtDraw.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Test.executor&quot;: &quot;Run&quot;,
-    &quot;Application.TikaCore.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.MusicPlayer [clean].executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;SWT-V1.0.0.0&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/SourceCode/Eclipse/MusicPlayer/song&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;MavenSettings&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.AudioLength.executor": "Run",
+    "Application.AudioPlaybackProgress.executor": "Run",
+    "Application.MusicPlayer (1).executor": "Run",
+    "Application.MusicPlayer.executor": "Run",
+    "Application.SineWaveSynth.executor": "Run",
+    "Application.SwtDraw.executor": "Run",
+    "Application.Test.executor": "Run",
+    "Application.TikaCore.executor": "Run",
+    "Maven.MusicPlayer [clean].executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "SWT-V1.0.0.0",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "E:/SourceCode/Eclipse/MusicPlayer/src/main/resources",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "MavenSettings"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\SourceCode\Eclipse\MusicPlayer\src\main\resources" />
       <recent name="E:\SourceCode\Eclipse\MusicPlayer\song" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
@@ -107,7 +109,7 @@
       <recent name="com.xu.music.player.player" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TikaCore">
+  <component name="RunManager" selected="Application.MusicPlayer">
     <configuration name="MusicPlayer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.xu.music.player.main.MusicPlayer" />
       <module name="MusicPlayer" />
@@ -160,9 +162,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.MusicPlayer" />
         <item itemvalue="Application.TikaCore" />
         <item itemvalue="Application.SwtDraw" />
-        <item itemvalue="Application.MusicPlayer" />
         <item itemvalue="Application.MusicPlayer" />
         <item itemvalue="Application.SwtDraw" />
       </list>
@@ -249,7 +251,15 @@
       <option name="project" value="LOCAL" />
       <updated>1728355978749</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="dev:&#10;1、优化代码7">
+      <option name="closed" value="true" />
+      <created>1728356124349</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1728356124349</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -263,7 +273,8 @@
     <MESSAGE value="dev:&#10;1、优化代码5" />
     <MESSAGE value="默认更改列表" />
     <MESSAGE value="dev:&#10;1、优化代码6" />
-    <option name="LAST_COMMIT_MESSAGE" value="dev:&#10;1、优化代码6" />
+    <MESSAGE value="dev:&#10;1、优化代码7" />
+    <option name="LAST_COMMIT_MESSAGE" value="dev:&#10;1、优化代码7" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

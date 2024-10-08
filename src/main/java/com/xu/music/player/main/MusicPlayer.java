@@ -114,6 +114,7 @@ public class MusicPlayer {
      * Create contents of the window.
      */
     protected void createContents() {
+        log.info("Init");
         shell = new Shell(SWT.NONE);
         shell.setImage(Utils.getImage("main.png"));
         shell.setSize(new Point(1000, 645));
