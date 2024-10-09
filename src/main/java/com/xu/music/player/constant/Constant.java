@@ -24,6 +24,8 @@ import org.eclipse.swt.graphics.Color;
  */
 public class Constant implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private Constant() {
 
     }
@@ -122,7 +124,6 @@ public class Constant implements Serializable {
      */
     public static final String MUSIC_PLAYER_DOWNLOAD_PATH = SYSTEM_USER_HOME + File.separator + ".MusicPlayer" + File.separator + "download" + File.separator;
 
-    private static final long serialVersionUID = 1L;
 
     /**
      * 歌词
