@@ -18,7 +18,6 @@ import com.xu.music.player.wrapper.QueryWrapper;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.stream.IntStream;
@@ -58,14 +57,10 @@ public class MusicPlayer {
 
     private final List<Integer> spectrum = new LinkedList<>();
 
-    private static Timer TIMER = new Timer(true);
-
-    private final SecureRandom random = new SecureRandom();
+    private Timer timer = new Timer(true);
 
     private double position;
 
-    // 播放按钮
-    public boolean playing = true;
     protected Shell shell;
     // 播放器
     private Player player = null;
@@ -73,8 +68,6 @@ public class MusicPlayer {
     // 播放器托盘
     private Tray tray;
     private Table lists;
-    private Table lyrics;
-    private Composite top;
     // 频谱面板
     private Composite foot;
     // 进度条
@@ -114,14 +107,13 @@ public class MusicPlayer {
      * Create contents of the window.
      */
     protected void createContents() {
-        log.info("Init");
         shell = new Shell(SWT.NONE);
         shell.setImage(Utils.getImage("main.png"));
         shell.setSize(new Point(1000, 645));
         shell.setSize(900, 486);
         shell.setText("MusicPlayer");
-        shell.setLocation((display.getClientArea().width - shell.getSize().x) / 2,
-                (display.getClientArea().height - shell.getSize().y) / 2);
+//        shell.setLocation((display.getClientArea().width - shell.getSize().x) / 2,
+//                (display.getClientArea().height - shell.getSize().y) / 2);
         shell.setLayout(new FillLayout(SWT.HORIZONTAL));
         shell.setBackgroundMode(SWT.INHERIT_DEFAULT);
 
@@ -139,7 +131,7 @@ public class MusicPlayer {
 
         SashForm sashForm = new SashForm(composite, SWT.VERTICAL);
 
-        top = new Composite(sashForm, SWT.NONE);
+        Composite top = new Composite(sashForm, SWT.NONE);
         top.setBackgroundMode(SWT.INHERIT_FORCE);
 
         Label exit = new Label(top, SWT.NONE);
@@ -191,22 +183,22 @@ public class MusicPlayer {
         tableColumn.setWidth(41);
         tableColumn.setText("序号");
 
-        TableColumn tableColumn_1 = new TableColumn(lists, SWT.NONE);
-        tableColumn_1.setWidth(117);
-        tableColumn_1.setText("歌曲");
+        TableColumn song = new TableColumn(lists, SWT.NONE);
+        song.setWidth(117);
+        song.setText("歌曲");
 
         Composite composite2 = new Composite(sashForm1, SWT.NONE);
         composite2.setBackgroundMode(SWT.INHERIT_FORCE);
         composite2.setLayout(new FillLayout(SWT.HORIZONTAL));
 
-        lyrics = new Table(composite2, SWT.NONE);
+        Table lyrics = new Table(composite2, SWT.NONE);
 
-        TableColumn tableColumn_2 = new TableColumn(lyrics, SWT.CENTER);
-        tableColumn_2.setText("歌词");
+        TableColumn lyric1 = new TableColumn(lyrics, SWT.CENTER);
+        lyric1.setText("歌词");
 
-        TableColumn tableColumn_3 = new TableColumn(lyrics, SWT.CENTER);
-        tableColumn_3.setWidth(738);
-        tableColumn_3.setText("歌词");
+        TableColumn lyric2 = new TableColumn(lyrics, SWT.CENTER);
+        lyric2.setWidth(738);
+        lyric2.setText("歌词");
 
         foot = new Composite(sashForm, SWT.NONE);
         foot.setBackgroundMode(SWT.INHERIT_FORCE);
@@ -223,15 +215,10 @@ public class MusicPlayer {
         start.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseDown(MouseEvent e) {
-                playing = Constant.MUSIC_PLAYER_PLAYING_STATE;
-                if (playing) {
-                    // TODO:
+                if (player.playing()) {
                     start.setImage(Utils.getImage("start.png"));
-                    playing = false;
                     player.pause();
                 } else {
-                    // TODO:
-                    playing = true;
                     start.setImage(Utils.getImage("stop.png"));
                     player.resume(0);
                 }
@@ -348,7 +335,8 @@ public class MusicPlayer {
                 if (chose) {
                     TableItem[] items = lists.getSelection();
                     String id = items[0].getText(0).trim();
-                    choose(id, true);// 下一曲
+                    // 下一曲
+                    choose(id, true);
                 }
             }
         });
@@ -392,7 +380,7 @@ public class MusicPlayer {
         foot.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseDoubleClick(MouseEvent e) {
-                org.eclipse.swt.graphics.Color color = Constant.COLORS.get(new Random().nextInt(Constant.COLORS.size()));
+                org.eclipse.swt.graphics.Color color = Constant.COLORS.get(new SecureRandom().nextInt(Constant.COLORS.size()));
                 if (color != Constant.SPECTRUM_BACKGROUND_COLOR) {
                     Constant.SPECTRUM_FOREGROUND_COLOR = color;
                 }
@@ -401,6 +389,10 @@ public class MusicPlayer {
 
         // 添加绘图监听器
         foot.addPaintListener(listener -> {
+            if (!player.playing()) {
+                return;
+            }
+
             GC gc = listener.gc;
 
             int width = listener.width;
@@ -498,7 +490,11 @@ public class MusicPlayer {
         if (StrUtil.isNotBlank(index)) {
             Constant.PLAYING_INDEX = Integer.parseInt(index);
         } else {
-            Constant.PLAYING_INDEX += next ? 1 : -1;
+            if (null == Constant.PLAYING_INDEX) {
+                Constant.PLAYING_INDEX = 0;
+            } else {
+                Constant.PLAYING_INDEX += next ? 1 : -1;
+            }
             if (Constant.PLAYING_INDEX > Constant.PLAYING_LIST.size() - 1) {
                 Constant.PLAYING_INDEX = 0;
             }
@@ -522,10 +518,10 @@ public class MusicPlayer {
     }
 
     private void spectrum(Composite comp, Label label) {
-        TIMER.cancel();
+        timer.cancel();
         position = 0;
-        TIMER = new Timer(true);
-        TIMER.scheduleAtFixedRate(new TimerTask() {
+        timer = new Timer(true);
+        timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 display.asyncExec(() -> {
@@ -545,19 +541,21 @@ public class MusicPlayer {
 
     private void draw(GC gc, int x, int y, int width, int height) {
         // 设置条形的颜色
-        org.eclipse.swt.graphics.Color color = new org.eclipse.swt.graphics.Color(display, random.nextInt(255), random.nextInt(255), random.nextInt(255));
-        gc.setBackground(color);
+        gc.setBackground(Constant.SPECTRUM_FOREGROUND_COLOR);
         // 绘制条形
         org.eclipse.swt.graphics.Rectangle draw = new org.eclipse.swt.graphics.Rectangle(x, y, width, -height);
         gc.fillRectangle(draw);
-        // 释放颜色资源
-        color.dispose();
     }
 
     public void update() {
         if (CollUtil.isEmpty(SdlFftPlayer.TRANS) || SdlFftPlayer.TRANS.isEmpty()) {
             return;
         }
+
+        if (!player.playing()) {
+            return;
+        }
+
         position += 0.1;
         spectrum.clear();
         for (int i = 0, len = SdlFftPlayer.TRANS.size(); i < len; i++) {
@@ -574,11 +572,11 @@ public class MusicPlayer {
         timeLabel1.setText(Utils.format(entity.getLength().intValue()));
 
         TableItem[] items = table.getItems();
-        for (TableItem item : items) {
-            if (StrUtil.equals(entity.getId(), item.getText(0))) {
-                item.setBackground(Utils.getColor(SWT.COLOR_GRAY));
+        for (int i = 0, len = items.length; i < len; i++) {
+            if (i == Constant.PLAYING_INDEX) {
+                items[i].setBackground(Utils.getColor(SWT.COLOR_GRAY));
             } else {
-                item.setBackground(Utils.getColor(SWT.COLOR_WHITE));
+                items[i].setBackground(Utils.getColor(SWT.COLOR_WHITE));
             }
         }
 

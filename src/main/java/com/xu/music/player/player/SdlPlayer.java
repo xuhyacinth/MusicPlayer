@@ -23,8 +23,6 @@ import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.apache.commons.math3.transform.FastFourierTransformer;
-
 /**
  * SourceDataLine 音频播放
  *
@@ -205,7 +203,7 @@ public class SdlPlayer implements Player {
     }
 
     @Override
-    public void play() throws Exception {
+    public void play() {
         if (this.playing) {
             return;
         }
@@ -247,6 +245,11 @@ public class SdlPlayer implements Player {
     @Override
     public double duration() {
         return this.duration;
+    }
+
+    @Override
+    public boolean playing() {
+        return this.playing;
     }
 
     /**

@@ -10,7 +10,6 @@ import cn.hutool.core.text.CharSequenceUtil;
 
 import com.xu.music.player.constant.Constant;
 import com.xu.music.player.hander.DataBaseError;
-import com.xu.music.player.hander.MusicPlayerError;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -215,12 +214,12 @@ public class SdlFftPlayer implements Player {
             data.drain();
             data.stop();
         } catch (Exception e) {
-            throw new MusicPlayerError(e.getMessage(), e);
+            log.error("SdlFftPlayer 播放异常！", e);
         }
     }
 
     @Override
-    public void play() throws Exception {
+    public void play() {
         if (this.playing) {
             return;
         }
@@ -265,6 +264,11 @@ public class SdlFftPlayer implements Player {
     @Override
     public double duration() {
         return this.duration;
+    }
+
+    @Override
+    public boolean playing() {
+        return !this.paused;
     }
 
     /**

@@ -170,4 +170,9 @@ public class ClipPlayer implements Player {
         return 0;
     }
 
+    @Override
+    public boolean playing() {
+        return !this.paused;
+    }
+
 }

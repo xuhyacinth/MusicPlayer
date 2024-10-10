@@ -88,10 +88,9 @@ public interface Player {
     /**
      * 开始播放
      *
-     * @throws Exception 异常
      * @date 2019年10月31日19:06:39
      */
-    void play() throws Exception;
+    void play();
 
     /**
      * 结束播放
@@ -123,5 +122,13 @@ public interface Player {
      * @date 2019年10月31日19:06:39
      */
     double duration();
+
+    /**
+     * 是否正在播放
+     *
+     * @return 是否正在播放
+     * @date 2019年10月31日19:06:39
+     */
+    boolean playing();
 
 }
