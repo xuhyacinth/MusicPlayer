@@ -4,8 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import cn.hutool.core.collection.CollUtil;
 
-import com.xu.music.player.player.SdlFftPlayer;
 import com.xu.music.player.player.Player;
+import com.xu.music.player.player.SdlFftPlayer;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -48,8 +48,16 @@ public class SwtDraw {
      */
     public void play() {
         try {
+            // 获取 JDK 版本
+            log.info("Java Version: {}", System.getProperty("java.version"));
+            log.info("Java Vendor: {}", System.getProperty("java.vendor"));
+            log.info("Java Home: {}", System.getProperty("java.home"));
+            log.info("Operating System: {}", System.getProperty("os.name"));
+            log.info("OS Architecture: {}", System.getProperty("os.arch"));
+            log.info("OS Version: {}", System.getProperty("os.version"));
+
             Player player = SdlFftPlayer.create();
-            player.load("song/Beyond - 长城（粤语）.flac");
+            player.load("song/梦涵 - 加减乘除.mp3");
             player.play();
         } catch (Exception e) {
             log.error("异常", e);
@@ -99,8 +107,9 @@ public class SwtDraw {
             int length = width / 25;
 
             if (spectrum.size() >= length) {
-                for (int i = 0; i < length; i++) {
-                    draw(gc, i * 25, height, 25, spectrum.get(i));
+                for (int i = 0; i < length-1; i++) {
+                    //draw(gc, i * 25, height, 25, spectrum.get(i));
+                    drawLine(gc, i * 25, spectrum.get(i), (i + 1) * 25, spectrum.get(i + 1));
                 }
             }
 
@@ -172,6 +181,15 @@ public class SwtDraw {
         gc.fillRectangle(draw);
         // 释放颜色资源
         color.dispose();
+    }
+
+    private void drawLine(GC gc, int x1, int y1, int x2, int y2) {
+        // 设置条形的颜色
+        Color color = new Color(display, random.nextInt(255), random.nextInt(255), random.nextInt(255));
+        gc.setBackground(color);
+
+        // 绘制线条 (x1, y1, x2, y2)
+        gc.drawLine(x1, y1, x2, y2);
     }
 
 }
