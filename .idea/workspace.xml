@@ -7,13 +7,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d80f8f9d-1d6c-42ec-878e-b4abc86527ba" name="Changes" comment="dev:&#10;1、显示歌词">
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/constant/Constant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/constant/Constant.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/main/MusicPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/main/MusicPlayer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/utils/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/utils/Utils.java" afterDir="false" />
-    </list>
+    <list default="true" id="d80f8f9d-1d6c-42ec-878e-b4abc86527ba" name="Changes" comment="dev:&#10;1、优化方法名称" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -329,7 +323,15 @@
       <option name="project" value="LOCAL" />
       <updated>1728619121607</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="dev:&#10;1、优化方法名称">
+      <option name="closed" value="true" />
+      <created>1728629056676</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1728629056676</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -348,7 +350,8 @@
     <MESSAGE value="dev:&#10;1、优化代码9" />
     <MESSAGE value="dev:&#10;1、优化代码10" />
     <MESSAGE value="dev:&#10;1、显示歌词" />
-    <option name="LAST_COMMIT_MESSAGE" value="dev:&#10;1、显示歌词" />
+    <MESSAGE value="dev:&#10;1、优化方法名称" />
+    <option name="LAST_COMMIT_MESSAGE" value="dev:&#10;1、优化方法名称" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
