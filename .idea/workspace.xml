@@ -7,17 +7,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d80f8f9d-1d6c-42ec-878e-b4abc86527ba" name="Changes" comment="dev:&#10;1、zeng">
-      <change afterPath="$PROJECT_DIR$/song/张敬轩 - 酷爱.lrc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/SplitExample.java" afterDir="false" />
+    <list default="true" id="d80f8f9d-1d6c-42ec-878e-b4abc86527ba" name="Changes" comment="dev:&#10;1、显示歌词">
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sqlite/db/MusicPlayer.db" beforeDir="false" afterPath="$PROJECT_DIR$/sqlite/db/MusicPlayer.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/constant/Constant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/constant/Constant.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/main/MusicPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/main/MusicPlayer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/ClipPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/ClipPlayer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/Player.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/SdlFftPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/SdlFftPlayer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/SdlPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/SdlPlayer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/utils/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/utils/Utils.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -86,30 +80,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.AudioLength.executor": "Run",
-    "Application.AudioPlaybackProgress.executor": "Run",
-    "Application.MusicPlayer (1).executor": "Run",
-    "Application.MusicPlayer.executor": "Debug",
-    "Application.SineWaveSynth.executor": "Run",
-    "Application.SplitExample.executor": "Debug",
-    "Application.SwtDraw.executor": "Run",
-    "Application.Test.executor": "Run",
-    "Application.TikaCore.executor": "Run",
-    "Application.TransparentProgressBar.executor": "Run",
-    "Maven.MusicPlayer [clean].executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SONARLINT_PRECOMMIT_ANALYSIS": "true",
-    "git-widget-placeholder": "SWT-V1.0.0.0",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "E:/SourceCode/Eclipse/MusicPlayer/song",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.pluginManager"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.AudioLength.executor&quot;: &quot;Run&quot;,
+    &quot;Application.AudioPlaybackProgress.executor&quot;: &quot;Run&quot;,
+    &quot;Application.MusicPlayer (1).executor&quot;: &quot;Run&quot;,
+    &quot;Application.MusicPlayer.executor&quot;: &quot;Debug&quot;,
+    &quot;Application.SineWaveSynth.executor&quot;: &quot;Run&quot;,
+    &quot;Application.SplitExample.executor&quot;: &quot;Debug&quot;,
+    &quot;Application.SwtDraw.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Test.executor&quot;: &quot;Run&quot;,
+    &quot;Application.TikaCore.executor&quot;: &quot;Run&quot;,
+    &quot;Application.TransparentProgressBar.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.MusicPlayer [clean].executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SONARLINT_PRECOMMIT_ANALYSIS&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;SWT-V1.0.0.0&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;E:/SourceCode/Eclipse/MusicPlayer/song&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
   }
-}]]></component>
+}</component>
   <component name="QodanaReportsService">
     <option name="descriptions">
       <ReportDescription localRun="true" path="C:\Users\xuyq\AppData\Local\Temp\qodana_output\qodana.sarif.json" reportGuid="eb1e36b7-8c28-4660-8d2d-b077f1ffd20b" reportId="MusicPlayer/qodana/2024-10-08" />
@@ -327,7 +321,15 @@
       <option name="project" value="LOCAL" />
       <updated>1728442454693</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="dev:&#10;1、显示歌词">
+      <option name="closed" value="true" />
+      <created>1728619121607</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1728619121607</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -345,7 +347,8 @@
     <MESSAGE value="dev:&#10;1、优化代码8" />
     <MESSAGE value="dev:&#10;1、优化代码9" />
     <MESSAGE value="dev:&#10;1、优化代码10" />
-    <option name="LAST_COMMIT_MESSAGE" value="dev:&#10;1、优化代码10" />
+    <MESSAGE value="dev:&#10;1、显示歌词" />
+    <option name="LAST_COMMIT_MESSAGE" value="dev:&#10;1、显示歌词" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

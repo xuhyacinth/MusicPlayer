@@ -346,7 +346,7 @@ public class MusicPlayer {
                     TableItem[] items = lists.getSelection();
                     String id = items[0].getText(0).trim();
                     // 下一曲
-                    choose(id, true);
+                    next(id, true);
                 }
             }
         });
@@ -360,7 +360,7 @@ public class MusicPlayer {
 
             @Override
             public void mouseUp(MouseEvent e) {
-                choose(null, false);// 上一曲
+                next(null, false);// 上一曲
                 prev.setImage(Utils.getImage("lastsong-1.png"));
             }
         });
@@ -374,7 +374,7 @@ public class MusicPlayer {
 
             @Override
             public void mouseUp(MouseEvent e) {
-                choose(null, true);// 下一曲
+                next(null, true);// 下一曲
                 next.setImage(Utils.getImage("nextsong-1.png"));
             }
         });
@@ -390,10 +390,7 @@ public class MusicPlayer {
         foot.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseDoubleClick(MouseEvent e) {
-                org.eclipse.swt.graphics.Color color = Constant.COLORS.get(new SecureRandom().nextInt(Constant.COLORS.size()));
-                if (color != Constant.SPECTRUM_BACKGROUND_COLOR) {
-                    Constant.SPECTRUM_FOREGROUND_COLOR = color;
-                }
+                Constant.SPECTRUM_FOREGROUND_COLOR = Constant.COLORS.get(new SecureRandom().nextInt(Constant.COLORS.size()));
             }
         });
 
@@ -411,7 +408,7 @@ public class MusicPlayer {
 
             if (spectrum.size() >= length) {
                 for (int i = 0; i < length; i++) {
-                    draw(gc, i * 26, height, 26, spectrum.get(i));
+                    Utils.draw(gc, i * 26, height, 26, spectrum.get(i));
                 }
             }
 
@@ -468,15 +465,13 @@ public class MusicPlayer {
             return;
         }
 
-        initTable(list, table);
+        initSongTable(list, table);
     }
 
-    private void initTable(List<SongEntity> list, Table table) {
+    private void initSongTable(List<SongEntity> list, Table table) {
         table.removeAll();
         TableItem item;
-        IntStream.range(0, list.size()).forEach(i -> {
-            Constant.PLAYING_LIST.put(i, list.get(i));
-        });
+        IntStream.range(0, list.size()).forEach(i -> Constant.PLAYING_LIST.put(i, list.get(i)));
 
         int index = 0;
         for (SongEntity entity : list) {
@@ -486,7 +481,7 @@ public class MusicPlayer {
         }
     }
 
-    private void choose(String index, boolean next) {
+    private void next(String index, boolean next) {
         if (CollUtil.isEmpty(Constant.PLAYING_LIST)) {
             MessageBox msg = Utils.tips(shell, null, "未发现歌曲，现在添加歌曲？");
             if (msg.open() == SWT.YES) {
@@ -523,9 +518,73 @@ public class MusicPlayer {
             log.error("选择歌曲播放异常！", e);
         }
 
-        loadLyric();
+        initLyric();
         spectrum(foot, timeLabel2);
-        updateListsColor(lists, Constant.PLAYING_SONG);
+        updateSongListsColor(lists, Constant.PLAYING_SONG);
+    }
+
+    private void updateSongListsColor(Table table, SongEntity entity) {
+        start.setImage(Utils.getImage("start.png"));
+        timeLabel1.setText(Utils.format(entity.getLength().intValue()));
+
+        TableItem[] items = table.getItems();
+        for (int i = 0, len = items.length; i < len; i++) {
+            if (i == Constant.PLAYING_INDEX) {
+                items[i].setBackground(Utils.getColor(SWT.COLOR_GRAY));
+            } else {
+                items[i].setBackground(Utils.getColor(SWT.COLOR_WHITE));
+            }
+        }
+
+        if (entity.getIndex() <= 7) {
+            table.setTopIndex(entity.getIndex());
+        } else {
+            table.setTopIndex(entity.getIndex() - 7);
+        }
+
+    }
+
+    private void updateLyric(String time) {
+        if (!Constant.PLAYING_LYRIC) {
+            return;
+        }
+
+        TableItem[] items = lyrics.getItems();
+        int index = 0;
+        for (TableItem item : items) {
+            item.setBackground(Utils.getColor(SWT.COLOR_WHITE));
+            if (StrUtil.equals(time, item.getText(0))) {
+                item.setBackground(Utils.getColor(SWT.COLOR_GRAY));
+                index++;
+            }
+        }
+
+        if (index <= 7) {
+            lyrics.setTopIndex(index);
+        } else {
+            lyrics.setTopIndex(index - 7);
+        }
+    }
+
+    private void initLyric() {
+        Constant.PLAYING_LYRIC = false;
+        Path path = Paths.get(Constant.PLAYING_SONG.getLyricPath());
+        if (!Files.exists(path)) {
+            return;
+        }
+
+        Constant.PLAYING_LYRIC = true;
+        lyrics.clearAll();
+        List<String> lyric = FileUtil.readUtf8Lines(path.toFile());
+        for (String s : lyric) {
+            String[] parts = s.split("(?<=\\])", 2);
+            if (parts.length < 2) {
+                continue;
+            }
+
+            TableItem item = new TableItem(lyrics, SWT.NONE);
+            item.setText(new String[]{parts[0], parts[1]});
+        }
     }
 
     private void spectrum(Composite comp, Label label) {
@@ -552,14 +611,6 @@ public class MusicPlayer {
         }, 0, 100);
     }
 
-    private void draw(GC gc, int x, int y, int width, int height) {
-        // 设置条形的颜色
-        gc.setBackground(Constant.SPECTRUM_FOREGROUND_COLOR);
-        // 绘制条形
-        org.eclipse.swt.graphics.Rectangle draw = new org.eclipse.swt.graphics.Rectangle(x, y, width, -height);
-        gc.fillRectangle(draw);
-    }
-
     public void update() {
         if (CollUtil.isEmpty(SdlFftPlayer.TRANS) || SdlFftPlayer.TRANS.isEmpty()) {
             return;
@@ -578,72 +629,6 @@ public class MusicPlayer {
             }
             spectrum.add(Math.abs(v.intValue()));
         }
-    }
-
-    private void updateListsColor(Table table, SongEntity entity) {
-        start.setImage(Utils.getImage("start.png"));
-        timeLabel1.setText(Utils.format(entity.getLength().intValue()));
-
-        TableItem[] items = table.getItems();
-        for (int i = 0, len = items.length; i < len; i++) {
-            if (i == Constant.PLAYING_INDEX) {
-                items[i].setBackground(Utils.getColor(SWT.COLOR_GRAY));
-            } else {
-                items[i].setBackground(Utils.getColor(SWT.COLOR_WHITE));
-            }
-        }
-
-        if (entity.getIndex() <= 7) {
-            table.setTopIndex(entity.getIndex());
-        } else {
-            table.setTopIndex(entity.getIndex() - 7);
-        }
-
-    }
-
-    private void updateLyric(String time) {
-        if (!Constant.PLAYING_LYRIC) {
-            return;
-        }
-        System.out.println(time);
-
-        TableItem[] items = lyrics.getItems();
-        int index = 0;
-        for (TableItem item : items) {
-            item.setBackground(Utils.getColor(SWT.COLOR_WHITE));
-            if (StrUtil.equals(time, item.getText(0))) {
-                item.setBackground(Utils.getColor(SWT.COLOR_GRAY));
-                index++;
-            }
-        }
-
-        if (index <= 7) {
-            lyrics.setTopIndex(index);
-        } else {
-            lyrics.setTopIndex(index - 7);
-        }
-    }
-
-    private void loadLyric() {
-        Constant.PLAYING_LYRIC = false;
-        Path path = Paths.get(Constant.PLAYING_SONG.getLyricPath());
-        if (!Files.exists(path)) {
-            return;
-        }
-
-        Constant.PLAYING_LYRIC = true;
-        lyrics.clearAll();
-        List<String> lyric = FileUtil.readUtf8Lines(path.toFile());
-        for (String s : lyric) {
-            String[] parts = s.split("(?<=\\])", 2);
-            if (parts.length < 2) {
-                continue;
-            }
-            String id = parts[0].substring(0, parts[0].length() - 2);
-            TableItem item = new TableItem(lyrics, SWT.NONE);
-            item.setText(new String[]{id, parts[1]});
-        }
-
     }
 
     private void exit() {
