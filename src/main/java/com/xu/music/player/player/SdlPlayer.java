@@ -249,8 +249,14 @@ public class SdlPlayer implements Player {
 
     @Override
     public boolean playing() {
-        return this.playing;
+        return false;
     }
+
+    @Override
+    public boolean pausing() {
+        return false;
+    }
+
 
     /**
      * 计算音频时长

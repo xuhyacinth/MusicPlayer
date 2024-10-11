@@ -131,4 +131,12 @@ public interface Player {
      */
     boolean playing();
 
+    /**
+     * 是否正在
+     *
+     * @return 是否正在播放
+     * @date 2019年10月31日19:06:39
+     */
+    boolean pausing();
+
 }

@@ -41,7 +41,7 @@ public class SdlFftPlayer implements Player {
     /**
      * 原始数据
      */
-    public static final Deque<Double> SRC = new LinkedList<>();
+    protected static final Deque<Double> SRC = new LinkedList<>();
 
     /**
      * 频谱
@@ -268,7 +268,12 @@ public class SdlFftPlayer implements Player {
 
     @Override
     public boolean playing() {
-        return !this.paused;
+        return this.playing;
+    }
+
+    @Override
+    public boolean pausing() {
+        return this.paused;
     }
 
     /**

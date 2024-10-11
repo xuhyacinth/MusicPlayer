@@ -57,6 +57,11 @@ public class Constant implements Serializable {
     public static SongEntity PLAYING_SONG = null;
 
     /**
+     * 正在播放歌曲
+     */
+    public static boolean PLAYING_LYRIC = false;
+
+    /**
      * 正在播放歌曲时长
      */
     public static double PLAYING_SONG_LENGTH = 0;

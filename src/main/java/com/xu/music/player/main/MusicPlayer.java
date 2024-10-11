@@ -1,10 +1,14 @@
 package com.xu.music.player.main;
 
 import java.awt.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.SecureRandom;
 import lombok.extern.slf4j.Slf4j;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 
 import com.xu.music.player.constant.Constant;
@@ -68,6 +72,8 @@ public class MusicPlayer {
     // 播放器托盘
     private Tray tray;
     private Table lists;
+    // 歌词
+    private Table lyrics;
     // 频谱面板
     private Composite foot;
     // 进度条
@@ -191,7 +197,7 @@ public class MusicPlayer {
         composite2.setBackgroundMode(SWT.INHERIT_FORCE);
         composite2.setLayout(new FillLayout(SWT.HORIZONTAL));
 
-        Table lyrics = new Table(composite2, SWT.NONE);
+        lyrics = new Table(composite2, SWT.NONE);
 
         TableColumn lyric1 = new TableColumn(lyrics, SWT.CENTER);
         lyric1.setText("歌词");
@@ -215,7 +221,11 @@ public class MusicPlayer {
         start.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseDown(MouseEvent e) {
-                if (player.playing()) {
+                if (!player.playing()) {
+                    return;
+                }
+
+                if (player.pausing()) {
                     start.setImage(Utils.getImage("start.png"));
                     player.pause();
                 } else {
@@ -389,7 +399,7 @@ public class MusicPlayer {
 
         // 添加绘图监听器
         foot.addPaintListener(listener -> {
-            if (!player.playing()) {
+            if (player.playing() && !player.pausing()) {
                 return;
             }
 
@@ -513,6 +523,7 @@ public class MusicPlayer {
             log.error("选择歌曲播放异常！", e);
         }
 
+        loadLyric();
         spectrum(foot, timeLabel2);
         updateListsColor(lists, Constant.PLAYING_SONG);
     }
@@ -530,6 +541,8 @@ public class MusicPlayer {
                         update();
                         comp.redraw();
                     }
+                    // 歌词
+                    //updateLyric("[" + Utils.format(position));
                     // 进度条
                     progress.setSelection((int) ((int) position / (Constant.PLAYING_SONG.getLength() / 100)));
                     // 实时播放时间
@@ -584,6 +597,51 @@ public class MusicPlayer {
             table.setTopIndex(entity.getIndex());
         } else {
             table.setTopIndex(entity.getIndex() - 7);
+        }
+
+    }
+
+    private void updateLyric(String time) {
+        if (!Constant.PLAYING_LYRIC) {
+            return;
+        }
+        System.out.println(time);
+
+        TableItem[] items = lyrics.getItems();
+        int index = 0;
+        for (TableItem item : items) {
+            item.setBackground(Utils.getColor(SWT.COLOR_WHITE));
+            if (StrUtil.equals(time, item.getText(0))) {
+                item.setBackground(Utils.getColor(SWT.COLOR_GRAY));
+                index++;
+            }
+        }
+
+        if (index <= 7) {
+            lyrics.setTopIndex(index);
+        } else {
+            lyrics.setTopIndex(index - 7);
+        }
+    }
+
+    private void loadLyric() {
+        Constant.PLAYING_LYRIC = false;
+        Path path = Paths.get(Constant.PLAYING_SONG.getLyricPath());
+        if (!Files.exists(path)) {
+            return;
+        }
+
+        Constant.PLAYING_LYRIC = true;
+        lyrics.clearAll();
+        List<String> lyric = FileUtil.readUtf8Lines(path.toFile());
+        for (String s : lyric) {
+            String[] parts = s.split("(?<=\\])", 2);
+            if (parts.length < 2) {
+                continue;
+            }
+            String id = parts[0].substring(0, parts[0].length() - 2);
+            TableItem item = new TableItem(lyrics, SWT.NONE);
+            item.setText(new String[]{id, parts[1]});
         }
 
     }

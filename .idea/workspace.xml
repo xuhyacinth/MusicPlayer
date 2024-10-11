@@ -7,14 +7,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d80f8f9d-1d6c-42ec-878e-b4abc86527ba" name="Changes" comment="dev:&#10;1、优化代码10">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/TransparentProgressBar.java" afterDir="false" />
+    <list default="true" id="d80f8f9d-1d6c-42ec-878e-b4abc86527ba" name="Changes" comment="dev:&#10;1、zeng">
+      <change afterPath="$PROJECT_DIR$/song/张敬轩 - 酷爱.lrc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/SplitExample.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sqlite/db/MusicPlayer.db" beforeDir="false" afterPath="$PROJECT_DIR$/sqlite/db/MusicPlayer.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/constant/Constant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/constant/Constant.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/main/MusicPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/main/MusicPlayer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/ClipPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/ClipPlayer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/Player.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/SdlFftPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/SdlFftPlayer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/SdlPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/SdlPlayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/utils/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/utils/Utils.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,6 +93,7 @@
     "Application.MusicPlayer (1).executor": "Run",
     "Application.MusicPlayer.executor": "Debug",
     "Application.SineWaveSynth.executor": "Run",
+    "Application.SplitExample.executor": "Debug",
     "Application.SwtDraw.executor": "Run",
     "Application.Test.executor": "Run",
     "Application.TikaCore.executor": "Run",
@@ -98,7 +103,7 @@
     "SONARLINT_PRECOMMIT_ANALYSIS": "true",
     "git-widget-placeholder": "SWT-V1.0.0.0",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "E:/SourceCode/Eclipse/MusicPlayer/src/main/resources",
+    "last_opened_file_path": "E:/SourceCode/Eclipse/MusicPlayer/song",
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
@@ -112,8 +117,8 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="E:\SourceCode\Eclipse\MusicPlayer\src\main\resources" />
       <recent name="E:\SourceCode\Eclipse\MusicPlayer\song" />
+      <recent name="E:\SourceCode\Eclipse\MusicPlayer\src\main\resources" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="com.xu.music.player" />
@@ -129,6 +134,19 @@
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="com.xu.music.player.main.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SplitExample" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.xu.music.player.test.SplitExample" />
+      <module name="MusicPlayer" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.xu.music.player.test.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -189,10 +207,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Application.MusicPlayer" />
+        <item itemvalue="Application.SplitExample" />
         <item itemvalue="Application.TransparentProgressBar" />
         <item itemvalue="Application.TikaCore" />
         <item itemvalue="Application.SwtDraw" />
-        <item itemvalue="Application.MusicPlayer" />
       </list>
     </recent_temporary>
   </component>
@@ -336,6 +354,11 @@
           <url>jar://$MAVEN_REPOSITORY$/com/googlecode/soundlibs/mp3spi/1.9.5.4/mp3spi-1.9.5.4-sources.jar!/javazoom/spi/mpeg/sampled/file/tag/IcyInputStream.java</url>
           <line>126</line>
           <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/xu/music/player/main/MusicPlayer.java</url>
+          <line>223</line>
+          <option name="timeStamp" value="15" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

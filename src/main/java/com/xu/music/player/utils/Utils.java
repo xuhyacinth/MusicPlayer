@@ -83,6 +83,25 @@ public class Utils {
         return message;
     }
 
+    public static String format(double time) {
+        if (time < 10) {
+            return StrUtil.format("00:0{}", String.format("%.1f", time));
+        }
+
+        if (time < 60) {
+            return StrUtil.format("00:{}", String.format("%.1f", time));
+        }
+
+        int merchant = (int) time / 60;
+        double remainder = Math.round(time % 60 * 100) / 100.0;
+
+        String pre = merchant > 9 ? String.valueOf(merchant) : StrUtil.format("0{}", merchant);
+        String tail = remainder > 9 ? String.format("%.1f", remainder)
+                : StrUtil.format("0{}", String.format("%.1f", remainder));
+
+        return StrUtil.format("{}:{}", pre, tail);
+    }
+
     public static String format(int time) {
         if (time < 10) {
             return StrUtil.format("00:0{}", time);

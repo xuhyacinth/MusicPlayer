@@ -172,7 +172,12 @@ public class ClipPlayer implements Player {
 
     @Override
     public boolean playing() {
-        return !this.paused;
+        return false;
+    }
+
+    @Override
+    public boolean pausing() {
+        return false;
     }
 
 }
