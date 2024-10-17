@@ -8,8 +8,66 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d80f8f9d-1d6c-42ec-878e-b4abc86527ba" name="Changes" comment="dev:&#10;1、优化方法名称">
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/player/ClipPlayer.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/player/SdlFftPlayer.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/player/SdlPlayer.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/SwtDraw.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/SwtDraw.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/qodana.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/constant/Constant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/constant/Constant.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/entity/SongEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/entity/SongEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/hander/DataBaseError.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/hander/DataBaseError.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/hander/MusicPlayerError.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/hander/MusicPlayerError.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/image/addMusic.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/image/addMusic.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/image/delete_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/image/delete_1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/image/delete_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/image/delete_2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/image/end.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/image/end.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/image/exit-1.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/image/exit-1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/image/exit-2.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/image/exit-2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/image/find.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/image/find.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/image/hand.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/image/hand.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/image/lastsong-1.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/image/lastsong-1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/image/lastsong-2.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/image/lastsong-2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/image/main.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/image/main.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/image/mini-1.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/image/mini-1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/image/mini-2.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/image/mini-2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/image/minus_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/image/minus_1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/image/minus_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/image/minus_2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/image/music.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/image/music.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/image/next.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/image/next.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/image/nextsong-1.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/image/nextsong-1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/image/nextsong-2.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/image/nextsong-2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/image/prev.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/image/prev.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/image/search.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/image/search.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/image/start.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/image/start.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/image/stop.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/image/stop.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/main/MusicPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/main/MusicPlayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/ClipPlayer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/player/Player.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/SdlFftPlayer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/SdlPlayer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/SplitExample.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/test/SplitExample.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/SwtDraw.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/test/SwtDraw.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/test/Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/TikaCore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/test/TikaCore.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/TransparentProgressBar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/test/TransparentProgressBar.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/tray/MusicPlayerTray.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/tray/MusicPlayerTray.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/utils/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/utils/Utils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/window/SongChoose.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/window/SongChoose.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/BasicWrapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/wrapper/BasicWrapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/InsertWrapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/wrapper/InsertWrapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/QueryWrapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/wrapper/QueryWrapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/UpdateWrapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/wrapper/UpdateWrapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/sql/Helper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/wrapper/sql/Helper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/sql/NewHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/wrapper/sql/NewHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/sql/SysType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/wrapper/sql/SysType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/xu/music/player/AppTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/com/xu/music/player/AppTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/xu/music/player/AudioLength.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/com/xu/music/player/AudioLength.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/xu/music/player/AudioPlaybackProgress.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/com/xu/music/player/AudioPlaybackProgress.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/xu/music/player/SineWaveSynth.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/kotlin/com/xu/music/player/SineWaveSynth.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,7 +84,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="idea" />
+        <entry key="$PROJECT_DIR$" value="Kotlin-SWT-V1.0.0.0" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -40,8 +98,8 @@
               <option name="branches">
                 <list>
                   <RecentBranch>
-                    <option name="branchName" value="SWT-V1.0.0.0" />
-                    <option name="lastUsedInstant" value="1727577089" />
+                    <option name="branchName" value="Kotlin-SWT-V1.0.0.0" />
+                    <option name="lastUsedInstant" value="1729129514" />
                   </RecentBranch>
                   <RecentBranch>
                     <option name="branchName" value="main" />
@@ -77,30 +135,31 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.AudioLength.executor&quot;: &quot;Run&quot;,
-    &quot;Application.AudioPlaybackProgress.executor&quot;: &quot;Run&quot;,
-    &quot;Application.MusicPlayer (1).executor&quot;: &quot;Run&quot;,
-    &quot;Application.MusicPlayer.executor&quot;: &quot;Debug&quot;,
-    &quot;Application.SineWaveSynth.executor&quot;: &quot;Run&quot;,
-    &quot;Application.SplitExample.executor&quot;: &quot;Debug&quot;,
-    &quot;Application.SwtDraw.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Test.executor&quot;: &quot;Run&quot;,
-    &quot;Application.TikaCore.executor&quot;: &quot;Run&quot;,
-    &quot;Application.TransparentProgressBar.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.MusicPlayer [clean].executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SONARLINT_PRECOMMIT_ANALYSIS&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;SWT-V1.0.0.0&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/SourceCode/Eclipse/MusicPlayer/song&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.AudioLength.executor": "Run",
+    "Application.AudioPlaybackProgress.executor": "Run",
+    "Application.MusicPlayer (1).executor": "Run",
+    "Application.MusicPlayer.executor": "Debug",
+    "Application.SineWaveSynth.executor": "Run",
+    "Application.SplitExample.executor": "Debug",
+    "Application.SwtDraw.executor": "Run",
+    "Application.Test.executor": "Run",
+    "Application.TikaCore.executor": "Run",
+    "Application.TransparentProgressBar.executor": "Run",
+    "Maven.MusicPlayer [clean].executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SONARLINT_PRECOMMIT_ANALYSIS": "true",
+    "git-widget-placeholder": "Kotlin-SWT-V1.0.0.0",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "E:/SourceCode/Eclipse/MusicPlayer/song",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "MavenSettings"
   }
-}</component>
+}]]></component>
   <component name="QodanaReportsService">
     <option name="descriptions">
       <ReportDescription localRun="true" path="C:\Users\xuyq\AppData\Local\Temp\qodana_output\qodana.sarif.json" reportGuid="eb1e36b7-8c28-4660-8d2d-b077f1ffd20b" reportId="MusicPlayer/qodana/2024-10-08" />
@@ -118,7 +177,7 @@
       <recent name="com.xu.music.player.player" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.SwtDraw">
+  <component name="RunManager" selected="Application.MusicPlayer">
     <configuration name="MusicPlayer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.xu.music.player.main.MusicPlayer" />
       <module name="MusicPlayer" />
@@ -197,8 +256,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.SwtDraw" />
         <item itemvalue="Application.MusicPlayer" />
+        <item itemvalue="Application.SwtDraw" />
         <item itemvalue="Application.SplitExample" />
         <item itemvalue="Application.TransparentProgressBar" />
         <item itemvalue="Application.TikaCore" />
@@ -337,6 +396,16 @@
     <option name="localTasksCounter" value="16" />
     <servers />
   </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ID_ORDER">
+      <list>
+        <option value="Default.Root" />
+        <option value="Default.Author" />
+        <option value="Default.Date" />
+        <option value="Default.Subject" />
+      </list>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="dev:&#10;优化代码" />
     <MESSAGE value="dev:&#10;1、增加Linux支持" />
@@ -346,7 +415,6 @@
     <MESSAGE value="dev:&#10;1、优化代码" />
     <MESSAGE value="dev:&#10;1、优化代码4" />
     <MESSAGE value="dev:&#10;1、优化代码5" />
-    <MESSAGE value="默认更改列表" />
     <MESSAGE value="dev:&#10;1、优化代码6" />
     <MESSAGE value="dev:&#10;1、优化代码7" />
     <MESSAGE value="dev:&#10;1、优化代码8" />
@@ -354,7 +422,8 @@
     <MESSAGE value="dev:&#10;1、优化代码10" />
     <MESSAGE value="dev:&#10;1、显示歌词" />
     <MESSAGE value="dev:&#10;1、优化方法名称" />
-    <option name="LAST_COMMIT_MESSAGE" value="dev:&#10;1、优化方法名称" />
+    <MESSAGE value="默认更改列表" />
+    <option name="LAST_COMMIT_MESSAGE" value="默认更改列表" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -365,7 +434,7 @@
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/xu/music/player/main/MusicPlayer.java</url>
+          <url>file://$PROJECT_DIR$/src/main/kotlin/com/xu/music/player/main/MusicPlayer.java</url>
           <line>223</line>
           <option name="timeStamp" value="15" />
         </line-breakpoint>

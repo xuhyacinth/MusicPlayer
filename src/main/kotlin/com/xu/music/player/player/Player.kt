@@ -1,10 +1,9 @@
-package com.xu.music.player.player;
+package com.xu.music.player.player
 
-import java.io.File;
-import java.net.URL;
-
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
+import java.io.File
+import java.net.URL
+import javax.sound.sampled.AudioFormat
+import javax.sound.sampled.AudioInputStream
 
 /**
  * 音频播放
@@ -12,7 +11,7 @@ import javax.sound.sampled.AudioInputStream;
  * @date 2024年6月4日19点07分
  * @since SWT-V1.0.0.0
  */
-public interface Player {
+interface Player {
 
     /**
      * 加载音频
@@ -21,7 +20,8 @@ public interface Player {
      * @throws Exception 异常
      * @date 2019年10月31日19:06:39
      */
-    void load(URL url) throws Exception;
+    @Throws(Exception::class)
+    fun load(url: URL?)
 
     /**
      * 加载音频
@@ -30,7 +30,8 @@ public interface Player {
      * @throws Exception 异常
      * @date 2019年10月31日19:06:39
      */
-    void load(File file) throws Exception;
+    @Throws(Exception::class)
+    fun load(file: File)
 
     /**
      * 加载音频
@@ -39,7 +40,8 @@ public interface Player {
      * @throws Exception 异常
      * @date 2019年10月31日19:06:39
      */
-    void load(String path) throws Exception;
+    @Throws(Exception::class)
+    fun load(path: String?)
 
     /**
      * 加载音频
@@ -48,7 +50,8 @@ public interface Player {
      * @throws Exception 异常
      * @date 2019年10月31日19:06:39
      */
-    void load(AudioInputStream stream) throws Exception;
+    @Throws(Exception::class)
+    fun load(stream: AudioInputStream)
 
     /**
      * 加载音频
@@ -58,7 +61,8 @@ public interface Player {
      * @throws Exception 异常
      * @date 2019年10月31日19:06:39
      */
-    void load(AudioFormat.Encoding encoding, AudioInputStream stream) throws Exception;
+    @Throws(Exception::class)
+    fun load(encoding: AudioFormat.Encoding?, stream: AudioInputStream?)
 
     /**
      * 加载音频
@@ -68,14 +72,15 @@ public interface Player {
      * @throws Exception 异常
      * @date 2019年10月31日19:06:39
      */
-    void load(AudioFormat format, AudioInputStream stream) throws Exception;
+    @Throws(Exception::class)
+    fun load(format: AudioFormat?, stream: AudioInputStream?)
 
     /**
      * 暂停播放
      *
      * @date 2019年10月31日19:06:39
      */
-    void pause();
+    fun pause()
 
     /**
      * 继续播放
@@ -83,21 +88,21 @@ public interface Player {
      * @param duration 音频位置
      * @date 2019年10月31日19:06:39
      */
-    void resume(long duration);
+    fun resume(duration: Long)
 
     /**
      * 开始播放
      *
      * @date 2019年10月31日19:06:39
      */
-    void play();
+    fun play()
 
     /**
      * 结束播放
      *
      * @date 2019年10月31日19:06:39
      */
-    void stop();
+    fun stop()
 
     /**
      * 设置音量
@@ -105,7 +110,7 @@ public interface Player {
      * @param volume 音量
      * @date 2019年10月31日19:06:39
      */
-    void volume(float volume);
+    fun volume(volume: Float)
 
     /**
      * 获取音频播放位置
@@ -113,7 +118,7 @@ public interface Player {
      * @return 播放位置
      * @date 2019年10月31日19:06:39
      */
-    double position();
+    fun position(): Double
 
     /**
      * 获取音频总时长
@@ -121,7 +126,7 @@ public interface Player {
      * @return 音频总时长
      * @date 2019年10月31日19:06:39
      */
-    double duration();
+    fun duration(): Double
 
     /**
      * 是否正在播放
@@ -129,7 +134,7 @@ public interface Player {
      * @return 是否正在播放
      * @date 2019年10月31日19:06:39
      */
-    boolean playing();
+    fun playing(): Boolean
 
     /**
      * 是否正在
@@ -137,6 +142,6 @@ public interface Player {
      * @return 是否正在播放
      * @date 2019年10月31日19:06:39
      */
-    boolean pausing();
+    fun pausing(): Boolean
 
 }

@@ -81,7 +81,7 @@ public class Utils {
      * @since SWT-V1.0.0.0
      */
     public static Image getImage(String name) {
-        Path path = Paths.get(StrUtil.format("src/main/java/com/xu/music/player/image/{}", name));
+        Path path = Paths.get(StrUtil.format("src/main/kotlin/com/xu/music/player/image/{}", name));
         if (!path.toFile().exists()) {
             return null;
         }
