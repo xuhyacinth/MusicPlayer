@@ -1,17 +1,16 @@
-package com.xu.music.player.tray;
+package com.xu.music.player.tray
 
-import com.xu.music.player.utils.Utils;
-
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Tray;
-import org.eclipse.swt.widgets.TrayItem;
-
+import com.xu.music.player.utils.Utils.getImage
+import org.eclipse.jface.dialogs.MessageDialog
+import org.eclipse.swt.SWT
+import org.eclipse.swt.events.SelectionAdapter
+import org.eclipse.swt.events.SelectionEvent
+import org.eclipse.swt.widgets.Event
+import org.eclipse.swt.widgets.Menu
+import org.eclipse.swt.widgets.MenuItem
+import org.eclipse.swt.widgets.Shell
+import org.eclipse.swt.widgets.Tray
+import org.eclipse.swt.widgets.TrayItem
 
 /**
  * 通用托盘
@@ -19,27 +18,19 @@ import org.eclipse.swt.widgets.TrayItem;
  * @date 2024年6月4日19点07分
  * @since SWT-V1.0.0.0
  */
-public class MusicPlayerTray {
+class MusicPlayerTray(private val shell: Shell, private val tray: Tray?) {
 
-    private final Tray tray;
-    private final Shell shell;
-    private Menu menu;
+    private var menu: Menu? = null
 
-    public MusicPlayerTray(Shell shell, Tray tray) {
-        super();
-        this.shell = shell;
-        this.tray = tray;
-    }
-
-    public void tray() {
+    fun tray() {
         if (tray == null) {
-            MessageDialog.openError(shell, "错误提示", "您的系统不支持托盘图标");
+            MessageDialog.openError(shell, "错误提示", "您的系统不支持托盘图标")
         } else {
-            TrayItem item = new TrayItem(tray, SWT.NONE);
-            item.setToolTipText("登录");
-            item.setImage(Utils.getImage("main.png"));
-            menu = new Menu(shell, SWT.POP_UP);
-            item.addListener(SWT.MenuDetect, arg0 -> menu.setVisible(true));
+            val item = TrayItem(tray, SWT.NONE)
+            item.toolTipText = "登录"
+            item.image = getImage("main.png")
+            menu = Menu(shell, SWT.POP_UP)
+            item.addListener(SWT.MenuDetect) { arg0: Event? -> menu!!.isVisible = true }
             // 放大
 //            MenuItem max = new MenuItem(menu, SWT.PUSH);
 //            max.setText("放大");
@@ -50,27 +41,25 @@ public class MusicPlayerTray {
 //                }
 //            });
             // 缩小
-            MenuItem mini = new MenuItem(menu, SWT.PUSH);
-            mini.setText("缩小");
-            mini.addSelectionListener(new SelectionAdapter() {
-                @Override
-                public void widgetSelected(SelectionEvent arg0) {
-                    shell.setMaximized(true);
+            val mini = MenuItem(menu, SWT.PUSH)
+            mini.text = "缩小"
+            mini.addSelectionListener(object : SelectionAdapter() {
+                override fun widgetSelected(arg0: SelectionEvent) {
+                    shell.maximized = true
                 }
-            });
+            })
             // 关闭
             //横线
-            new MenuItem(menu, SWT.SEPARATOR);
-            MenuItem close = new MenuItem(menu, SWT.PUSH);
-            close.setText("关闭");
-            close.addSelectionListener(new SelectionAdapter() {
-                @Override
-                public void widgetSelected(SelectionEvent arg0) {
-                    tray.dispose();
-                    shell.dispose();
-                    System.exit(0);
+            MenuItem(menu, SWT.SEPARATOR)
+            val close = MenuItem(menu, SWT.PUSH)
+            close.text = "关闭"
+            close.addSelectionListener(object : SelectionAdapter() {
+                override fun widgetSelected(arg0: SelectionEvent) {
+                    tray.dispose()
+                    shell.dispose()
+                    System.exit(0)
                 }
-            });
+            })
         }
     }
 

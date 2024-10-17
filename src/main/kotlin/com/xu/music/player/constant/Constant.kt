@@ -1,17 +1,11 @@
-package com.xu.music.player.constant;
+package com.xu.music.player.constant
 
-import java.io.Serializable;
-
-import com.xu.music.player.entity.SongEntity;
-import com.xu.music.player.utils.Utils;
-
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
+import com.xu.music.player.entity.SongEntity
+import com.xu.music.player.utils.Utils.getColor
+import org.eclipse.swt.SWT
+import org.eclipse.swt.graphics.Color
+import java.io.Serializable
+import kotlin.concurrent.Volatile
 
 /**
  * 常量类
@@ -20,63 +14,72 @@ import org.eclipse.swt.graphics.Color;
  * @date 2024年6月4日19点07分
  * @since SWT-V1.0.0.0
  */
-public class Constant implements Serializable {
+object Constant : Serializable {
 
-    private static final long serialVersionUID = 1L;
-
-    private Constant() {
-
-    }
+    private const val serialVersionUID = 1L
 
     /**
      * 播放器颜色
      */
-    public static List<Color> COLORS = new ArrayList<>();
+    @JvmField
+    var COLORS: MutableList<Color> = ArrayList()
 
-    static {
-        for (int i = 1; i <= 16; i++) {
-            COLORS.add(Utils.getColor(i));
+    init {
+        for (i in 1..16) {
+            COLORS.add(getColor(i))
         }
     }
 
     /**
      * 频谱长度
      */
-    public static final int SPECTRUM_TOTAL_NUMBER = 128;
+    const val SPECTRUM_TOTAL_NUMBER: Int = 128
 
     /**
      * 播放列表
      */
-    public static final Map<Integer, SongEntity> PLAYING_LIST = new LinkedHashMap<>();
+    @JvmField
+    val PLAYING_LIST: Map<Int, SongEntity> = LinkedHashMap()
 
     /**
      * 正在播放歌曲
      */
-    public static volatile SongEntity PLAYING_SONG = null;
+    @JvmField
+    @Volatile
+    var PLAYING_SONG: SongEntity? = null
 
     /**
      * 正在播放歌曲
      */
-    public static volatile boolean PLAYING_LYRIC = false;
+    @JvmField
+    @Volatile
+    var PLAYING_LYRIC: Boolean = false
 
     /**
      * 正在播放歌曲时长
      */
-    public static volatile double PLAYING_SONG_LENGTH = 0;
+    @JvmField
+    @Volatile
+    var PLAYING_SONG_LENGTH: Double = 0.0
 
     /**
      * 正在播放歌曲索引
      */
-    public static volatile Integer PLAYING_INDEX = null;
+    @JvmField
+    @Volatile
+    var PLAYING_INDEX: Int? = null
 
     /**
      * 是否正在播放
      */
-    public static volatile boolean MUSIC_PLAYER_PLAYING_STATE = true;
+    @JvmField
+    @Volatile
+    var MUSIC_PLAYER_PLAYING_STATE: Boolean = true
 
     /**
      * 频谱 前景颜色
      */
-    public static volatile Color SPECTRUM_FOREGROUND_COLOR = Utils.getColor(SWT.COLOR_BLUE);
-
+    @JvmField
+    @Volatile
+    var SPECTRUM_FOREGROUND_COLOR: Color = getColor(SWT.COLOR_BLUE)
 }

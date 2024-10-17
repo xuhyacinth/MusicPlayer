@@ -396,7 +396,7 @@ public class MusicPlayer {
 
         // 添加绘图监听器
         foot.addPaintListener(listener -> {
-            if (player.playing() && !player.pausing()) {
+            if (!player.playing() && player.pausing()) {
                 return;
             }
 

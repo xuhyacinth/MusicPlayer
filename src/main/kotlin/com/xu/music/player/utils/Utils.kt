@@ -1,36 +1,28 @@
-package com.xu.music.player.utils;
+package com.xu.music.player.utils
 
-import java.awt.*;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import lombok.extern.slf4j.Slf4j;
-
-import cn.hutool.core.util.StrUtil;
-
-import com.xu.music.player.constant.Constant;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
+import cn.hutool.core.util.StrUtil
+import com.xu.music.player.constant.Constant
+import org.eclipse.swt.SWT
+import org.eclipse.swt.graphics.Color
+import org.eclipse.swt.graphics.Font
+import org.eclipse.swt.graphics.FontData
+import org.eclipse.swt.graphics.GC
+import org.eclipse.swt.graphics.Image
+import org.eclipse.swt.graphics.ImageData
+import org.eclipse.swt.graphics.Rectangle
+import org.eclipse.swt.widgets.Display
+import org.eclipse.swt.widgets.MessageBox
+import org.eclipse.swt.widgets.Shell
+import org.slf4j.LoggerFactory
+import java.awt.Toolkit
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 /**
  * 通用工具
@@ -38,19 +30,16 @@ import org.eclipse.swt.widgets.Shell;
  * @date 2024年6月4日19点07分
  * @since SWT-V1.0.0.0
  */
-@Slf4j
-public class Utils {
+object Utils {
 
-    private Utils() {
+    val log = LoggerFactory.getLogger("Utils")
 
-    }
+    private val FONT: MutableMap<String, Font> = HashMap()
+    private val CACHE: MutableMap<String, Image> = HashMap()
 
-    private static final Map<String, Font> FONT = new HashMap<>();
-    private static final Map<String, Image> CACHE = new HashMap<>();
-
-    public static final String FORMAT_DATE = "yyyy-MM-dd";
-    public static final String FORMAT_TIME = "HH:mm:ss";
-    public static final String FORMAT_DATE_TIME = "yyyy-MM-dd HH:mm:ss";
+    private const val FORMAT_DATE: String = "yyyy-MM-dd"
+    private const val FORMAT_TIME: String = "HH:mm:ss"
+    const val FORMAT_DATE_TIME: String = "yyyy-MM-dd HH:mm:ss"
 
 
     /**
@@ -64,12 +53,13 @@ public class Utils {
      * @date 2024年6月4日19点07分
      * @since SWT-V1.0.0.0
      */
-    public static void draw(GC gc, int x, int y, int width, int height) {
+    @JvmStatic
+    fun draw(gc: GC, x: Int, y: Int, width: Int, height: Int) {
         // 设置条形的颜色
-        gc.setBackground(Constant.SPECTRUM_FOREGROUND_COLOR);
+        gc.background = Constant.SPECTRUM_FOREGROUND_COLOR
         // 绘制条形
-        Rectangle draw = new Rectangle(x, y, width, -height);
-        gc.fillRectangle(draw);
+        val draw = Rectangle(x, y, width, -height)
+        gc.fillRectangle(draw)
     }
 
     /**
@@ -80,35 +70,36 @@ public class Utils {
      * @date 2024年6月4日19点07分
      * @since SWT-V1.0.0.0
      */
-    public static Image getImage(String name) {
-        Path path = Paths.get(StrUtil.format("src/main/kotlin/com/xu/music/player/image/{}", name));
+    @JvmStatic
+    fun getImage(name: String): Image? {
+        val path = Paths.get(StrUtil.format("src/main/kotlin/com/xu/music/player/image/{}", name))
         if (!path.toFile().exists()) {
-            return null;
+            return null
         }
 
         if (CACHE.containsKey(name)) {
-            return CACHE.get(name);
+            return CACHE[name]
         }
 
         try {
-            InputStream stream = Files.newInputStream(path);
-            Display display = Display.getCurrent();
-            ImageData data = new ImageData(stream);
+            val stream = Files.newInputStream(path)
+            val display = Display.getCurrent()
+            val data = ImageData(stream)
 
             if (data.transparentPixel > 0) {
-                Image image = new Image(display, data, data.getTransparencyMask());
-                CACHE.put(name, image);
-                return image;
+                val image = Image(display, data, data.transparencyMask)
+                CACHE[name] = image
+                return image
             }
 
-            Image image = new Image(display, data);
-            CACHE.put(name, image);
-            return image;
-        } catch (Exception e) {
-            log.error("读取图片异常！", e);
+            val image = Image(display, data)
+            CACHE[name] = image
+            return image
+        } catch (e: Exception) {
+            Utils.log.error("读取图片异常！", e)
         }
 
-        return null;
+        return null
     }
 
     /**
@@ -121,12 +112,13 @@ public class Utils {
      * @date 2024年6月4日19点07分
      * @since SWT-V1.0.0.0
      */
-    public static MessageBox tips(Shell shell, String title, String content) {
-        Toolkit.getDefaultToolkit().beep();
-        MessageBox message = new MessageBox(shell, SWT.YES | SWT.ICON_WARNING | SWT.NO);
-        message.setText(title);
-        message.setMessage(content);
-        return message;
+    @JvmStatic
+    fun tips(shell: Shell?, title: String?, content: String?): MessageBox {
+        Toolkit.getDefaultToolkit().beep()
+        val message = MessageBox(shell, SWT.YES or SWT.ICON_WARNING or SWT.NO)
+        message.text = title
+        message.message = content
+        return message
     }
 
     /**
@@ -137,23 +129,25 @@ public class Utils {
      * @date 2024年6月4日19点07分
      * @since SWT-V1.0.0.0
      */
-    public static String format(double time) {
+    fun format(time: Double): String {
         if (time < 10) {
-            return StrUtil.format("00:0{}", String.format("%.1f", time));
+            return StrUtil.format("00:0{}", String.format("%.1f", time))
         }
 
         if (time < 60) {
-            return StrUtil.format("00:{}", String.format("%.1f", time));
+            return StrUtil.format("00:{}", String.format("%.1f", time))
         }
 
-        int merchant = (int) time / 60;
-        double remainder = Math.round(time % 60 * 100) / 100.0;
+        val merchant = time.toInt() / 60
+        val remainder = Math.round(time % 60 * 100) / 100.0
 
-        String pre = merchant > 9 ? String.valueOf(merchant) : StrUtil.format("0{}", merchant);
-        String tail = remainder > 9 ? String.format("%.1f", remainder)
-                : StrUtil.format("0{}", String.format("%.1f", remainder));
+        val pre = if (merchant > 9) merchant.toString() else StrUtil.format("0{}", merchant)
+        val tail = if (remainder > 9) String.format("%.1f", remainder) else StrUtil.format(
+            "0{}",
+            String.format("%.1f", remainder)
+        )
 
-        return StrUtil.format("{}:{}", pre, tail);
+        return StrUtil.format("{}:{}", pre, tail)
     }
 
     /**
@@ -164,22 +158,23 @@ public class Utils {
      * @date 2024年6月4日19点07分
      * @since SWT-V1.0.0.0
      */
-    public static String format(int time) {
+    @JvmStatic
+    fun format(time: Int): String {
         if (time < 10) {
-            return StrUtil.format("00:0{}", time);
+            return StrUtil.format("00:0{}", time)
         }
 
         if (time < 60) {
-            return StrUtil.format("00:{}", time);
+            return StrUtil.format("00:{}", time)
         }
 
-        int merchant = time / 60;
-        int remainder = time % 60;
+        val merchant = time / 60
+        val remainder = time % 60
 
-        String pre = merchant > 9 ? String.valueOf(merchant) : StrUtil.format("0{}", merchant);
-        String tail = remainder > 9 ? String.valueOf(remainder) : StrUtil.format("0{}", remainder);
+        val pre = if (merchant > 9) merchant.toString() else StrUtil.format("0{}", merchant)
+        val tail = if (remainder > 9) remainder.toString() else StrUtil.format("0{}", remainder)
 
-        return StrUtil.format("{}:{}", pre, tail);
+        return StrUtil.format("{}:{}", pre, tail)
     }
 
     /**
@@ -190,9 +185,10 @@ public class Utils {
      * @date 2024年6月4日19点07分
      * @since SWT-V1.0.0.0
      */
-    public static Color getColor(int id) {
-        Display display = Display.getCurrent();
-        return display.getSystemColor(id);
+    @JvmStatic
+    fun getColor(id: Int): Color {
+        val display = Display.getCurrent()
+        return display.getSystemColor(id)
     }
 
     /**
@@ -205,8 +201,9 @@ public class Utils {
      * @date 2024年6月4日19点07分
      * @since SWT-V1.0.0.0
      */
-    public static Font getFont(String name, int height, int style) {
-        return getFont(name, height, style, false, false);
+    @JvmStatic
+    fun getFont(name: String, height: Int, style: Int): Font {
+        return getFont(name, height, style, false, false)
     }
 
     /**
@@ -221,39 +218,39 @@ public class Utils {
      * @date 2024年6月4日19点07分
      * @since SWT-V1.0.0.0
      */
-    public static Font getFont(String name, int size, int style, boolean strikeout, boolean underline) {
-        String fontName = name + '|' + size + '|' + style + '|' + strikeout + '|' + underline;
+    fun getFont(name: String, size: Int, style: Int, strikeout: Boolean, underline: Boolean): Font {
+        val fontName = "$name|$size|$style|$strikeout|$underline"
 
-        Font font = FONT.get(fontName);
+        var font = FONT[fontName]
         if (font == null) {
-            FontData fontData = new FontData(name, size, style);
+            val fontData = FontData(name, size, style)
             if (strikeout || underline) {
                 try {
                     //$NON-NLS-1$
-                    Class<?> cls = Class.forName("org.eclipse.swt.internal.win32.LOGFONT");
+                    val cls = Class.forName("org.eclipse.swt.internal.win32.LOGFONT")
                     //$NON-NLS-1$
-                    Object logFont = FontData.class.getField("data").get(fontData);
+                    val logFont = FontData::class.java.getField("data")[fontData]
 
                     if (logFont != null) {
                         if (strikeout) {
                             //$NON-NLS-1$
-                            cls.getField("lfStrikeOut").set(logFont, Byte.valueOf((byte) 1));
+                            cls.getField("lfStrikeOut")[logFont] = 1.toByte()
                         }
                         if (underline) {
                             //$NON-NLS-1$
-                            cls.getField("lfUnderline").set(logFont, Byte.valueOf((byte) 1));
+                            cls.getField("lfUnderline")[logFont] = 1.toByte()
                         }
                     }
-                } catch (Exception e) {
-                    log.error("获取字体异常！", e);
+                } catch (e: Exception) {
+                    Utils.log.error("获取字体异常！", e)
                 }
             }
 
-            font = new Font(Display.getCurrent(), fontData);
-            FONT.put(fontName, font);
+            font = Font(Display.getCurrent(), fontData)
+            FONT[fontName] = font
         }
 
-        return font;
+        return font
     }
 
     /**
@@ -264,21 +261,19 @@ public class Utils {
      * @date 2024年6月7日12点55分
      * @since idea
      */
-    public static String formatDateTime(Object date) {
+    @JvmStatic
+    fun formatDateTime(date: Any?): String? {
         if (null == date) {
-            return null;
+            return null
         }
-        switch (date.getClass().getSimpleName()) {
-            case "Date":
-                return ((Date) date).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().format(DateTimeFormatter.ofPattern(FORMAT_DATE_TIME));
-            case "LocalDate":
-                return ((LocalDate) date).format(DateTimeFormatter.ofPattern(FORMAT_DATE));
-            case "LocalTime":
-                return ((LocalTime) date).format(DateTimeFormatter.ofPattern(FORMAT_TIME));
-            case "LocalDateTime":
-                return ((LocalDateTime) date).format(DateTimeFormatter.ofPattern(FORMAT_DATE_TIME));
-            default:
-                return null;
+        return when (date.javaClass.simpleName) {
+            "Date" -> (date as Date).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
+                .format(DateTimeFormatter.ofPattern(FORMAT_DATE_TIME))
+
+            "LocalDate" -> (date as LocalDate).format(DateTimeFormatter.ofPattern(FORMAT_DATE))
+            "LocalTime" -> (date as LocalTime).format(DateTimeFormatter.ofPattern(FORMAT_TIME))
+            "LocalDateTime" -> (date as LocalDateTime).format(DateTimeFormatter.ofPattern(FORMAT_DATE_TIME))
+            else -> null
         }
     }
 
