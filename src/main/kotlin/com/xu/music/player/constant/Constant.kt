@@ -16,6 +16,8 @@ import kotlin.concurrent.Volatile
  */
 object Constant : Serializable {
 
+    private fun readResolve(): Any = Constant
+
     private const val serialVersionUID = 1L
 
     /**

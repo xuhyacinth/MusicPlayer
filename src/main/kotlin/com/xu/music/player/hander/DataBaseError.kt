@@ -1,4 +1,4 @@
-package com.xu.music.player.hander;
+package com.xu.music.player.hander
 
 /**
  * 数据库异常
@@ -7,18 +7,12 @@ package com.xu.music.player.hander;
  * @date 2024年6月4日19点07分
  * @since SWT-V1.0.0.0
  */
-public class DataBaseError extends RuntimeException {
+class DataBaseError : RuntimeException {
 
-    public DataBaseError(String msg) {
-        super(msg);
-    }
+    constructor(msg: String?) : super(msg)
 
-    public DataBaseError(Throwable cause) {
-        super(cause);
-    }
+    constructor(cause: Throwable?) : super(cause)
 
-    public DataBaseError(String msg, Throwable cause) {
-        super(msg, cause);
-    }
+    constructor(msg: String?, cause: Throwable?) : super(msg, cause)
 
 }

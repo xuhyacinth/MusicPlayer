@@ -1,22 +1,17 @@
-package com.xu.music.player.window;
+package com.xu.music.player.window
 
-import cn.hutool.core.util.ArrayUtil;
-import java.io.File;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Shell;
+import cn.hutool.core.util.ArrayUtil
+import org.eclipse.swt.SWT
+import org.eclipse.swt.widgets.FileDialog
+import org.eclipse.swt.widgets.Shell
+import java.io.File
 
 /**
  * @author hyacinth
  * @date 2024年6月4日19点07分
  * @since SWT-V1.0.0.0
  */
-public class SongChoose {
-
-    public static void main(String[] args) {
-        new SongChoose().open(new Shell());
-    }
+class SongChoose {
 
     /**
      * 歌曲选择
@@ -25,21 +20,28 @@ public class SongChoose {
      * @date 2024年6月4日19点07分
      * @since idea
      */
-    public void open(Shell shell) {
+    fun open(shell: Shell?) {
         try {
-            FileDialog dialog = new FileDialog(shell, SWT.OPEN | SWT.MULTI);
-            dialog.setFilterExtensions(new String[]{"*.mp3", "*.MP3", "*.wav", "*.WAV", "*.flac", "*.FLAC", "*.pcm", "*.PCM"});
-            dialog.open();
-            String[] files = dialog.getFileNames();
+            val dialog = FileDialog(shell, SWT.OPEN or SWT.MULTI)
+            dialog.filterExtensions = arrayOf("*.mp3", "*.MP3", "*.wav", "*.WAV", "*.flac", "*.FLAC", "*.pcm", "*.PCM")
+            dialog.open()
+            val files = dialog.fileNames
             if (ArrayUtil.isEmpty(files)) {
-                return;
+                return
             }
-            for (String file : files) {
-                String paths = dialog.getFilterPath() + File.separator + file;
-                System.out.println(paths);
+            for (file in files) {
+                val paths = dialog.filterPath + File.separator + file
+                println(paths)
             }
-        } catch (Exception e) {
-            throw new RuntimeException("参数错误");
+        } catch (e: Exception) {
+            throw RuntimeException("参数错误")
+        }
+    }
+
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>) {
+            SongChoose().open(Shell())
         }
     }
 

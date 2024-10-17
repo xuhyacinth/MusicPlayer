@@ -1,4 +1,4 @@
-package com.xu.music.player.hander;
+package com.xu.music.player.hander
 
 /**
  * 播放异常
@@ -6,18 +6,12 @@ package com.xu.music.player.hander;
  * @date 2024年6月4日19点07分
  * @since SWT-V1.0.0.0
  */
-public class MusicPlayerError extends RuntimeException {
+class MusicPlayerError : RuntimeException {
 
-    public MusicPlayerError(String msg) {
-        super(msg);
-    }
+    constructor(msg: String?) : super(msg)
 
-    public MusicPlayerError(Throwable cause) {
-        super(cause);
-    }
+    constructor(cause: Throwable?) : super(cause)
 
-    public MusicPlayerError(String msg, Throwable cause) {
-        super(msg, cause);
-    }
+    constructor(msg: String?, cause: Throwable?) : super(msg, cause)
 
 }
