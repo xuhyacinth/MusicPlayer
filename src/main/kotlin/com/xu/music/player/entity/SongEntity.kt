@@ -1,9 +1,7 @@
-package com.xu.music.player.entity;
+package com.xu.music.player.entity
 
-import java.io.Serializable;
-import lombok.Data;
-
-import java.util.Date;
+import java.io.Serializable
+import java.util.Date
 
 /**
  * 实体类
@@ -12,79 +10,79 @@ import java.util.Date;
  * @date 2024年6月4日19点07分
  * @since SWT-V1.0.0.0
  */
-@Data
-public class SongEntity implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+data class SongEntity(
 
     /**
      * id
      */
-    private String id;
+    var id: String? = null,
 
     /**
      * 歌曲名称
      */
-    private String name;
+    var name: String? = null,
 
     /**
      * 歌曲信息
      */
-    private String info;
+    var info: String? = null,
 
     /**
      * 标志
      */
-    private Integer flag;
+    var flag: Int? = null,
 
     /**
      * 排序
      */
-    private Integer index;
+    var index: Int? = null,
 
     /**
      * 歌词路径
      */
-    private String lyricPath;
+    var lyricPath: String? = null,
 
     /**
      * 歌词信息
      */
-    private String lyricInfo;
+    var lyricInfo: String? = null,
 
     /**
      * 歌手
      */
-    private String author;
+    var author: String? = null,
 
     /**
      * 歌曲长度
      */
-    private Double length;
+    var length: Double? = 0.0,
 
     /**
      * 歌曲路径
      */
-    private String songPath;
+    var songPath: String? = null,
 
     /**
-     *
+     * 创建人
      */
-    private String createBy;
+    var createBy: String? = null,
 
     /**
-     *
+     * 创建时间
      */
-    private Date createTime;
+    var createTime: Date? = null,
 
     /**
-     *
+     * 更新人
      */
-    private String updateBy;
+    var updateBy: String? = null,
 
     /**
-     *
+     * 更新时间
      */
-    private Date updateTime;
-
+    var updateTime: Date? = null
+) : Serializable {
+    companion object {
+        private const val serialVersionUID = 1L
+    }
 }

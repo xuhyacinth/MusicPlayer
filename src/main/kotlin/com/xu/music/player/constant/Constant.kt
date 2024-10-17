@@ -41,7 +41,7 @@ object Constant : Serializable {
      * 播放列表
      */
     @JvmField
-    val PLAYING_LIST: Map<Int, SongEntity> = LinkedHashMap()
+    var PLAYING_LIST = mutableMapOf<Int, SongEntity>()
 
     /**
      * 正在播放歌曲
