@@ -7,9 +7,26 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d80f8f9d-1d6c-42ec-878e-b4abc86527ba" name="Changes" comment="dev:&#10;1、优化方法名称">
+    <list default="true" id="d80f8f9d-1d6c-42ec-878e-b4abc86527ba" name="Changes" comment="dev:&#10;1、初始化kotlin代码 4">
+      <change afterPath="$PROJECT_DIR$/src/main/resources/song/Beyond - 长城（国语）.flac" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/song/Beyond - 长城（粤语）.flac" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/song/张敬轩 - 酷爱.lrc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/song/张敬轩 - 酷爱.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/song/梦涵 - 加减乘除.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/sqlite/db/MusicPlayer.db" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/sqlite/sqlite-tools-linux-x64-3460000/sqldiff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/sqlite/sqlite-tools-linux-x64-3460000/sqlite3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/sqlite/sqlite-tools-linux-x64-3460000/sqlite3_analyzer" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/sqlite/sqlite-tools-osx-x64-3460000/sqldiff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/sqlite/sqlite-tools-osx-x64-3460000/sqlite3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/sqlite/sqlite-tools-osx-x64-3460000/sqlite3_analyzer" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/sqlite/sqlite-tools-win-x64-3460000/sqldiff.exe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/sqlite/sqlite-tools-win-x64-3460000/sqlite3.exe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/sqlite/sqlite-tools-win-x64-3460000/sqlite3_analyzer.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/SwtDraw.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/test/SwtDraw.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/sql/NewHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/sql/NewHelper.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,13 +37,14 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Class" />
+        <option value="Kotlin Data Class" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="idea" />
+        <entry key="$PROJECT_DIR$" value="Kotlin-SWT-V1.0.0.0" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -40,8 +58,12 @@
               <option name="branches">
                 <list>
                   <RecentBranch>
-                    <option name="branchName" value="SWT-V1.0.0.0" />
-                    <option name="lastUsedInstant" value="1727577089" />
+                    <option name="branchName" value="Java-SWT-V1.0.0.0" />
+                    <option name="lastUsedInstant" value="1729654462" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="Kotlin-SWT-V1.0.0.0" />
+                    <option name="lastUsedInstant" value="1729129514" />
                   </RecentBranch>
                   <RecentBranch>
                     <option name="branchName" value="main" />
@@ -77,30 +99,34 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.AudioLength.executor&quot;: &quot;Run&quot;,
-    &quot;Application.AudioPlaybackProgress.executor&quot;: &quot;Run&quot;,
-    &quot;Application.MusicPlayer (1).executor&quot;: &quot;Run&quot;,
-    &quot;Application.MusicPlayer.executor&quot;: &quot;Debug&quot;,
-    &quot;Application.SineWaveSynth.executor&quot;: &quot;Run&quot;,
-    &quot;Application.SplitExample.executor&quot;: &quot;Debug&quot;,
-    &quot;Application.SwtDraw.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Test.executor&quot;: &quot;Run&quot;,
-    &quot;Application.TikaCore.executor&quot;: &quot;Run&quot;,
-    &quot;Application.TransparentProgressBar.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.MusicPlayer [clean].executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SONARLINT_PRECOMMIT_ANALYSIS&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;SWT-V1.0.0.0&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/SourceCode/Eclipse/MusicPlayer/song&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.AudioLength.executor": "Run",
+    "Application.AudioPlaybackProgress.executor": "Run",
+    "Application.MusicPlayer (1).executor": "Run",
+    "Application.MusicPlayer.executor": "Run",
+    "Application.SineWaveSynth.executor": "Run",
+    "Application.SplitExample.executor": "Debug",
+    "Application.SwtDraw.executor": "Debug",
+    "Application.Test.executor": "Run",
+    "Application.TikaCore.executor": "Run",
+    "Application.TransparentProgressBar.executor": "Run",
+    "Kotlin.MusicPlayer.executor": "Run",
+    "Kotlin.SongChoose.executor": "Run",
+    "Maven.MusicPlayer [clean].executor": "Run",
+    "Maven.MusicPlayer [install].executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SONARLINT_PRECOMMIT_ANALYSIS": "true",
+    "git-widget-placeholder": "Java-SWT-V1.0.0.0",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "E:/SourceCode/Eclipse/MusicPlayer/src/main/resources",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "MavenSettings"
   }
-}</component>
+}]]></component>
   <component name="QodanaReportsService">
     <option name="descriptions">
       <ReportDescription localRun="true" path="C:\Users\xuyq\AppData\Local\Temp\qodana_output\qodana.sarif.json" reportGuid="eb1e36b7-8c28-4660-8d2d-b077f1ffd20b" reportId="MusicPlayer/qodana/2024-10-08" />
@@ -108,8 +134,8 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="E:\SourceCode\Eclipse\MusicPlayer\song" />
       <recent name="E:\SourceCode\Eclipse\MusicPlayer\src\main\resources" />
+      <recent name="E:\SourceCode\Eclipse\MusicPlayer\song" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="com.xu.music.player" />
@@ -118,7 +144,7 @@
       <recent name="com.xu.music.player.player" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.SwtDraw">
+  <component name="RunManager">
     <configuration name="MusicPlayer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.xu.music.player.main.MusicPlayer" />
       <module name="MusicPlayer" />
@@ -132,76 +158,9 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="SplitExample" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.xu.music.player.test.SplitExample" />
-      <module name="MusicPlayer" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.xu.music.player.test.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="SwtDraw" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.xu.music.player.test.SwtDraw" />
-      <module name="MusicPlayer" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.xu.music.player.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="TikaCore" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.xu.music.player.test.TikaCore" />
-      <module name="MusicPlayer" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.xu.music.player.test.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="TransparentProgressBar" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.xu.music.player.test.TransparentProgressBar" />
-      <module name="MusicPlayer" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.xu.music.player.test.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="JetRunConfigurationType">
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <option name="filePath" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.SwtDraw" />
         <item itemvalue="Application.MusicPlayer" />
-        <item itemvalue="Application.SplitExample" />
-        <item itemvalue="Application.TransparentProgressBar" />
-        <item itemvalue="Application.TikaCore" />
       </list>
     </recent_temporary>
   </component>
@@ -334,8 +293,50 @@
       <option name="project" value="LOCAL" />
       <updated>1728629056676</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="dev:&#10;1、初始化kotlin代码1">
+      <option name="closed" value="true" />
+      <created>1729165612479</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1729165612479</updated>
+    </task>
+    <task id="LOCAL-00017" summary="dev:&#10;1、初始化kotlin代码 2">
+      <option name="closed" value="true" />
+      <created>1729166378043</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1729166378043</updated>
+    </task>
+    <task id="LOCAL-00018" summary="dev:&#10;1、初始化kotlin代码 3">
+      <option name="closed" value="true" />
+      <created>1729168059168</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1729168059168</updated>
+    </task>
+    <task id="LOCAL-00019" summary="dev:&#10;1、初始化kotlin代码 4">
+      <option name="closed" value="true" />
+      <created>1729169527306</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1729169527306</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ID_ORDER">
+      <list>
+        <option value="Default.Root" />
+        <option value="Default.Author" />
+        <option value="Default.Date" />
+        <option value="Default.Subject" />
+      </list>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="dev:&#10;优化代码" />
@@ -346,7 +347,6 @@
     <MESSAGE value="dev:&#10;1、优化代码" />
     <MESSAGE value="dev:&#10;1、优化代码4" />
     <MESSAGE value="dev:&#10;1、优化代码5" />
-    <MESSAGE value="默认更改列表" />
     <MESSAGE value="dev:&#10;1、优化代码6" />
     <MESSAGE value="dev:&#10;1、优化代码7" />
     <MESSAGE value="dev:&#10;1、优化代码8" />
@@ -354,7 +354,12 @@
     <MESSAGE value="dev:&#10;1、优化代码10" />
     <MESSAGE value="dev:&#10;1、显示歌词" />
     <MESSAGE value="dev:&#10;1、优化方法名称" />
-    <option name="LAST_COMMIT_MESSAGE" value="dev:&#10;1、优化方法名称" />
+    <MESSAGE value="默认更改列表" />
+    <MESSAGE value="dev:&#10;1、初始化kotlin代码1" />
+    <MESSAGE value="dev:&#10;1、初始化kotlin代码 2" />
+    <MESSAGE value="dev:&#10;1、初始化kotlin代码 3" />
+    <MESSAGE value="dev:&#10;1、初始化kotlin代码 4" />
+    <option name="LAST_COMMIT_MESSAGE" value="dev:&#10;1、初始化kotlin代码 4" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
