@@ -3,6 +3,7 @@ package com.xu.music.player.wrapper.sql;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.lang.reflect.Field;
+import lombok.extern.slf4j.Slf4j;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.IoUtil;
@@ -41,12 +42,13 @@ import java.sql.Timestamp;
  * @date 2024年6月4日19点07分
  * @since SWT-V1.0.0.0
  */
+@Slf4j
 public class NewHelper implements Helper {
 
-    private static final String DATABASE = "sqlite/db/MusicPlayer.db";
-    private static final String MAC_OS = "sqlite/sqlite-tools-osx-x64-3460000/sqlite3";
-    private static final String LINUX = "sqlite/sqlite-tools-linux-x64-3460000/sqlite3";
-    private static final String WINDOWS = "sqlite/sqlite-tools-win-x64-3460000/sqlite3.exe";
+    private static final String DATABASE = "lib/sqlite/db/MusicPlayer.db";
+    private static final String MAC_OS = "lib/sqlite/sqlite-tools-osx-x64-3460000/sqlite3";
+    private static final String LINUX = "lib/sqlite/sqlite-tools-linux-x64-3460000/sqlite3";
+    private static final String WINDOWS = "lib/sqlite/sqlite-tools-win-x64-3460000/sqlite3.exe";
 
     static {
         try {
@@ -91,7 +93,7 @@ public class NewHelper implements Helper {
     public Connection getConn() {
         try {
             return DriverManager.getConnection("jdbc:sqlite:" + DATABASE);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new DataBaseError(e.getMessage());
         }
     }
