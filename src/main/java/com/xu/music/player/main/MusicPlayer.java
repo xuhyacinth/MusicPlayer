@@ -567,6 +567,9 @@ public class MusicPlayer {
     }
 
     private void initLyric() {
+        if (StrUtil.isBlank(Constant.PLAYING_SONG.getLyricPath())) {
+            return;
+        }
         Constant.PLAYING_LYRIC = false;
         Path path = Paths.get(Constant.PLAYING_SONG.getLyricPath());
         if (!Files.exists(path)) {
