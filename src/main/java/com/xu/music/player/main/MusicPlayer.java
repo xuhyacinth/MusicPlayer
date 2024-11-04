@@ -225,7 +225,7 @@ public class MusicPlayer {
                     return;
                 }
 
-                if (player.pausing()) {
+                if (!player.pausing()) {
                     start.setImage(Utils.getImage("start.png"));
                     player.pause();
                 } else {
