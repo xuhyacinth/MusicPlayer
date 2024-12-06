@@ -7,40 +7,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d80f8f9d-1d6c-42ec-878e-b4abc86527ba" name="Changes" comment="dev:&#10;1、修改打包方式">
+    <list default="true" id="d80f8f9d-1d6c-42ec-878e-b4abc86527ba" name="Changes" comment="dev:&#10;1、修改暂停和开始">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qodana.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/song/Beyond - 长城（国语）.flac" beforeDir="false" afterPath="$PROJECT_DIR$/lib/song/Beyond - 长城（国语）.flac" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/song/Beyond - 长城（粤语）.flac" beforeDir="false" afterPath="$PROJECT_DIR$/lib/song/Beyond - 长城（粤语）.flac" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/song/张敬轩 - 酷爱.lrc" beforeDir="false" afterPath="$PROJECT_DIR$/lib/song/张敬轩 - 酷爱.lrc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/song/张敬轩 - 酷爱.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/lib/song/张敬轩 - 酷爱.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/song/梦涵 - 加减乘除.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/lib/song/梦涵 - 加减乘除.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sqlite/db/MusicPlayer.db" beforeDir="false" afterPath="$PROJECT_DIR$/lib/sqlite/db/MusicPlayer.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sqlite/sqlite-tools-linux-x64-3460000/sqldiff" beforeDir="false" afterPath="$PROJECT_DIR$/lib/sqlite/sqlite-tools-linux-x64-3460000/sqldiff" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sqlite/sqlite-tools-linux-x64-3460000/sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/lib/sqlite/sqlite-tools-linux-x64-3460000/sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sqlite/sqlite-tools-linux-x64-3460000/sqlite3_analyzer" beforeDir="false" afterPath="$PROJECT_DIR$/lib/sqlite/sqlite-tools-linux-x64-3460000/sqlite3_analyzer" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sqlite/sqlite-tools-osx-x64-3460000/sqldiff" beforeDir="false" afterPath="$PROJECT_DIR$/lib/sqlite/sqlite-tools-osx-x64-3460000/sqldiff" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sqlite/sqlite-tools-osx-x64-3460000/sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/lib/sqlite/sqlite-tools-osx-x64-3460000/sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sqlite/sqlite-tools-osx-x64-3460000/sqlite3_analyzer" beforeDir="false" afterPath="$PROJECT_DIR$/lib/sqlite/sqlite-tools-osx-x64-3460000/sqlite3_analyzer" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sqlite/sqlite-tools-win-x64-3460000/sqldiff.exe" beforeDir="false" afterPath="$PROJECT_DIR$/lib/sqlite/sqlite-tools-win-x64-3460000/sqldiff.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sqlite/sqlite-tools-win-x64-3460000/sqlite3.exe" beforeDir="false" afterPath="$PROJECT_DIR$/lib/sqlite/sqlite-tools-win-x64-3460000/sqlite3.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sqlite/sqlite-tools-win-x64-3460000/sqlite3_analyzer.exe" beforeDir="false" afterPath="$PROJECT_DIR$/lib/sqlite/sqlite-tools-win-x64-3460000/sqlite3_analyzer.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/sql/NewHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/sql/NewHelper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/song/Beyond - 长城（国语）.flac" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/song/Beyond - 长城（粤语）.flac" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/song/张敬轩 - 酷爱.lrc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/song/张敬轩 - 酷爱.mp3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/song/梦涵 - 加减乘除.mp3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sqlite/db/MusicPlayer.db" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sqlite/sqlite-tools-linux-x64-3460000/sqldiff" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sqlite/sqlite-tools-linux-x64-3460000/sqlite3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sqlite/sqlite-tools-linux-x64-3460000/sqlite3_analyzer" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sqlite/sqlite-tools-osx-x64-3460000/sqldiff" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sqlite/sqlite-tools-osx-x64-3460000/sqlite3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sqlite/sqlite-tools-osx-x64-3460000/sqlite3_analyzer" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sqlite/sqlite-tools-win-x64-3460000/sqldiff.exe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sqlite/sqlite-tools-win-x64-3460000/sqlite3.exe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sqlite/sqlite-tools-win-x64-3460000/sqlite3_analyzer.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/Player.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -130,6 +99,7 @@
     "Maven.MusicPlayer [clean].executor": "Run",
     "Maven.MusicPlayer [install].executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "SONARLINT_PRECOMMIT_ANALYSIS": "true",
     "git-widget-placeholder": "Java-SWT-V1.0.0.0",
     "ignore.virus.scanning.warn.message": "true",
@@ -348,7 +318,47 @@
       <option name="project" value="LOCAL" />
       <updated>1729755207978</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="dev:&#10;1、优化代码">
+      <option name="closed" value="true" />
+      <created>1730688922075</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1730688922075</updated>
+    </task>
+    <task id="LOCAL-00022" summary="dev:&#10;1、修改频谱显示">
+      <option name="closed" value="true" />
+      <created>1730689102424</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1730689102424</updated>
+    </task>
+    <task id="LOCAL-00023" summary="dev:&#10;1、修改歌词加载">
+      <option name="closed" value="true" />
+      <created>1730689223949</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1730689223949</updated>
+    </task>
+    <task id="LOCAL-00024" summary="dev:&#10;1、格式化代码">
+      <option name="closed" value="true" />
+      <created>1730689253191</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1730689253191</updated>
+    </task>
+    <task id="LOCAL-00025" summary="dev:&#10;1、修改暂停和开始">
+      <option name="closed" value="true" />
+      <created>1730690271583</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1730690271583</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -390,7 +400,6 @@
     <MESSAGE value="dev:&#10;1、移除未使用依赖" />
     <MESSAGE value="dev:&#10;1、修改文件名称" />
     <MESSAGE value="dev:&#10;1、增加忽略文件" />
-    <MESSAGE value="dev:&#10;1、优化代码" />
     <MESSAGE value="dev:&#10;1、优化代码4" />
     <MESSAGE value="dev:&#10;1、优化代码5" />
     <MESSAGE value="dev:&#10;1、优化代码6" />
@@ -406,7 +415,12 @@
     <MESSAGE value="dev:&#10;1、初始化kotlin代码 3" />
     <MESSAGE value="dev:&#10;1、初始化kotlin代码 4" />
     <MESSAGE value="dev:&#10;1、修改打包方式" />
-    <option name="LAST_COMMIT_MESSAGE" value="dev:&#10;1、修改打包方式" />
+    <MESSAGE value="dev:&#10;1、优化代码" />
+    <MESSAGE value="dev:&#10;1、修改频谱显示" />
+    <MESSAGE value="dev:&#10;1、修改歌词加载" />
+    <MESSAGE value="dev:&#10;1、格式化代码" />
+    <MESSAGE value="dev:&#10;1、修改暂停和开始" />
+    <option name="LAST_COMMIT_MESSAGE" value="dev:&#10;1、修改暂停和开始" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -415,11 +429,6 @@
           <url>jar://$MAVEN_REPOSITORY$/com/googlecode/soundlibs/mp3spi/1.9.5.4/mp3spi-1.9.5.4-sources.jar!/javazoom/spi/mpeg/sampled/file/tag/IcyInputStream.java</url>
           <line>126</line>
           <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/xu/music/player/main/MusicPlayer.java</url>
-          <line>223</line>
-          <option name="timeStamp" value="15" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
