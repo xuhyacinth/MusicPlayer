@@ -1,6 +1,7 @@
 package com.xu.music.player.test;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cn.hutool.core.collection.CollUtil;
 
@@ -25,8 +26,9 @@ import org.eclipse.swt.widgets.Shell;
 /**
  * @author hyacinth
  */
-@Slf4j
 public class SwtDraw {
+
+    private static final Logger log = LoggerFactory.getLogger(SwtDraw.class);
 
     private Shell shell = null;
 

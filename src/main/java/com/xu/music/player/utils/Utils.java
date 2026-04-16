@@ -10,7 +10,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import lombok.extern.slf4j.Slf4j;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cn.hutool.core.util.StrUtil;
 
@@ -38,8 +40,9 @@ import org.eclipse.swt.widgets.Shell;
  * @date 2024年6月4日19点07分
  * @since SWT-V1.0.0.0
  */
-@Slf4j
 public class Utils {
+
+    private static final Logger log = LoggerFactory.getLogger(Utils.class);
 
     private Utils() {
 

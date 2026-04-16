@@ -3,7 +3,9 @@ package com.xu.music.player.player;
 import java.io.File;
 import java.net.URL;
 import javazoom.spi.mpeg.sampled.file.MpegAudioFileReader;
-import lombok.extern.slf4j.Slf4j;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.text.CharSequenceUtil;
@@ -35,8 +37,9 @@ import org.apache.commons.math3.transform.TransformType;
  * @date 2024年6月4日19点07分
  * @since SWT-V1.0.0.0
  */
-@Slf4j
 public class SdlFftPlayer implements Player {
+
+    private static final Logger log = LoggerFactory.getLogger(SdlFftPlayer.class);
 
     /**
      * 原始数据

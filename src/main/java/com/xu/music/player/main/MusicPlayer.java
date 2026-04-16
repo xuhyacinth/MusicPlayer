@@ -5,7 +5,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
-import lombok.extern.slf4j.Slf4j;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
@@ -56,8 +58,9 @@ import org.eclipse.swt.widgets.Tray;
  * @date 2024年6月4日19点07分
  * @since SWT-V1.0.0.0
  */
-@Slf4j
 public class MusicPlayer {
+
+    private static final Logger log = LoggerFactory.getLogger(MusicPlayer.class);
 
     private final List<Integer> spectrum = new LinkedList<>();
 

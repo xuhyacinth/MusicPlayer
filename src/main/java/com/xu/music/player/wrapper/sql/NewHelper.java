@@ -3,7 +3,6 @@ package com.xu.music.player.wrapper.sql;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.lang.reflect.Field;
-import lombok.extern.slf4j.Slf4j;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.IoUtil;
@@ -42,7 +41,6 @@ import java.sql.Timestamp;
  * @date 2024年6月4日19点07分
  * @since SWT-V1.0.0.0
  */
-@Slf4j
 public class NewHelper implements Helper {
 
     private static final String DATABASE = "lib/sqlite/db/MusicPlayer.db";
