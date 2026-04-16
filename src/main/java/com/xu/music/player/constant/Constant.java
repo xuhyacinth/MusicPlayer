@@ -42,7 +42,7 @@ public class Constant implements Serializable {
     /**
      * 频谱长度
      */
-    public static final int SPECTRUM_TOTAL_NUMBER = 128;
+    public static final int SPECTRUM_TOTAL_NUMBER = 512;
 
     /**
      * 播放列表

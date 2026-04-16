@@ -62,35 +62,44 @@ public class MusicPlayer {
 
     private static final Logger log = LoggerFactory.getLogger(MusicPlayer.class);
 
-    private final List<Integer> spectrum = new LinkedList<>();
-
+    // 定时器，用于刷新 UI 和更新进度
     private Timer timer = new Timer(true);
 
+    // 当前播放歌曲所处的时间位置（以 0.1 秒为步进单位）
     private double position;
 
+    // SWT 主窗口实例
     protected Shell shell;
-    // 播放器
+    // 音频播放核心组件
     private Player player = null;
+    // SWT 显示对象（用于事件循环分配）
     private Display display;
-    // 播放器托盘
+    // 任务栏托盘
     private Tray tray;
+    // 歌曲列表格
     private Table lists;
-    // 歌词
+    // 歌词列表格
     private Table lyrics;
-    // 频谱面板
+    // 底部控制与频谱展示面板
     private Composite foot;
-    // 进度条
+    // 进度条组件
     private ProgressBar progress;
+    // 当前播放时间标签
     private Label timeLabel1;
-    // 界面移动
+    // 界面拖拽时记录的 X, Y 轴坐标
     private int clickX, clickY;
+    // 总播放时间标签
     private Label timeLabel2;
-    // 双击播放
+    // 双击选择状态标志位
     private boolean chose = true;
+    // 播放/暂停控制按钮
     private Label start;
-    // 界面移动
+    // 是否按下了界面以进行拖拽移动
     private boolean click = false;
 
+    /**
+     * 程序的主入口，初始化并展示播放器
+     */
     public static void main(String[] args) {
         try {
             MusicPlayer window = new MusicPlayer();
@@ -100,6 +109,9 @@ public class MusicPlayer {
         }
     }
 
+    /**
+     * 开启事件循环，保持窗口打开与互动响应
+     */
     public void open() {
         display = Display.getDefault();
         createContents();
@@ -114,15 +126,18 @@ public class MusicPlayer {
 
     /**
      * Create contents of the window.
+     * 构建窗口主要内容与 UI 布局。
      */
     protected void createContents() {
         shell = new Shell(SWT.NONE);
         shell.setImage(Utils.getImage("main.png"));
-        shell.setSize(new Point(1000, 645));
+        // 修复：保留正常的播放器窗口尺寸配置并删除无效重复行
+        // shell.setSize(new Point(1000, 645));
         shell.setSize(900, 486);
         shell.setText("MusicPlayer");
-//        shell.setLocation((display.getClientArea().width - shell.getSize().x) / 2,
-//                (display.getClientArea().height - shell.getSize().y) / 2);
+        // 初始化窗口到屏幕中间
+        // shell.setLocation((display.getClientArea().width - shell.getSize().x) / 2,
+        // (display.getClientArea().height - shell.getSize().y) / 2);
         shell.setLayout(new FillLayout(SWT.HORIZONTAL));
         shell.setBackgroundMode(SWT.INHERIT_DEFAULT);
 
@@ -161,16 +176,18 @@ public class MusicPlayer {
         combo.addModifyListener(arg0 -> {
             // List<APISearchTipsEntity> songs = Search.search(combo.getText(),"API");
             // for (APISearchTipsEntity song:songs) {
-            // 	combo.add(song.getFilename());
+            // combo.add(song.getFilename());
             // }
             // combo.setListVisible(true);
-//            combo.clearSelection();
-//            for (int i = 0; i < Constant.MUSIC_PLAYER_SONGS_LIST.size(); i++) {
-//                if (Constant.MUSIC_PLAYER_SONGS_LIST.get(i).getName().contains(combo.getText())) {
-//                    combo.add(Constant.MUSIC_PLAYER_SONGS_LIST.get(i).getName());
-//                }
-//            }
-//            combo.setListVisible(true);
+            // combo.clearSelection();
+            // for (int i = 0; i < Constant.MUSIC_PLAYER_SONGS_LIST.size(); i++) {
+            // if
+            // (Constant.MUSIC_PLAYER_SONGS_LIST.get(i).getName().contains(combo.getText()))
+            // {
+            // combo.add(Constant.MUSIC_PLAYER_SONGS_LIST.get(i).getName());
+            // }
+            // }
+            // combo.setListVisible(true);
         });
         combo.setBounds(283, 21, 330, 25);
         combo.setVisible(false);
@@ -393,7 +410,8 @@ public class MusicPlayer {
         foot.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseDoubleClick(MouseEvent e) {
-                Constant.SPECTRUM_FOREGROUND_COLOR = Constant.COLORS.get(new SecureRandom().nextInt(Constant.COLORS.size()));
+                Constant.SPECTRUM_FOREGROUND_COLOR = Constant.COLORS
+                        .get(new SecureRandom().nextInt(Constant.COLORS.size()));
             }
         });
 
@@ -409,10 +427,55 @@ public class MusicPlayer {
             int height = listener.height;
             int length = width / 25;
 
-            if (spectrum.size() >= length) {
-                for (int i = 0; i < length; i++) {
-                    Utils.draw(gc, i * 26, height, 26, spectrum.get(i));
+            if (CollUtil.isEmpty(SdlFftPlayer.TRANS)) {
+                return;
+            }
+
+            // 获取 FFT 数据快照
+            Object[] transSnapshot = SdlFftPlayer.TRANS.toArray();
+            if (transSnapshot.length < 2)
+                return;
+
+            int validDataLen = transSnapshot.length / 2;
+            if (length <= 0)
+                return;
+
+            // 对数域频率映射边界，过滤掉低频直流分量并设置最高有效频段
+            double minFreqBin = 1.0;
+            double maxFreqBin = validDataLen - 1;
+
+            for (int i = 0; i < length; i++) {
+                // 采用对数分布算法来将所有的频率等比例压进界面的柱形条中（偏重于低音频段的渲染使得符合人耳听觉系统）
+                double ratioStart = (double) i / length;
+                double ratioEnd = (double) (i + 1) / length;
+
+                int binStart = (int) (minFreqBin * Math.pow(maxFreqBin / minFreqBin, ratioStart));
+                int binEnd = (int) (minFreqBin * Math.pow(maxFreqBin / minFreqBin, ratioEnd));
+
+                if (binEnd <= binStart)
+                    binEnd = binStart + 1;
+                if (binEnd > validDataLen)
+                    binEnd = validDataLen;
+
+                double sum = 0;
+                int count = 0;
+                for (int b = binStart; b < binEnd && b < validDataLen; b++) {
+                    Object obj = transSnapshot[b];
+                    if (obj != null) {
+                        sum += Math.abs(((Double) obj).doubleValue());
+                        count++;
+                    }
                 }
+
+                double avgMagnitude = count > 0 ? (sum / count) : 0;
+
+                // 为了增强可视性，使用平方根放大的方式衰减高光点，并平滑整体动态幅度
+                int barHeight = (int) (Math.sqrt(avgMagnitude) * 6);
+
+                if (barHeight > height)
+                    barHeight = height;
+
+                Utils.draw(gc, i * 26 + 1, height, 22, barHeight);
             }
 
         });
@@ -453,12 +516,19 @@ public class MusicPlayer {
 
     }
 
+    /**
+     * 扫描初始化歌曲信息
+     *
+     * @param shell 窗口对象
+     * @param table 表格对象
+     */
     public void initPlayer(Shell shell, Table table) {
-        QueryWrapper<SongEntity> wrapper = new QueryWrapper<>(SongEntity.class, "song");
-        List<SongEntity> list = wrapper.list();
+        var wrapper = new QueryWrapper<>(SongEntity.class, "song");
+        var list = wrapper.list();
 
         if (CollUtil.isEmpty(list)) {
-            SongChoose choice = new SongChoose();
+            // 当本地没有存放数据时，自动唤起文件选择窗口添加歌曲
+            var choice = new SongChoose();
             Toolkit.getDefaultToolkit().beep();
             choice.open(shell);
             list = wrapper.list();
@@ -473,20 +543,19 @@ public class MusicPlayer {
 
     private void initSongTable(List<SongEntity> list, Table table) {
         table.removeAll();
-        TableItem item;
         IntStream.range(0, list.size()).forEach(i -> Constant.PLAYING_LIST.put(i, list.get(i)));
 
         int index = 0;
-        for (SongEntity entity : list) {
-            item = new TableItem(table, SWT.NONE);
-            item.setText(new String[]{String.valueOf(index), entity.getName()});
+        for (var entity : list) {
+            var item = new TableItem(table, SWT.NONE);
+            item.setText(new String[] { String.valueOf(index), entity.getName() });
             index++;
         }
     }
 
     private void next(String index, boolean next) {
         if (CollUtil.isEmpty(Constant.PLAYING_LIST)) {
-            MessageBox msg = Utils.tips(shell, null, "未发现歌曲，现在添加歌曲？");
+            var msg = Utils.tips(shell, null, "未发现歌曲，现在添加歌曲？");
             if (msg.open() == SWT.YES) {
                 initPlayer(shell, lists);
             } else {
@@ -575,22 +644,22 @@ public class MusicPlayer {
         }
 
         Constant.PLAYING_LYRIC = false;
-        Path path = Paths.get(Constant.PLAYING_SONG.getLyricPath());
+        var path = Paths.get(Constant.PLAYING_SONG.getLyricPath());
         if (!Files.exists(path)) {
             return;
         }
 
         Constant.PLAYING_LYRIC = true;
         lyrics.clearAll();
-        List<String> lyric = FileUtil.readUtf8Lines(path.toFile());
-        for (String s : lyric) {
-            String[] parts = s.split("(?<=\\])", 2);
+        var lyric = FileUtil.readUtf8Lines(path.toFile());
+        for (var s : lyric) {
+            var parts = s.split("(?<=\\])", 2);
             if (parts.length < 2) {
                 continue;
             }
 
-            TableItem item = new TableItem(lyrics, SWT.NONE);
-            item.setText(new String[]{parts[0], parts[1]});
+            var item = new TableItem(lyrics, SWT.NONE);
+            item.setText(new String[] { parts[0], parts[1] });
         }
     }
 
@@ -608,7 +677,7 @@ public class MusicPlayer {
                         comp.redraw();
                     }
                     // 歌词
-                    //updateLyric("[" + Utils.format(position));
+                    // updateLyric("[" + Utils.format(position));
                     // 进度条
                     progress.setSelection((int) ((int) position / (Constant.PLAYING_SONG.getLength() / 100)));
                     // 实时播放时间
@@ -618,31 +687,28 @@ public class MusicPlayer {
         }, 0, 100);
     }
 
+    /**
+     * 更新频谱数据。
+     * 定时器调用该方法不断刷新图形以便于显示底部的跳动频谱条
+     */
     public void update() {
-        if (CollUtil.isEmpty(SdlFftPlayer.TRANS) || SdlFftPlayer.TRANS.isEmpty()) {
-            return;
-        }
-
         if (!player.playing()) {
             return;
         }
 
+        // 歌曲播放进度累进
         position += 0.1;
-        spectrum.clear();
-        for (int i = 0, len = SdlFftPlayer.TRANS.size(); i < len; i++) {
-            Double v = SdlFftPlayer.TRANS.peek();
-            if (null == v) {
-                continue;
-            }
-            spectrum.add(Math.abs(v.intValue()));
-        }
     }
 
+    /**
+     * 退出并释放关联的托盘与播放器进程硬件资源
+     */
     private void exit() {
         tray.dispose();
-        System.exit(0);
         player.stop();
         shell.dispose();
+        // 置于最后执行以保证前面的指令能正常被触发
+        System.exit(0);
     }
 
 }

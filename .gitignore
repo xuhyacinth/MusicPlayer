@@ -37,5 +37,13 @@ build/
 
 ### Mac OS ###
 .DS_Store
-/.idea/
+/.idea/**
 /.vscode/
+dependency-reduced-pom.xml
+.idea/workspace.xml
+.idea/misc.xml
+.idea/jarRepositories.xml
+.idea/jarRepositories.xml
+.idea/misc.xml
+.idea/workspace.xml
+.idea/jarRepositories.xml

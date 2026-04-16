@@ -22,6 +22,7 @@ import javax.sound.sampled.SourceDataLine;
 
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -42,19 +43,19 @@ public class SdlFftPlayer implements Player {
     private static final Logger log = LoggerFactory.getLogger(SdlFftPlayer.class);
 
     /**
-     * 原始数据
+     * 缓存的原始音频采样源数据
      */
     protected static final Deque<Double> SRC = new LinkedList<>();
 
     /**
-     * 频谱
+     * FFT 提取出的频域能量阵列结果（声明为基于并发的队列用于防由于截断数组引起的并发修改异常）
      */
-    public static final Deque<Double> TRANS = new LinkedList<>();
+    public static final Deque<Double> TRANS = new ConcurrentLinkedDeque<>();
 
     /**
-     * 线程池
+     * 线程池 (采用 JDK 21 虚拟线程以极致优化异步开销)
      */
-    private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(1);
+    private static final ExecutorService EXECUTOR = Executors.newVirtualThreadPerTaskExecutor();
 
     /**
      * FFT
@@ -146,7 +147,10 @@ public class SdlFftPlayer implements Player {
         load(new File(path));
     }
 
-    @Override
+    /**
+     * 加载处理 AudioInputStream 开始构建 SourceDataLine
+     * @param stream AudioInputStream 音频流
+     */
     public void load(AudioInputStream stream) throws Exception {
         if (this.playing) {
             stop();
@@ -322,24 +326,40 @@ public class SdlFftPlayer implements Player {
         putSrc((buff[0] & 0xFF) / 128.0 - 1.0);
     }
 
-    private void putDst(double value) {
-        TRANS.add(value);
-        if (TRANS.size() > Constant.SPECTRUM_TOTAL_NUMBER) {
-            TRANS.removeFirst();
-        }
-    }
+    /**
+     * FFT采样拦截计数器，用于控制进行傅里叶计算的频率，避免高负载
+     */
+    private int sampleCount = 0;
 
+    /**
+     * 追加源数据样本。
+     * 当收到足够的样本之后将触发一次计算密集型的 FFT 计算。采用 50% 步进滑动窗口算法大大减消资源开销。
+     *
+     * @param value PCM 数据双精度采样值
+     */
     private void putSrc(double value) {
         synchronized (SRC) {
             SRC.add(value);
+            // 维持固定大小的采样窗口
             if (SRC.size() > Constant.SPECTRUM_TOTAL_NUMBER) {
                 SRC.removeFirst();
+            }
+            sampleCount++;
 
+            // 满编，且更新的数据点积累达到容量的一半（交叠步进距离为 1/2）才执行一次 FFT。
+            // 例如大小 128 时每 64 个样本点才做 1 遍计算，可削减大量的 CPU 无意义自耗
+            if (SRC.size() == Constant.SPECTRUM_TOTAL_NUMBER && sampleCount >= Constant.SPECTRUM_TOTAL_NUMBER / 2) {
+                sampleCount = 0;
+                // 执行短时快速傅里叶变换，提取其频域上各点幅度特征
                 Complex[] complex = fft.transform(SRC.stream().mapToDouble(Double::doubleValue).toArray(), TransformType.FORWARD);
 
+                // 生成一帧全新的渲染列，并原子替换
+                Deque<Double> tempTrans = new LinkedList<>();
                 for (int i = 0; i < Constant.SPECTRUM_TOTAL_NUMBER; i++) {
-                    putDst(complex[i].abs());
+                    tempTrans.add(complex[i].abs());
                 }
+                TRANS.clear();
+                TRANS.addAll(tempTrans);
             }
         }
     }

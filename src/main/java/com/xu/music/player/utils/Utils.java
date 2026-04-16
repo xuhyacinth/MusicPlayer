@@ -268,21 +268,14 @@ public class Utils {
      * @since idea
      */
     public static String formatDateTime(Object date) {
-        if (null == date) {
-            return null;
-        }
-        switch (date.getClass().getSimpleName()) {
-            case "Date":
-                return ((Date) date).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().format(DateTimeFormatter.ofPattern(FORMAT_DATE_TIME));
-            case "LocalDate":
-                return ((LocalDate) date).format(DateTimeFormatter.ofPattern(FORMAT_DATE));
-            case "LocalTime":
-                return ((LocalTime) date).format(DateTimeFormatter.ofPattern(FORMAT_TIME));
-            case "LocalDateTime":
-                return ((LocalDateTime) date).format(DateTimeFormatter.ofPattern(FORMAT_DATE_TIME));
-            default:
-                return null;
-        }
+        return switch (date) {
+            case null -> null;
+            case Date d -> d.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().format(DateTimeFormatter.ofPattern(FORMAT_DATE_TIME));
+            case LocalDate ld -> ld.format(DateTimeFormatter.ofPattern(FORMAT_DATE));
+            case LocalTime lt -> lt.format(DateTimeFormatter.ofPattern(FORMAT_TIME));
+            case LocalDateTime ldt -> ldt.format(DateTimeFormatter.ofPattern(FORMAT_DATE_TIME));
+            default -> null;
+        };
     }
 
 }
