@@ -36,30 +36,42 @@ public class MusicPlayerTray {
             MessageDialog.openError(shell, "错误提示", "您的系统不支持托盘图标");
         } else {
             TrayItem item = new TrayItem(tray, SWT.NONE);
-            item.setToolTipText("登录");
+            item.setToolTipText("音乐播放器");
             item.setImage(Utils.getImage("main.png"));
+
+            // 双击或单击托盘图标还原窗口
+            item.addListener(SWT.Selection, arg0 -> {
+                shell.setVisible(true);
+                shell.setMinimized(false);
+                shell.setActive();
+            });
+
             menu = new Menu(shell, SWT.POP_UP);
             item.addListener(SWT.MenuDetect, arg0 -> menu.setVisible(true));
-            // 放大
-//            MenuItem max = new MenuItem(menu, SWT.PUSH);
-//            max.setText("放大");
-//            max.addSelectionListener(new SelectionAdapter() {
-//                public void widgetSelected(SelectionEvent arg0) {
-//                    shell.setVisible(true);
-//                    shell.setMaximized(true);
-//                }
-//            });
-            // 缩小
+
+            // 显示主窗口
+            MenuItem show = new MenuItem(menu, SWT.PUSH);
+            show.setText("显示主窗口");
+            show.addSelectionListener(new SelectionAdapter() {
+                @Override
+                public void widgetSelected(SelectionEvent arg0) {
+                    shell.setVisible(true);
+                    shell.setMinimized(false);
+                    shell.setActive();
+                }
+            });
+
+            // 最小化
             MenuItem mini = new MenuItem(menu, SWT.PUSH);
-            mini.setText("缩小");
+            mini.setText("最小化");
             mini.addSelectionListener(new SelectionAdapter() {
                 @Override
                 public void widgetSelected(SelectionEvent arg0) {
-                    shell.setMaximized(true);
+                    shell.setMinimized(true);
                 }
             });
-            // 关闭
-            //横线
+
+            // 横线
             new MenuItem(menu, SWT.SEPARATOR);
             MenuItem close = new MenuItem(menu, SWT.PUSH);
             close.setText("关闭");

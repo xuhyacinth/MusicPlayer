@@ -65,7 +65,7 @@ public class NewHelper implements Helper {
             System.setProperty("java.library.path", path + ";" + System.getProperty("java.library.path"));
             Class.forName("org.sqlite.JDBC");
         } catch (Exception e) {
-            throw new DataBaseError(e.getMessage());
+            throw new DataBaseError(e.getMessage(), e);
         }
     }
 
@@ -92,7 +92,7 @@ public class NewHelper implements Helper {
         try {
             return DriverManager.getConnection("jdbc:sqlite:" + DATABASE);
         } catch (Exception e) {
-            throw new DataBaseError(e.getMessage());
+            throw new DataBaseError(e.getMessage(), e);
         }
     }
 
@@ -107,21 +107,16 @@ public class NewHelper implements Helper {
             if (ArrayUtil.isEmpty(params)) {
                 try (Statement state = conn.createStatement()) {
                     return state.executeUpdate(sql);
-                } catch (SQLException e) {
-                    conn.rollback();
+                }
+            } else {
+                try (PreparedStatement state = conn.prepareStatement(sql)) {
+                    setValues(state, params);
+                    return state.executeUpdate(); // 修复: prepared statement 不应传入 sql 参数，以防丢失绑定参数
                 }
             }
-
-            try (PreparedStatement state = conn.prepareStatement(sql)) {
-                setValues(state, params);
-                return state.executeUpdate(sql);
-            } catch (SQLException e) {
-                conn.rollback();
-            }
         } catch (Exception e) {
-            throw new DataBaseError(e.getMessage());
+            throw new DataBaseError(e.getMessage(), e); // 不再吞掉异常，方便捕获上层错误
         }
-        return 0;
     }
 
     @Override
@@ -143,28 +138,26 @@ public class NewHelper implements Helper {
     @Override
     public List<Map<String, Object>> select(String sql, Object... params) {
         List<Map<String, Object>> list = new ArrayList<>();
-        Connection conn = this.getConn();
-        try (PreparedStatement state = conn.prepareStatement(sql)) {
+        // 使用 try-with-resources 自动管理 Connection、PreparedStatement 和 ResultSet，杜绝连接泄露
+        try (Connection conn = this.getConn();
+             PreparedStatement state = conn.prepareStatement(sql)) {
 
             this.setValues(state, params);
-            ResultSet result = state.executeQuery();
-            ResultSetMetaData data = result.getMetaData();
+            try (ResultSet result = state.executeQuery()) {
+                ResultSetMetaData data = result.getMetaData();
 
-            int len = data.getColumnCount();
-            String[] col = new String[len];
-            for (int i = 0; i < len; i++) {
-                col[i] = data.getColumnName(i + 1);
+                int len = data.getColumnCount();
+                String[] col = new String[len];
+                for (int i = 0; i < len; i++) {
+                    col[i] = data.getColumnName(i + 1);
+                }
+
+                while (result.next()) {
+                    list.add(setValue(result, col, len));
+                }
             }
-
-            while (result.next()) {
-                list.add(setValue(result, col, len));
-            }
-
-            IoUtil.close(result);
         } catch (Exception e) {
-            throw new DataBaseError(e.getMessage());
-        } finally {
-            IoUtil.close(conn);
+            throw new DataBaseError(e.getMessage(), e);
         }
         return list;
     }
@@ -231,7 +224,7 @@ public class NewHelper implements Helper {
                 }
             }
         } catch (SQLException e) {
-            throw new DataBaseError(e.getMessage());
+            throw new DataBaseError(e.getMessage(), e);
         }
     }
 
@@ -288,7 +281,7 @@ public class NewHelper implements Helper {
             }
             return t;
         } catch (Exception e) {
-            throw new DataBaseError(e.getMessage());
+            throw new DataBaseError(e.getMessage(), e);
         }
     }
 
@@ -311,7 +304,7 @@ public class NewHelper implements Helper {
             IoUtil.close(stream);
             return bt;
         } catch (Exception e) {
-            throw new DataBaseError(e.getMessage());
+            throw new DataBaseError(e.getMessage(), e);
         }
     }
 

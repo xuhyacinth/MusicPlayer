@@ -612,25 +612,64 @@ public class MusicPlayer {
 
     }
 
-    private void updateLyric(String time) {
+    private double parseLrcTime(String timeStr) {
+        try {
+            timeStr = timeStr.replace("[", "").replace("]", "").trim();
+            String[] parts = timeStr.split(":");
+            if (parts.length < 2) {
+                return -1.0;
+            }
+            double minutes = Double.parseDouble(parts[0]);
+            double seconds = Double.parseDouble(parts[1]);
+            return minutes * 60 + seconds;
+        } catch (Exception e) {
+            return -1.0;
+        }
+    }
+
+    private void updateLyric(double currentPosition) {
         if (!Constant.PLAYING_LYRIC) {
             return;
         }
 
         TableItem[] items = lyrics.getItems();
-        int index = 0;
-        for (TableItem item : items) {
-            item.setBackground(Utils.getColor(SWT.COLOR_WHITE));
-            if (StrUtil.equals(time, item.getText(0))) {
-                item.setBackground(Utils.getColor(SWT.COLOR_GRAY));
-                index++;
+        if (items.length == 0) {
+            return;
+        }
+
+        int highlightIndex = -1;
+        double maxTime = -1.0;
+
+        // 寻找小于等于当前播放进度的最大歌词时间戳
+        for (int i = 0; i < items.length; i++) {
+            Object timeObj = items[i].getData("time");
+            if (timeObj instanceof Double) {
+                double t = (Double) timeObj;
+                if (t >= 0 && t <= currentPosition) {
+                    if (t > maxTime) {
+                        maxTime = t;
+                        highlightIndex = i;
+                    }
+                }
             }
         }
 
-        if (index <= 7) {
-            lyrics.setTopIndex(index);
-        } else {
-            lyrics.setTopIndex(index - 7);
+        // 高亮当前行，清除其它行高亮
+        for (int i = 0; i < items.length; i++) {
+            if (i == highlightIndex) {
+                items[i].setBackground(Utils.getColor(SWT.COLOR_GRAY));
+            } else {
+                items[i].setBackground(Utils.getColor(SWT.COLOR_WHITE));
+            }
+        }
+
+        // 自动滚动，将当前歌词行置于视口偏上
+        if (highlightIndex != -1) {
+            if (highlightIndex <= 7) {
+                lyrics.setTopIndex(0);
+            } else {
+                lyrics.setTopIndex(highlightIndex - 7);
+            }
         }
     }
 
@@ -646,7 +685,7 @@ public class MusicPlayer {
         }
 
         Constant.PLAYING_LYRIC = true;
-        lyrics.clearAll();
+        lyrics.removeAll();
         var lyric = FileUtil.readUtf8Lines(path.toFile());
         for (var s : lyric) {
             var parts = s.split("(?<=\\])", 2);
@@ -654,8 +693,10 @@ public class MusicPlayer {
                 continue;
             }
 
+            double lyricTime = parseLrcTime(parts[0]);
             var item = new TableItem(lyrics, SWT.NONE);
             item.setText(new String[] { parts[0], parts[1] });
+            item.setData("time", lyricTime);
         }
     }
 
@@ -673,7 +714,7 @@ public class MusicPlayer {
                         comp.redraw();
                     }
                     // 歌词
-                    // updateLyric("[" + Utils.format(position));
+                    updateLyric(position);
                     // 进度条
                     progress.setSelection((int) ((int) position / (Constant.PLAYING_SONG.getLength() / 100)));
                     // 实时播放时间

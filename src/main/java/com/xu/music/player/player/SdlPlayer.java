@@ -38,9 +38,13 @@ public class SdlPlayer implements Player {
     public static final Deque<Double> SRC = new LinkedList<>();
 
     /**
-     * 线程池
+     * 线程池 (使用守护线程，防止 JVM 在应用退出时挂起)
      */
-    private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(1);
+    private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(1, r -> {
+        Thread t = new Thread(r);
+        t.setDaemon(true);
+        return t;
+    });
 
     /**
      * SourceDataLine
@@ -85,19 +89,13 @@ public class SdlPlayer implements Player {
 
     @Override
     public void load(URL url) throws Exception {
-        if (this.playing) {
-            stop();
-        }
-
+        stop();
         load(AudioSystem.getAudioInputStream(url));
     }
 
     @Override
     public void load(File file) throws Exception {
-        if (this.playing) {
-            stop();
-        }
-
+        stop();
         if (!file.exists()) {
             throw new DataBaseError("File does not exist");
         }
@@ -120,18 +118,13 @@ public class SdlPlayer implements Player {
 
     @Override
     public void load(String path) throws Exception {
-        if (this.playing) {
-            stop();
-        }
-
+        stop();
         load(new File(path));
     }
 
     @Override
     public void load(AudioInputStream stream) throws Exception {
-        if (this.playing) {
-            stop();
-        }
+        stop();
 
         AudioFormat format = stream.getFormat();
         format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, format.getSampleRate(), 16, format.getChannels(),
@@ -145,19 +138,13 @@ public class SdlPlayer implements Player {
 
     @Override
     public void load(AudioFormat.Encoding encoding, AudioInputStream stream) throws Exception {
-        if (this.playing) {
-            stop();
-        }
-
+        stop();
         load(AudioSystem.getAudioInputStream(encoding, stream));
     }
 
     @Override
     public void load(AudioFormat format, AudioInputStream stream) throws Exception {
-        if (this.playing) {
-            stop();
-        }
-
+        stop();
         load(AudioSystem.getAudioInputStream(format, stream));
     }
 
@@ -197,6 +184,7 @@ public class SdlPlayer implements Player {
             }
             data.drain();
             data.stop();
+            this.playing = false;
         } catch (Exception e) {
             throw new MusicPlayerError(e.getMessage(), e);
         }
@@ -218,12 +206,19 @@ public class SdlPlayer implements Player {
     @Override
     public void stop() {
         this.playing = false;
-        if (null == this.audio || null == this.data) {
-            return;
+        if (this.data != null) {
+            try {
+                this.data.stop();
+            } catch (Exception e) {
+                // ignore
+            }
+            IoUtil.close(this.data);
+            this.data = null;
         }
-        this.data.stop();
-        IoUtil.close(this.audio);
-        IoUtil.close(this.data);
+        if (this.audio != null) {
+            IoUtil.close(this.audio);
+            this.audio = null;
+        }
     }
 
     @Override
@@ -239,7 +234,7 @@ public class SdlPlayer implements Player {
 
     @Override
     public double position() {
-        return data.getFramePosition();
+        return data != null ? data.getFramePosition() : 0;
     }
 
     @Override
@@ -249,14 +244,13 @@ public class SdlPlayer implements Player {
 
     @Override
     public boolean playing() {
-        return false;
+        return this.playing;
     }
 
     @Override
     public boolean pausing() {
-        return false;
+        return this.paused;
     }
-
 
     /**
      * 计算音频时长

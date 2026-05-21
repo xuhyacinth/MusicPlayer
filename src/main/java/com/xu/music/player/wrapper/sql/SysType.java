@@ -1,8 +1,5 @@
 package com.xu.music.player.wrapper.sql;
 
-
-import cn.hutool.core.util.StrUtil;
-
 import java.util.Locale;
 
 /**
@@ -32,45 +29,41 @@ public enum SysType {
 
     public static SysType getSystemType() {
         String type = System.getProperty("os.name").toLowerCase(Locale.ROOT);
-        if (StrUtil.equals("digital", "unix")) {
-            return SysType.DIGITAL_UNIX;
-        } else if (StrUtil.containsAny(type, "mac", "os") && !StrUtil.equals(type, "x")) {
+        if (type.contains("windows")) {
+            return SysType.WINDOWS;
+        } else if (type.contains("mac") || type.contains("osx")) {
+            if (type.contains("x")) {
+                return SysType.MAC_OS_X;
+            }
             return SysType.MAC_OS;
-        } else if (StrUtil.containsAny(type, "mac", "os") && StrUtil.equals(type, "x")) {
-            return SysType.MAC_OS_X;
+        } else if (type.contains("linux")) {
+            return SysType.LINUX;
+        } else if (type.contains("os/2")) {
+            return SysType.OS2;
+        } else if (type.contains("solaris")) {
+            return SysType.SOLARIS;
+        } else if (type.contains("sunos")) {
+            return SysType.SUN_OS;
+        } else if (type.contains("mpe/ix")) {
+            return SysType.MPEIX;
+        } else if (type.contains("hp-ux")) {
+            return SysType.HP_UX;
+        } else if (type.contains("aix")) {
+            return SysType.AIX;
+        } else if (type.contains("os/390")) {
+            return SysType.OS390;
+        } else if (type.contains("freebsd")) {
+            return SysType.FREE_BSD;
+        } else if (type.contains("irix")) {
+            return SysType.IRIX;
+        } else if (type.contains("netware")) {
+            return SysType.NET_WARE;
+        } else if (type.contains("osf1")) {
+            return SysType.OSF1;
+        } else if (type.contains("openvms")) {
+            return SysType.OPEN_VMS;
         }
-        switch (type) {
-            case "linux":
-                return SysType.LINUX;
-            case "windows":
-                return SysType.WINDOWS;
-            case "os/2":
-                return SysType.OS2;
-            case "solaris":
-                return SysType.SOLARIS;
-            case "sunos":
-                return SysType.SUN_OS;
-            case "mpe/ix":
-                return SysType.MPEIX;
-            case "hp-ux":
-                return SysType.HP_UX;
-            case "aix":
-                return SysType.AIX;
-            case "os/390":
-                return SysType.OS390;
-            case "freebsd":
-                return SysType.FREE_BSD;
-            case "irix":
-                return SysType.IRIX;
-            case "netware":
-                return SysType.NET_WARE;
-            case "osf1":
-                return SysType.OSF1;
-            case "openvms":
-                return SysType.OPEN_VMS;
-            default:
-                return SysType.OTHERS;
-        }
+        return SysType.OTHERS;
     }
 
     public static SysType getSystemMainType() {

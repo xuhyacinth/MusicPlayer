@@ -43,9 +43,11 @@ public class SdlFftPlayer implements Player {
     private static final Logger log = LoggerFactory.getLogger(SdlFftPlayer.class);
 
     /**
-     * 缓存的原始音频采样源数据
+     * 环形采样数组以极致优化性能，规避对象装箱拆箱及垃圾回收开销
      */
-    protected static final Deque<Double> SRC = new LinkedList<>();
+    private static final double[] SRC_ARRAY = new double[Constant.SPECTRUM_TOTAL_NUMBER];
+    private static int srcWriteIndex = 0;
+    private static int srcCount = 0;
 
     /**
      * FFT 提取出的频域能量阵列结果（声明为基于并发的队列用于防由于截断数组引起的并发修改异常）
@@ -56,11 +58,6 @@ public class SdlFftPlayer implements Player {
      * 线程池 (采用 JDK 21 虚拟线程以极致优化异步开销)
      */
     private static final ExecutorService EXECUTOR = Executors.newVirtualThreadPerTaskExecutor();
-
-    /**
-     * FFT
-     */
-    private final FastFourierTransformer fft = new FastFourierTransformer(DftNormalization.STANDARD);
 
     /**
      * SourceDataLine
@@ -105,19 +102,13 @@ public class SdlFftPlayer implements Player {
 
     @Override
     public void load(URL url) throws Exception {
-        if (this.playing) {
-            stop();
-        }
-
+        stop();
         load(AudioSystem.getAudioInputStream(url));
     }
 
     @Override
     public void load(File file) throws Exception {
-        if (this.playing) {
-            stop();
-        }
-
+        stop();
         if (!file.exists()) {
             throw new DataBaseError("File does not exist");
         }
@@ -140,10 +131,7 @@ public class SdlFftPlayer implements Player {
 
     @Override
     public void load(String path) throws Exception {
-        if (this.playing) {
-            stop();
-        }
-
+        stop();
         load(new File(path));
     }
 
@@ -152,9 +140,7 @@ public class SdlFftPlayer implements Player {
      * @param stream AudioInputStream 音频流
      */
     public void load(AudioInputStream stream) throws Exception {
-        if (this.playing) {
-            stop();
-        }
+        stop();
 
         AudioFormat format = stream.getFormat();
         format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, format.getSampleRate(), 16, format.getChannels(),
@@ -168,19 +154,13 @@ public class SdlFftPlayer implements Player {
 
     @Override
     public void load(AudioFormat.Encoding encoding, AudioInputStream stream) throws Exception {
-        if (this.playing) {
-            stop();
-        }
-
+        stop();
         load(AudioSystem.getAudioInputStream(encoding, stream));
     }
 
     @Override
     public void load(AudioFormat format, AudioInputStream stream) throws Exception {
-        if (this.playing) {
-            stop();
-        }
-
+        stop();
         load(AudioSystem.getAudioInputStream(format, stream));
     }
 
@@ -199,7 +179,6 @@ public class SdlFftPlayer implements Player {
 
     private void start() {
         try {
-            this.playing = true;
             this.data.start();
             if (this.data.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
                 control = (FloatControl) this.data.getControl(FloatControl.Type.MASTER_GAIN);
@@ -220,6 +199,7 @@ public class SdlFftPlayer implements Player {
             }
             data.drain();
             data.stop();
+            this.playing = false; // 播放结束更新状态，使 FFT 后台任务正常退出
         } catch (Exception e) {
             log.error("SdlFftPlayer 播放异常！", e);
         }
@@ -235,19 +215,82 @@ public class SdlFftPlayer implements Player {
             return;
         }
 
+        // 重置环形缓冲区
+        synchronized (SRC_ARRAY) {
+            srcWriteIndex = 0;
+            srcCount = 0;
+            java.util.Arrays.fill(SRC_ARRAY, 0.0);
+        }
+
+        this.playing = true;
         EXECUTOR.submit(this::start);
+        startFftTask();
+    }
+
+    private void startFftTask() {
+        EXECUTOR.submit(() -> {
+            FastFourierTransformer localFft = new FastFourierTransformer(DftNormalization.STANDARD);
+            while (playing) {
+                if (paused) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        break;
+                    }
+                    continue;
+                }
+
+                double[] input = null;
+                synchronized (SRC_ARRAY) {
+                    if (srcCount >= Constant.SPECTRUM_TOTAL_NUMBER) {
+                        input = new double[Constant.SPECTRUM_TOTAL_NUMBER];
+                        int readIdx = srcWriteIndex;
+                        for (int i = 0; i < Constant.SPECTRUM_TOTAL_NUMBER; i++) {
+                            input[i] = SRC_ARRAY[readIdx];
+                            readIdx = (readIdx + 1) % Constant.SPECTRUM_TOTAL_NUMBER;
+                        }
+                    }
+                }
+
+                if (input != null) {
+                    try {
+                        Complex[] complex = localFft.transform(input, TransformType.FORWARD);
+                        Deque<Double> tempTrans = new LinkedList<>();
+                        for (int i = 0; i < Constant.SPECTRUM_TOTAL_NUMBER; i++) {
+                            tempTrans.add(complex[i].abs());
+                        }
+                        TRANS.clear();
+                        TRANS.addAll(tempTrans);
+                    } catch (Exception e) {
+                        log.error("FFT 计算异常", e);
+                    }
+                }
+
+                try {
+                    Thread.sleep(30); // 约 33 Hz 的刷新频率，平衡流畅度与 CPU 负载
+                } catch (InterruptedException e) {
+                    break;
+                }
+            }
+        });
     }
 
     @Override
     public void stop() {
         this.playing = false;
-        if (null == this.audio || null == this.data) {
-            return;
+        if (this.data != null) {
+            try {
+                this.data.stop();
+            } catch (Exception e) {
+                // 忽略停止时的异常
+            }
+            IoUtil.close(this.data);
+            this.data = null;
         }
-
-        this.data.stop();
-        IoUtil.close(this.audio);
-        IoUtil.close(this.data);
+        if (this.audio != null) {
+            IoUtil.close(this.audio);
+            this.audio = null;
+        }
     }
 
     @Override
@@ -265,7 +308,7 @@ public class SdlFftPlayer implements Player {
 
     @Override
     public double position() {
-        return data.getFramePosition();
+        return data != null ? data.getFramePosition() : 0;
     }
 
     @Override
@@ -300,66 +343,34 @@ public class SdlFftPlayer implements Player {
             return;
         }
 
+        double val = 0.0;
         // Stereo
         if (channels == 2) {
             if (sample == 16) {
                 short left = (short) ((buff[1] << 8) | (buff[0] & 0xFF));
                 short right = (short) ((buff[3] << 8) | (buff[2] & 0xFF));
-                putSrc((left + right) / 2.0 / 32768.0);
-                return;
+                val = (left + right) / 2.0 / 32768.0;
+            } else {
+                // Assuming 8-bit samples
+                double left = (buff[0] & 0xFF) / 128.0 - 1.0;
+                double right = (buff[1] & 0xFF) / 128.0 - 1.0;
+                val = (left + right) / 2.0;
             }
-
-            // Assuming 8-bit samples
-            double left = (buff[0] & 0xFF) / 128.0 - 1.0;
-            double right = (buff[1] & 0xFF) / 128.0 - 1.0;
-            putSrc((left + right) / 2.0);
-            return;
+        } else {
+            // Mono
+            if (sample == 16) {
+                val = (short) ((buff[1] << 8) | (buff[0] & 0xFF)) / 32768.0;
+            } else {
+                // Assuming 8-bit samples
+                val = (buff[0] & 0xFF) / 128.0 - 1.0;
+            }
         }
 
-        // Mono
-        if (sample == 16) {
-            putSrc((short) ((buff[1] << 8) | (buff[0] & 0xFF)) / 32768.0);
-            return;
-        }
-
-        // Assuming 8-bit samples
-        putSrc((buff[0] & 0xFF) / 128.0 - 1.0);
-    }
-
-    /**
-     * FFT采样拦截计数器，用于控制进行傅里叶计算的频率，避免高负载
-     */
-    private int sampleCount = 0;
-
-    /**
-     * 追加源数据样本。
-     * 当收到足够的样本之后将触发一次计算密集型的 FFT 计算。采用 50% 步进滑动窗口算法大大减消资源开销。
-     *
-     * @param value PCM 数据双精度采样值
-     */
-    private void putSrc(double value) {
-        synchronized (SRC) {
-            SRC.add(value);
-            // 维持固定大小的采样窗口
-            if (SRC.size() > Constant.SPECTRUM_TOTAL_NUMBER) {
-                SRC.removeFirst();
-            }
-            sampleCount++;
-
-            // 满编，且更新的数据点积累达到容量的一半（交叠步进距离为 1/2）才执行一次 FFT。
-            // 例如大小 128 时每 64 个样本点才做 1 遍计算，可削减大量的 CPU 无意义自耗
-            if (SRC.size() == Constant.SPECTRUM_TOTAL_NUMBER && sampleCount >= Constant.SPECTRUM_TOTAL_NUMBER / 2) {
-                sampleCount = 0;
-                // 执行短时快速傅里叶变换，提取其频域上各点幅度特征
-                Complex[] complex = fft.transform(SRC.stream().mapToDouble(Double::doubleValue).toArray(), TransformType.FORWARD);
-
-                // 生成一帧全新的渲染列，并原子替换
-                Deque<Double> tempTrans = new LinkedList<>();
-                for (int i = 0; i < Constant.SPECTRUM_TOTAL_NUMBER; i++) {
-                    tempTrans.add(complex[i].abs());
-                }
-                TRANS.clear();
-                TRANS.addAll(tempTrans);
+        synchronized (SRC_ARRAY) {
+            SRC_ARRAY[srcWriteIndex] = val;
+            srcWriteIndex = (srcWriteIndex + 1) % Constant.SPECTRUM_TOTAL_NUMBER;
+            if (srcCount < Constant.SPECTRUM_TOTAL_NUMBER) {
+                srcCount++;
             }
         }
     }

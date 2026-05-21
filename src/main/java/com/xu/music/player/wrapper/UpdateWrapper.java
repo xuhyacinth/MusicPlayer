@@ -145,7 +145,7 @@ public class UpdateWrapper<T> extends BasicWrapper<T> {
      * @since idea
      */
     public UpdateWrapper<T> eq(String filed, Object value) {
-        super.condition.add(" and " + filed + " = " + value);
+        super.condition.add(" and " + filed + " = " + dealValue(value));
         return this;
     }
 
@@ -199,7 +199,7 @@ public class UpdateWrapper<T> extends BasicWrapper<T> {
      * @since idea
      */
     public UpdateWrapper<T> like(String filed, Object value) {
-        super.condition.add(" and " + filed + " like %" + value + "%");
+        super.condition.add(" and " + filed + " like '%" + value + "%'");
         return this;
     }
 
@@ -227,7 +227,7 @@ public class UpdateWrapper<T> extends BasicWrapper<T> {
      * @since idea
      */
     public UpdateWrapper<T> likeLeft(String filed, Object value) {
-        super.condition.add(" and " + filed + " like %" + value + "%");
+        super.condition.add(" and " + filed + " like '%" + value + "'");
         return this;
     }
 
@@ -255,7 +255,7 @@ public class UpdateWrapper<T> extends BasicWrapper<T> {
      * @since idea
      */
     public UpdateWrapper<T> likeRight(String filed, Object value) {
-        super.condition.add(" and " + filed + " like %" + value + "%");
+        super.condition.add(" and " + filed + " like '" + value + "%'");
         return this;
     }
 

@@ -72,7 +72,7 @@ public class QueryWrapper<T> extends BasicWrapper<T> {
      * @since idea
      */
     public QueryWrapper<T> eq(String filed, Object value) {
-        super.condition.add(" and " + filed + " = " + value);
+        super.condition.add(" and " + filed + " = " + dealValue(value));
         return this;
     }
 
@@ -126,7 +126,7 @@ public class QueryWrapper<T> extends BasicWrapper<T> {
      * @since idea
      */
     public QueryWrapper<T> like(String filed, Object value) {
-        super.condition.add(" and " + filed + " like %" + value + "%");
+        super.condition.add(" and " + filed + " like '%" + value + "%'");
         return this;
     }
 
@@ -154,7 +154,7 @@ public class QueryWrapper<T> extends BasicWrapper<T> {
      * @since idea
      */
     public QueryWrapper<T> likeLeft(String filed, Object value) {
-        super.condition.add(" and " + filed + " like %" + value + "%");
+        super.condition.add(" and " + filed + " like '%" + value + "'");
         return this;
     }
 
@@ -182,7 +182,7 @@ public class QueryWrapper<T> extends BasicWrapper<T> {
      * @since idea
      */
     public QueryWrapper<T> likeRight(String filed, Object value) {
-        super.condition.add(" and " + filed + " like %" + value + "%");
+        super.condition.add(" and " + filed + " like '" + value + "%'");
         return this;
     }
 

@@ -84,29 +84,39 @@ public class Utils {
      * @since SWT-V1.0.0.0
      */
     public static Image getImage(String name) {
-        Path path = Paths.get(StrUtil.format("src/main/java/com/xu/music/player/image/{}", name));
-        if (!path.toFile().exists()) {
-            return null;
-        }
-
         if (CACHE.containsKey(name)) {
             return CACHE.get(name);
         }
 
         try {
-            InputStream stream = Files.newInputStream(path);
-            Display display = Display.getCurrent();
-            ImageData data = new ImageData(stream);
+            // 优先尝试从 Classpath 加载资源
+            InputStream stream = Utils.class.getResourceAsStream("/com/xu/music/player/image/" + name);
+            if (stream == null) {
+                // 回退到物理文件路径加载（便于本地调试）
+                Path path = Paths.get(StrUtil.format("src/main/java/com/xu/music/player/image/{}", name));
+                if (path.toFile().exists()) {
+                    stream = Files.newInputStream(path);
+                }
+            }
 
-            if (data.transparentPixel > 0) {
-                Image image = new Image(display, data, data.getTransparencyMask());
+            if (stream == null) {
+                return null;
+            }
+
+            try (InputStream input = stream) {
+                Display display = Display.getCurrent();
+                ImageData data = new ImageData(input);
+
+                if (data.transparentPixel > 0) {
+                    Image image = new Image(display, data, data.getTransparencyMask());
+                    CACHE.put(name, image);
+                    return image;
+                }
+
+                Image image = new Image(display, data);
                 CACHE.put(name, image);
                 return image;
             }
-
-            Image image = new Image(display, data);
-            CACHE.put(name, image);
-            return image;
         } catch (Exception e) {
             log.error("读取图片异常！", e);
         }
