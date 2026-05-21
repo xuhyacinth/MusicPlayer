@@ -3,6 +3,9 @@ package com.xu.music.player.wrapper;
 import com.xu.music.player.hander.DataBaseError;
 import com.xu.music.player.wrapper.sql.Helper;
 import com.xu.music.player.wrapper.sql.NewHelper;
+
+import cn.hutool.core.util.StrUtil;
+
 import java.lang.reflect.Field;
 
 import java.util.LinkedList;

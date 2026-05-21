@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AIDiffSettings">
+    <option name="showAIDiff" value="false" />
+  </component>
   <component name="AnalysisUIOptions">
     <option name="GROUP_BY_SEVERITY" value="true" />
   </component>
@@ -7,14 +10,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d80f8f9d-1d6c-42ec-878e-b4abc86527ba" name="Changes" comment="dev:&#10;1、修改暂停和开始">
+    <list default="true" id="d80f8f9d-1d6c-42ec-878e-b4abc86527ba" name="Changes" comment="dev:&#10;1、修改服务启动">
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/player/Player.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/main/MusicPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/main/MusicPlayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/InsertWrapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/InsertWrapper.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="101" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -71,6 +81,10 @@
       </MavenGeneralSettings>
     </option>
   </component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
@@ -82,35 +96,49 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.AudioLength.executor": "Run",
-    "Application.AudioPlaybackProgress.executor": "Run",
-    "Application.MusicPlayer (1).executor": "Run",
-    "Application.MusicPlayer.executor": "Debug",
-    "Application.SineWaveSynth.executor": "Run",
-    "Application.SplitExample.executor": "Debug",
-    "Application.SwtDraw.executor": "Debug",
-    "Application.Test.executor": "Run",
-    "Application.TikaCore.executor": "Run",
-    "Application.TransparentProgressBar.executor": "Run",
-    "Kotlin.MusicPlayer.executor": "Run",
-    "Kotlin.SongChoose.executor": "Run",
-    "Maven.MusicPlayer [clean].executor": "Run",
-    "Maven.MusicPlayer [install].executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SONARLINT_PRECOMMIT_ANALYSIS": "true",
-    "git-widget-placeholder": "Java-SWT-V1.0.0.0",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "E:/SourceCode/Eclipse/MusicPlayer/lib",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "MavenSettings"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.AudioLength.executor&quot;: &quot;Run&quot;,
+    &quot;Application.AudioPlaybackProgress.executor&quot;: &quot;Run&quot;,
+    &quot;Application.MusicPlayer (1).executor&quot;: &quot;Run&quot;,
+    &quot;Application.MusicPlayer.executor&quot;: &quot;Debug&quot;,
+    &quot;Application.SineWaveSynth.executor&quot;: &quot;Run&quot;,
+    &quot;Application.SplitExample.executor&quot;: &quot;Debug&quot;,
+    &quot;Application.SwtDraw.executor&quot;: &quot;Debug&quot;,
+    &quot;Application.Test.executor&quot;: &quot;Run&quot;,
+    &quot;Application.TikaCore.executor&quot;: &quot;Run&quot;,
+    &quot;Application.TransparentProgressBar.executor&quot;: &quot;Run&quot;,
+    &quot;Kotlin.MusicPlayer.executor&quot;: &quot;Run&quot;,
+    &quot;Kotlin.SongChoose.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.MusicPlayer [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.MusicPlayer [install].executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;SONARLINT_PRECOMMIT_ANALYSIS&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Java-SWT-V1.0.0.0&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Code/Learn/MusicPlayer&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;项目&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;MavenSettings&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;,
+    &quot;应用程序.MusicPlayer.executor&quot;: &quot;Debug&quot;
   }
-}]]></component>
+}</component>
   <component name="QodanaReportsService">
     <option name="descriptions">
       <ReportDescription localRun="true" path="C:\Users\xuyq\AppData\Local\Temp\qodana_output\qodana.sarif.json" reportGuid="eb1e36b7-8c28-4660-8d2d-b077f1ffd20b" reportId="MusicPlayer/qodana/2024-10-08" />
@@ -145,7 +173,7 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.MusicPlayer" />
+        <item itemvalue="应用程序.MusicPlayer" />
       </list>
     </recent_temporary>
   </component>
@@ -157,6 +185,10 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1727577079397</updated>
+      <workItem from="1776239974465" duration="13000" />
+      <workItem from="1776240308297" duration="3404000" />
+      <workItem from="1776304282113" duration="3018000" />
+      <workItem from="1776481460849" duration="698000" />
     </task>
     <task id="LOCAL-00001" summary="dev:&#10;优化代码">
       <option name="closed" value="true" />
@@ -358,8 +390,19 @@
       <option name="project" value="LOCAL" />
       <updated>1730690271583</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="dev:&#10;1、修改服务启动">
+      <option name="closed" value="true" />
+      <created>1776304648646</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1776304648646</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.History.Properties">
     <option name="COLUMN_ID_ORDER">
@@ -395,7 +438,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="dev:&#10;优化代码" />
     <MESSAGE value="dev:&#10;1、增加Linux支持" />
     <MESSAGE value="dev:&#10;1、移除未使用依赖" />
     <MESSAGE value="dev:&#10;1、修改文件名称" />
@@ -420,7 +462,8 @@
     <MESSAGE value="dev:&#10;1、修改歌词加载" />
     <MESSAGE value="dev:&#10;1、格式化代码" />
     <MESSAGE value="dev:&#10;1、修改暂停和开始" />
-    <option name="LAST_COMMIT_MESSAGE" value="dev:&#10;1、修改暂停和开始" />
+    <MESSAGE value="dev:&#10;1、修改服务启动" />
+    <option name="LAST_COMMIT_MESSAGE" value="dev:&#10;1、修改服务启动" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
