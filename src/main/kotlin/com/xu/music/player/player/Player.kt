@@ -125,4 +125,40 @@ interface Player {
      * @since V1.0.0.0
      */
     fun volume(volume: Float)
+
+    /**
+     * 获取音频播放位置
+     *
+     * @return 播放位置
+     * @date 2024年6月10日15点30分
+     * @since V1.0.0.0
+     */
+    fun position(): Double
+
+    /**
+     * 获取音频总时长
+     *
+     * @return 音频总时长
+     * @date 2024年6月10日15点30分
+     * @since V1.0.0.0
+     */
+    fun duration(): Double
+
+    /**
+     * 是否正在播放
+     *
+     * @return 是否正在播放
+     * @date 2024年6月10日15点30分
+     * @since V1.0.0.0
+     */
+    fun playing(): Boolean
+
+    /**
+     * 是否正在暂停
+     *
+     * @return 是否正在暂停
+     * @date 2024年6月10日15点30分
+     * @since V1.0.0.0
+     */
+    fun pausing(): Boolean
 }

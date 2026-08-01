@@ -156,6 +156,23 @@ class SourceDataLinePlayer private constructor() : Player {
         NioUtil.close(this.audio)
     }
 
+    override fun position(): Double {
+        return data?.framePosition?.toDouble() ?: 0.0
+    }
+
+    override fun duration(): Double {
+        return audio?.frameLength?.times(audio!!.format.frameSize)
+            ?.div(audio!!.format.sampleRate * audio!!.format.channels * (audio!!.format.sampleSizeInBits / 8.0)) ?: 0.0
+    }
+
+    override fun playing(): Boolean {
+        return playing
+    }
+
+    override fun pausing(): Boolean {
+        return paused
+    }
+
     override fun volume(volume: Float) {
         if (null == control) {
             return

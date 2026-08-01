@@ -96,7 +96,7 @@ public class BasicWrapper<T> {
         } else if (value instanceof String) {
             return "'" + value + "'";
         }
-        return (String) value;
+        return String.valueOf(value);
     }
 
     /**

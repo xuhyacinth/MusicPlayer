@@ -137,6 +137,22 @@ class ClipPlayer private constructor() : Player {
         }
     }
 
+    override fun position(): Double {
+        return clip?.microsecondPosition?.div(1_000_000.0) ?: 0.0
+    }
+
+    override fun duration(): Double {
+        return clip?.microsecondLength?.div(1_000_000.0) ?: 0.0
+    }
+
+    override fun playing(): Boolean {
+        return clip?.isRunning ?: false
+    }
+
+    override fun pausing(): Boolean {
+        return paused
+    }
+
     override fun volume(volume: Float) {
         if (null == control) {
             return

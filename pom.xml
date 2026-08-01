@@ -15,6 +15,7 @@
         <kotlin.version>2.4.10</kotlin.version>
         <javafx.version>26.0.2</javafx.version>
         <maven.compiler.release>25</maven.compiler.release>
+        <slf4j.version>2.0.17</slf4j.version>
     </properties>
 
     <dependencies>
@@ -31,6 +32,27 @@
             <groupId>org.jflac</groupId>
             <artifactId>jflac-codec</artifactId>
             <version>1.5.2</version>
+        </dependency>
+
+        <!-- fft -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+            <version>3.6.1</version>
+        </dependency>
+
+        <!-- log -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+        <!-- log -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.version}</version>
         </dependency>
 
         <!-- hutool -->
@@ -194,7 +216,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.xu.music.player/com.xu.music.player.HelloApplication</mainClass>
+                            <mainClass>com.xu.music.player/com.xu.music.player.MusicPlayer</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>
