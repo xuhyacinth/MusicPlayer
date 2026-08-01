@@ -236,6 +236,7 @@ class MusicPlayerWindow(private val stage: Stage) {
         // 时间标签行
         val timeRow = HBox()
         timeRow.alignment = Pos.CENTER_LEFT
+        timeRow.maxWidth = Double.MAX_VALUE
         timeLabel1 = Label("00:00")
         timeLabel1.font = Font("Consolas", 9.0)
         timeLabel2 = Label("00:00")
@@ -247,6 +248,7 @@ class MusicPlayerWindow(private val stage: Stage) {
         // 控制按钮行
         val controlRow = HBox(20.0)
         controlRow.alignment = Pos.CENTER_LEFT
+        controlRow.maxWidth = Double.MAX_VALUE
 
         val prev = ImageView(CommUtils.getImage("lastsong-1.png"))
         prev.fitWidth = 28.0
@@ -503,7 +505,10 @@ class MusicPlayerWindow(private val stage: Stage) {
 
     private fun updateSongListsColor(entity: SongEntity) {
         start.image = CommUtils.getImage("start.png")
-        timeLabel2.text = CommUtils.format(entity.length?.toInt() ?: 0)
+        // 优先使用播放器真实时长，未知时回退到数据库存储的时长
+        val realDuration = player.duration()
+        timeLabel2.text = if (realDuration > 0) CommUtils.format(realDuration.toInt())
+        else CommUtils.format(entity.length?.toInt() ?: 0)
 
         // 高亮当前播放歌曲（程序化选中，避免递归触发播放）
         syncingSelection = true
@@ -635,11 +640,12 @@ class MusicPlayerWindow(private val stage: Stage) {
                     redrawSpectrum()
                     // 歌词
                     updateLyric(position)
-                    // 进度条
-                    val length = Constant.PLAYING_SONG_LENGTH
-                    if (length > 0) {
-                        val pct = position / (length / 100.0)
-                        progress.progress = (pct / 100.0).coerceIn(0.0, 1.0)
+                    // 进度条：使用播放器真实总时长
+                    val total = player.duration()
+                    if (total > 0) {
+                        progress.progress = (position / total).coerceIn(0.0, 1.0)
+                        // 总时长就绪后同步更新总时间标签
+                        timeLabel2.text = CommUtils.format(total.toInt())
                     }
                     // 实时播放时间
                     timeLabel1.text = CommUtils.format(position.toInt())

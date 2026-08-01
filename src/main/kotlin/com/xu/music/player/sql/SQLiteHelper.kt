@@ -51,7 +51,11 @@ class SQLiteHelper : Helper {
                         return state.executeUpdate(sql)
                     }
                 } catch (e: SQLException) {
-                    conn.rollback()
+                    try {
+                        conn.rollback()
+                    } catch (rollbackEx: Exception) {
+                        // 自动提交模式下 rollback 无意义，忽略
+                    }
                 } finally {
                     IoUtil.close(conn)
                 }
@@ -59,10 +63,14 @@ class SQLiteHelper : Helper {
             try {
                 conn.prepareStatement(sql).use { state ->
                     setValues(state, *params)
-                    return state.executeUpdate(sql)
+                    return state.executeUpdate()
                 }
             } catch (e: SQLException) {
-                conn.rollback()
+                try {
+                    conn.rollback()
+                } catch (rollbackEx: Exception) {
+                    // 自动提交模式下 rollback 无意义，忽略
+                }
             } finally {
                 IoUtil.close(conn)
             }
