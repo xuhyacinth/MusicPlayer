@@ -18,6 +18,7 @@ import javafx.geometry.Pos
 import javafx.scene.Parent
 import javafx.scene.canvas.Canvas
 import javafx.scene.control.Alert
+import javafx.scene.control.Button
 import javafx.scene.control.ButtonType
 import javafx.scene.control.Label
 import javafx.scene.control.ListCell
@@ -164,11 +165,23 @@ class MusicPlayerWindow(private val stage: Stage) {
         // ==================== 中间栏 ====================
         val center = HBox()
 
-        // 左侧：歌曲列表
+        // 左侧：添加歌曲按钮 + 歌曲列表
+        val leftPane = VBox(4.0)
+        leftPane.prefWidth = 170.0
+        leftPane.minWidth = 170.0
+
+        val addButton = Button("＋ 添加歌曲")
+        addButton.prefWidth = 170.0
+        addButton.style = "-fx-background-color: #e8e8e8; -fx-cursor: hand;"
+        addButton.setOnMouseEntered { addButton.style = "-fx-background-color: #d0d0d0; -fx-cursor: hand;" }
+        addButton.setOnMouseExited { addButton.style = "-fx-background-color: #e8e8e8; -fx-cursor: hand;" }
+        addButton.setOnAction { addSongs() }
+
         lists = TableView<SongEntity>()
         lists.isEditable = false
         lists.prefWidth = 170.0
         lists.minWidth = 170.0
+        VBox.setVgrow(lists, Priority.ALWAYS)
 
         val indexColumn = TableColumn<SongEntity, Int>("序号")
         indexColumn.prefWidth = 40.0
@@ -187,6 +200,8 @@ class MusicPlayerWindow(private val stage: Stage) {
                 next(selected.toString(), true)
             }
         }
+
+        leftPane.children.addAll(addButton, lists)
 
         // 右侧：歌词列表
         lyrics = ListView<LyricLine>()
@@ -210,7 +225,7 @@ class MusicPlayerWindow(private val stage: Stage) {
         }
 
         HBox.setHgrow(lyrics, Priority.ALWAYS)
-        center.children.addAll(lists, lyrics)
+        center.children.addAll(leftPane, lyrics)
 
         // ==================== 底部控制栏 ====================
         val foot = VBox(4.0)
@@ -331,6 +346,29 @@ class MusicPlayerWindow(private val stage: Stage) {
         }
 
         initSongTable(list!!)
+    }
+
+    /**
+     * 打开文件选择窗口添加歌曲，导入后刷新列表
+     *
+     * @date 2024年6月4日19点07分
+     * @since SWT-V1.0.0.0
+     */
+    private fun addSongs() {
+        try {
+            val choice = SongChoose()
+            if (choice.open(stage)) {
+                // 导入成功，刷新歌曲列表
+                val wrapper = QueryWrapper<SongEntity>(SongEntity::class.java, "song")
+                val list = wrapper.list()
+                if (!CollUtil.isEmpty(list)) {
+                    initSongTable(list!!)
+                }
+            }
+        } catch (e: Exception) {
+            log.error("添加歌曲失败！", e)
+            Alert(Alert.AlertType.ERROR, "添加歌曲失败: ${e.message}").show()
+        }
     }
 
     private fun initSongTable(list: List<SongEntity>) {
