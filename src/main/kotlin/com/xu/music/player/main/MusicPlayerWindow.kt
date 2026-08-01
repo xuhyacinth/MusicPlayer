@@ -267,6 +267,7 @@ class MusicPlayerWindow(private val stage: Stage) {
 
         progress = ProgressBar()
         progress.progress = 0.0
+        progress.maxWidth = Double.MAX_VALUE
         HBox.setHgrow(progress, Priority.ALWAYS)
 
         // 播放/暂停
