@@ -52,8 +52,8 @@ class MediaPlayerPlayer : Player {
         TRANS.clear()
         if (magnitudes != null) {
             for (mag in magnitudes) {
-                // AudioSpectrum 返回对数幅值(dB)，转为线性幅值用于柱状图
-                TRANS.add(Math.pow(10.0, mag / 20.0))
+                // AudioSpectrum 返回频段幅值(dB)，范围约 -80(阈值) ~ 0，直接存 dB 供 UI 归一化绘制
+                TRANS.add(mag.toDouble())
             }
         }
     }
@@ -185,6 +185,10 @@ class MediaPlayerPlayer : Player {
             paused = false
             onEndOfMedia?.invoke()
         }
+        // 配置频谱采集：128 个频段、阈值 -80dB、更新间隔 0.05s
+        mediaPlayer?.audioSpectrumNumBands = 128
+        mediaPlayer?.audioSpectrumThreshold = -80
+        mediaPlayer?.audioSpectrumInterval = 0.05
         mediaPlayer?.audioSpectrumListener = spectrumListener
     }
 

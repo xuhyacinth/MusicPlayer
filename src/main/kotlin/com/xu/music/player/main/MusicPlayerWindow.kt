@@ -11,6 +11,7 @@ import com.xu.music.player.tray.MusicPlayerTray
 import com.xu.music.player.utils.CommUtils
 import com.xu.music.player.window.SongChoose
 import com.xu.music.player.wrapper.QueryWrapper
+import com.xu.music.player.sql.SQLiteHelper
 import javafx.application.Platform
 import javafx.beans.property.SimpleObjectProperty
 import javafx.geometry.Insets
@@ -420,10 +421,17 @@ class MusicPlayerWindow(private val stage: Stage) {
         val song = Constant.PLAYING_LIST[Constant.PLAYING_INDEX]
         Constant.PLAYING_SONG = song
         Constant.PLAYING_SONG_LENGTH = song?.length ?: 0.0
+
+        // 播放前检查文件是否存在；不存在则提示删除
+        if (song == null || song.songPath.isNullOrBlank() || !Files.exists(Paths.get(song.songPath!!))) {
+            handleMissingSong(song)
+            return
+        }
+
         try {
             // 注册播放结束自动下一曲
             (player as? MediaPlayerPlayer)?.onEndOfMedia = { next(null, true) }
-            player.load(song!!.songPath)
+            player.load(song.songPath)
             player.play()
             Constant.MUSIC_PLAYER_PLAYING_STATE = true
         } catch (e: Exception) {
@@ -431,7 +439,66 @@ class MusicPlayerWindow(private val stage: Stage) {
         }
 
         initLyric()
-        updateSongListsColor(song!!)
+        updateSongListsColor(song)
+    }
+
+    /**
+     * 处理歌曲文件不存在：弹框确认后从数据库删除该歌曲并刷新列表
+     *
+     * @param song 文件不存在的歌曲
+     * @date 2024年6月4日19点07分
+     * @since SWT-V1.0.0.0
+     */
+    private fun handleMissingSong(song: SongEntity?) {
+        if (song == null || song.id.isNullOrBlank()) {
+            return
+        }
+        val name = song.name ?: song.songPath ?: "未知歌曲"
+        val result = Alert(
+            Alert.AlertType.WARNING,
+            "歌曲文件不存在: $name，是否从列表删除该歌曲？",
+            ButtonType.YES, ButtonType.NO
+        ).showAndWait().orElse(ButtonType.NO)
+
+        if (result != ButtonType.YES) {
+            return
+        }
+
+        try {
+            val sqliteHelper = SQLiteHelper()
+            sqliteHelper.delete("delete from song where id = ?", song.id)
+            log.info("已删除文件不存在的歌曲: {} (id={})", name, song.id)
+
+            // 从内存列表和界面移除
+            val removedIndex = Constant.PLAYING_INDEX
+            Constant.PLAYING_LIST.values.remove(song)
+            lists.items.remove(song)
+
+            // 若删除的是当前播放歌曲，停止播放
+            if (Constant.PLAYING_SONG == song) {
+                player.stop()
+                Constant.PLAYING_SONG = null
+            }
+
+            // 修正播放索引：删除索引前的项索引不变，删除后的项前移一位
+            if (!Constant.PLAYING_LIST.isEmpty()) {
+                if (removedIndex != null) {
+                    if (removedIndex >= Constant.PLAYING_LIST.size) {
+                        Constant.PLAYING_INDEX = Constant.PLAYING_LIST.size - 1
+                    }
+                }
+            } else {
+                // 列表为空则清空播放状态
+                Constant.PLAYING_SONG = null
+                Constant.PLAYING_INDEX = null
+                start.image = CommUtils.getImage("stop.png")
+                timeLabel1.text = "00:00"
+                timeLabel2.text = "00:00"
+            }
+        } catch (e: Exception) {
+            log.error("删除歌曲失败！", e)
+            Alert(Alert.AlertType.ERROR, "删除歌曲失败: ${e.message}").show()
+        }
     }
 
     private fun updateSongListsColor(entity: SongEntity) {
@@ -611,12 +678,13 @@ class MusicPlayerWindow(private val stage: Stage) {
             return
         }
 
-        val validDataLen = transSnapshot.size / 2
+        // AudioSpectrumListener 已给出真实频段幅值(dB)，无需再减半
+        val validDataLen = transSnapshot.size
         if (length <= 0) {
             return
         }
 
-        // 对数域频率映射边界，过滤掉低频直流分量
+        // 对数域频率映射边界
         val minFreqBin = 1.0
         val maxFreqBin = validDataLen - 1.0
 
@@ -643,16 +711,18 @@ class MusicPlayerWindow(private val stage: Stage) {
                 if (b < validDataLen) {
                     val obj = transSnapshot[b]
                     if (obj != null) {
-                        sum += Math.abs(obj as Double)
+                        sum += obj as Double
                         count++
                     }
                 }
             }
 
-            val avgMagnitude = if (count > 0) sum / count else 0.0
+            // dB(-80~0) 归一化到 0~1：加 80 再除 80
+            val avgDb = if (count > 0) sum / count else -80.0
+            val normalized = ((avgDb + 80.0) / 80.0).coerceIn(0.0, 1.0)
 
-            // 使用平方根放大，衰减高光点并平滑整体动态幅度
-            var barHeight = (Math.sqrt(avgMagnitude) * 6).toInt()
+            // 平方根增强低音量可见性，再映射到画布高度
+            var barHeight = (Math.sqrt(normalized) * canvasHeight).toInt()
             if (barHeight > canvasHeight) {
                 barHeight = canvasHeight.toInt()
             }
