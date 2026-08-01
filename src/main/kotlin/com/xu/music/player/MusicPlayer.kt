@@ -1,13 +1,11 @@
 package com.xu.music.player
 
+import com.xu.music.player.main.MusicPlayerWindow
+import com.xu.music.player.tray.MusicPlayerTray
 import javafx.application.Application
 import javafx.application.Platform
 import javafx.scene.Scene
-import javafx.scene.layout.BorderPane
 import javafx.stage.Stage
-import javafx.stage.StageStyle
-import com.xu.music.player.main.MusicPlayerWindow
-import com.xu.music.player.tray.MusicPlayerTray
 
 /**
  * JavaFX 音乐播放器入口
@@ -18,8 +16,7 @@ import com.xu.music.player.tray.MusicPlayerTray
 class MusicPlayer : Application() {
 
     override fun start(stage: Stage) {
-        // 无边框窗口，模拟 SWT 版本的自绘标题栏
-        stage.initStyle(StageStyle.UNDECORATED)
+	    // 使用系统原生窗口装饰（标题栏带最小化/关闭按钮）
         val window = MusicPlayerWindow(stage)
         val root = window.createContents()
         val scene = Scene(root, 900.0, 486.0)

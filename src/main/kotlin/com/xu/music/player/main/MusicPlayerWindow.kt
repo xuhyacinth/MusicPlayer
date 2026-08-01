@@ -1,17 +1,14 @@
 package com.xu.music.player.main
 
-import cn.hutool.core.collection.CollUtil
-import cn.hutool.core.io.FileUtil
-import cn.hutool.core.util.StrUtil
 import com.xu.music.player.constant.Constant
 import com.xu.music.player.entity.SongEntity
 import com.xu.music.player.player.MediaPlayerPlayer
 import com.xu.music.player.player.Player
+import com.xu.music.player.sql.SQLiteHelper
 import com.xu.music.player.tray.MusicPlayerTray
 import com.xu.music.player.utils.CommUtils
 import com.xu.music.player.window.SongChoose
 import com.xu.music.player.wrapper.QueryWrapper
-import com.xu.music.player.sql.SQLiteHelper
 import javafx.application.Platform
 import javafx.beans.property.SimpleObjectProperty
 import javafx.geometry.Insets
@@ -41,8 +38,10 @@ import org.slf4j.LoggerFactory
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.security.SecureRandom
-import java.util.Timer
-import java.util.TimerTask
+import java.util.*
+import cn.hutool.core.collection.CollUtil
+import cn.hutool.core.io.FileUtil
+import cn.hutool.core.util.StrUtil
 
 /**
  * 主窗口
@@ -85,14 +84,6 @@ class MusicPlayerWindow(private val stage: Stage) {
     /** 播放/暂停控制按钮 */
     private lateinit var start: ImageView
 
-    /** 界面拖拽时记录的坐标 */
-    private var clickX = 0.0
-
-    private var clickY = 0.0
-
-    /** 是否按下了界面以进行拖拽移动 */
-    private var click = false
-
     /** 已解析歌词行 */
     private val lyricLines = ArrayList<LyricLine>()
 
@@ -117,51 +108,6 @@ class MusicPlayerWindow(private val stage: Stage) {
      */
     fun createContents(): Parent {
         val root = BorderPane()
-
-        // ==================== 顶部栏 ====================
-        val top = HBox(10.0)
-        top.style = "-fx-background-color: #f0f0f0;"
-        top.padding = Insets(10.0, 12.0, 10.0, 12.0)
-        top.alignment = Pos.CENTER_RIGHT
-
-        val spacer = Region()
-        HBox.setHgrow(spacer, Priority.ALWAYS)
-
-        val mini = ImageView(CommUtils.getImage("mini-1.png"))
-        mini.fitWidth = 24.0
-        mini.fitHeight = 24.0
-        mini.isPreserveRatio = true
-
-        val exit = ImageView(CommUtils.getImage("exit-1.png"))
-        exit.fitWidth = 24.0
-        exit.fitHeight = 24.0
-        exit.isPreserveRatio = true
-
-        // 界面移动
-        top.setOnMousePressed { e: MouseEvent ->
-            click = true
-            clickX = e.sceneX
-            clickY = e.sceneY
-        }
-        top.setOnMouseReleased { _: MouseEvent -> click = false }
-        top.setOnMouseDragged { e: MouseEvent ->
-            if (click) {
-                stage.x = e.screenX - clickX
-                stage.y = e.screenY - clickY
-            }
-        }
-
-        // 缩小
-        mini.setOnMouseEntered { mini.image = CommUtils.getImage("mini-2.png") }
-        mini.setOnMouseExited { mini.image = CommUtils.getImage("mini-1.png") }
-        mini.setOnMouseClicked { stage.isIconified = true }
-
-        // 退出
-        exit.setOnMouseEntered { exit.image = CommUtils.getImage("exit-2.png") }
-        exit.setOnMouseExited { exit.image = CommUtils.getImage("exit-1.png") }
-        exit.setOnMouseClicked { exit() }
-
-        top.children.addAll(spacer, mini, exit)
 
         // ==================== 中间栏 ====================
         val center = HBox()
@@ -314,7 +260,6 @@ class MusicPlayerWindow(private val stage: Stage) {
 
         foot.children.addAll(timeRow, controlRow, spectrumCanvas)
 
-        root.top = top
         root.center = center
         root.bottom = foot
 
