@@ -5,8 +5,8 @@ import cn.hutool.core.io.FileUtil
 import cn.hutool.core.util.StrUtil
 import com.xu.music.player.constant.Constant
 import com.xu.music.player.entity.SongEntity
+import com.xu.music.player.player.MediaPlayerPlayer
 import com.xu.music.player.player.Player
-import com.xu.music.player.player.SdlFftPlayer
 import com.xu.music.player.tray.MusicPlayerTray
 import com.xu.music.player.utils.CommUtils
 import com.xu.music.player.window.SongChoose
@@ -60,7 +60,7 @@ class MusicPlayerWindow(private val stage: Stage) {
     private var position = 0.0
 
     /** 音频播放核心组件 */
-    private var player: Player = SdlFftPlayer.create()
+    private var player: Player = MediaPlayerPlayer()
 
     /** 歌曲列表 */
     private lateinit var lists: TableView<SongEntity>
@@ -383,6 +383,8 @@ class MusicPlayerWindow(private val stage: Stage) {
         Constant.PLAYING_SONG = song
         Constant.PLAYING_SONG_LENGTH = song?.length ?: 0.0
         try {
+            // 注册播放结束自动下一曲
+            (player as? MediaPlayerPlayer)?.onEndOfMedia = { next(null, true) }
             player.load(song!!.songPath)
             player.play()
             Constant.MUSIC_PLAYER_PLAYING_STATE = true
@@ -522,8 +524,9 @@ class MusicPlayerWindow(private val stage: Stage) {
         timer.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
                 Platform.runLater {
+                    // 使用 MediaPlayer 的真实播放位置
+                    position = player.position()
                     // 频谱面板
-                    update()
                     redrawSpectrum()
                     // 歌词
                     updateLyric(position)
@@ -538,20 +541,6 @@ class MusicPlayerWindow(private val stage: Stage) {
                 }
             }
         }, 0, 100)
-    }
-
-    /**
-     * 更新频谱数据
-     *
-     * @date 2024年6月4日19点07分
-     * @since SWT-V1.0.0.0
-     */
-    fun update() {
-        if (!player.playing()) {
-            return
-        }
-        // 歌曲播放进度累进
-        position += 0.1
     }
 
     /**
@@ -575,11 +564,11 @@ class MusicPlayerWindow(private val stage: Stage) {
 
         val length = (canvasWidth / 25.0).toInt()
 
-        if (CollUtil.isEmpty(SdlFftPlayer.TRANS)) {
+        if (CollUtil.isEmpty(MediaPlayerPlayer.TRANS)) {
             return
         }
 
-        val transSnapshot = SdlFftPlayer.TRANS.toTypedArray()
+        val transSnapshot = MediaPlayerPlayer.TRANS.toTypedArray()
         if (transSnapshot.size < 2) {
             return
         }

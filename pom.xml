@@ -20,25 +20,11 @@
 
     <dependencies>
 
-        <!-- mp3 -->
-        <dependency>
-            <groupId>com.googlecode.soundlibs</groupId>
-            <artifactId>mp3spi</artifactId>
-            <version>1.9.5.4</version>
-        </dependency>
-
         <!-- flac -->
         <dependency>
             <groupId>org.jflac</groupId>
             <artifactId>jflac-codec</artifactId>
             <version>1.5.2</version>
-        </dependency>
-
-        <!-- fft -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-math3</artifactId>
-            <version>3.6.1</version>
         </dependency>
 
         <!-- log -->
