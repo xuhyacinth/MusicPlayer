@@ -15,8 +15,6 @@ import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.SourceDataLine;
 import java.io.File;
 import java.net.URL;
-import java.util.Deque;
-import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -25,11 +23,6 @@ import java.util.concurrent.atomic.AtomicLong;
 public final class SdlFftPlayer implements Player {
 
     private static final Logger log = LoggerFactory.getLogger(SdlFftPlayer.class);
-
-    /**
-     * 兼容现有 SWT 绘制代码；后续由 Player 快照接口取代。
-     */
-    public static final Deque<Double> TRANS = new ConcurrentLinkedDeque<>();
 
     private final PlaybackSessionSlot sessions = new PlaybackSessionSlot();
     private final AtomicLong taskSequence = new AtomicLong();
@@ -190,10 +183,6 @@ public final class SdlFftPlayer implements Player {
             while (session.playing() && !Thread.currentThread().isInterrupted()) {
                 if (!session.paused()) {
                     session.analyzer().updateSpectrum();
-                    TRANS.clear();
-                    for (var magnitude : session.analyzer().spectrumSnapshot()) {
-                        TRANS.add(magnitude);
-                    }
                 }
                 Thread.sleep(30);
             }
@@ -228,7 +217,6 @@ public final class SdlFftPlayer implements Player {
         if (session != null) {
             session.close();
         }
-        TRANS.clear();
     }
 
     @Override

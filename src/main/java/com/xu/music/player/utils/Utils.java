@@ -2,9 +2,6 @@ package com.xu.music.player.utils;
 
 import java.awt.*;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -89,16 +86,7 @@ public class Utils {
         }
 
         try {
-            // 优先尝试从 Classpath 加载资源
             InputStream stream = Utils.class.getResourceAsStream("/com/xu/music/player/image/" + name);
-            if (stream == null) {
-                // 回退到物理文件路径加载（便于本地调试）
-                Path path = Paths.get(StrUtil.format("src/main/java/com/xu/music/player/image/{}", name));
-                if (path.toFile().exists()) {
-                    stream = Files.newInputStream(path);
-                }
-            }
-
             if (stream == null) {
                 return null;
             }
