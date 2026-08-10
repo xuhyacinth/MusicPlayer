@@ -29,14 +29,14 @@ README 采用“学习路径为主、技术专题索引为辅”的结构：
 3. 项目目录及核心类职责。
 4. 播放主链路和数据流。
 5. 核心知识专题：
-   - SWT 事件循环与 UI 线程；
-   - Java Sound、PCM 与 `SourceDataLine`；
-   - MP3/FLAC 解码 SPI；
-   - FFT 频谱计算和 SWT 绘制；
-   - LRC 时间标签解析与同步；
-   - SQLite 表结构、反射映射和查询封装；
-   - 虚拟线程、共享状态和定时刷新；
-   - Maven Shade 打包与资源加载。
+    - SWT 事件循环与 UI 线程；
+    - Java Sound、PCM 与 `SourceDataLine`；
+    - MP3/FLAC 解码 SPI；
+    - FFT 频谱计算和 SWT 绘制；
+    - LRC 时间标签解析与同步；
+    - SQLite 表结构、反射映射和查询封装；
+    - 虚拟线程、共享状态和定时刷新；
+    - Maven Shade 打包与资源加载。
 6. 数据库模型。
 7. 测试现状、已知限制和后续学习建议。
 
