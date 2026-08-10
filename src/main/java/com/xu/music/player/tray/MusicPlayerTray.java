@@ -12,6 +12,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
 
+import java.util.Objects;
 
 /**
  * 通用托盘
@@ -23,12 +24,13 @@ public class MusicPlayerTray {
 
     private final Tray tray;
     private final Shell shell;
+    private final Runnable closeAction;
     private Menu menu;
 
-    public MusicPlayerTray(Shell shell, Tray tray) {
-        super();
+    public MusicPlayerTray(Shell shell, Tray tray, Runnable closeAction) {
         this.shell = shell;
         this.tray = tray;
+        this.closeAction = Objects.requireNonNull(closeAction, "closeAction");
     }
 
     public void tray() {
@@ -78,12 +80,14 @@ public class MusicPlayerTray {
             close.addSelectionListener(new SelectionAdapter() {
                 @Override
                 public void widgetSelected(SelectionEvent arg0) {
-                    tray.dispose();
-                    shell.dispose();
-                    System.exit(0);
+                    close();
                 }
             });
         }
+    }
+
+    void close() {
+        closeAction.run();
     }
 
 }

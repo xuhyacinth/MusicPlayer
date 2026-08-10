@@ -4,6 +4,7 @@ import com.xu.music.player.wrapper.sql.Helper;
 import com.xu.music.player.wrapper.sql.NewHelper;
 import com.xu.music.player.wrapper.sql.SqlCommand;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -11,13 +12,14 @@ import java.util.List;
  */
 public class QueryWrapper<T> extends BasicWrapper<T> {
 
-    public QueryWrapper() {
-    }
-
     public QueryWrapper(Class<T> bean, String table, String... field) {
         this.bean = bean;
-        this.table = table;
-        this.field = field == null || field.length == 0 ? new String[]{"*"} : field;
+        this.table = requireIdentifier(table);
+        this.field = field == null || field.length == 0
+                ? new String[]{"*"}
+                : Arrays.stream(field)
+                .map(value -> "*".equals(value) ? value : dealField(value))
+                .toArray(String[]::new);
     }
 
     public SqlCommand command() {
@@ -31,15 +33,6 @@ public class QueryWrapper<T> extends BasicWrapper<T> {
         return helper.select(command.sql(), bean, command.parameterArray());
     }
 
-    public QueryWrapper<T> apply(String sql, Object... values) {
-        addCondition("(" + sql + ")", values);
-        return this;
-    }
-
-    public QueryWrapper<T> apply(boolean condition, String sql, Object... values) {
-        return condition ? apply(sql, values) : this;
-    }
-
     public QueryWrapper<T> eq(String field, Object value) {
         addCondition(dealField(field) + " = ?", value);
         return this;
@@ -47,15 +40,6 @@ public class QueryWrapper<T> extends BasicWrapper<T> {
 
     public QueryWrapper<T> eq(boolean condition, String field, Object value) {
         return condition ? eq(field, value) : this;
-    }
-
-    public QueryWrapper<T> last(String sql) {
-        this.last = sql;
-        return this;
-    }
-
-    public QueryWrapper<T> last(boolean condition, String sql) {
-        return condition ? last(sql) : this;
     }
 
     public QueryWrapper<T> like(String field, Object value) {

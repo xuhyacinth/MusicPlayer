@@ -1,6 +1,7 @@
 package com.xu.music.player.wrapper;
 
 import cn.hutool.core.util.StrUtil;
+import com.xu.music.player.hander.DataBaseError;
 import com.xu.music.player.wrapper.sql.SqlCommand;
 
 import java.util.ArrayList;
@@ -15,8 +16,8 @@ import java.util.regex.Pattern;
 public class BasicWrapper<T> {
 
     private static final Pattern UPPER_CASE = Pattern.compile("[A-Z]");
+    private static final Pattern IDENTIFIER = Pattern.compile("[A-Za-z_][A-Za-z0-9_]*");
 
-    protected String last;
     protected Class<T> bean;
     protected String table;
     protected String[] field;
@@ -31,16 +32,21 @@ public class BasicWrapper<T> {
     protected SqlCommand command(String baseSql, List<Object> leadingParameters) {
         var sql = new StringBuilder(baseSql);
         conditions.forEach(sql::append);
-        if (last != null) {
-            sql.append(' ').append(last);
-        }
 
         var allParameters = new ArrayList<>(leadingParameters);
         allParameters.addAll(parameters);
         return new SqlCommand(sql.toString(), allParameters);
     }
 
+    protected static String requireIdentifier(String name) {
+        if (name == null || !IDENTIFIER.matcher(name).matches()) {
+            throw new DataBaseError("非法 SQL 标识符: " + name);
+        }
+        return name;
+    }
+
     protected String dealField(String name) {
+        requireIdentifier(name);
         var matcher = UPPER_CASE.matcher(name);
         var result = new StringBuilder();
         while (matcher.find()) {

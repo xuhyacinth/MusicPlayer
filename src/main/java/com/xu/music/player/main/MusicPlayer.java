@@ -14,6 +14,7 @@ import cn.hutool.core.util.StrUtil;
 
 import com.xu.music.player.constant.Constant;
 import com.xu.music.player.entity.SongEntity;
+import com.xu.music.player.hander.MusicPlayerError;
 import com.xu.music.player.lyric.LrcParser;
 import com.xu.music.player.player.Player;
 import com.xu.music.player.player.SdlFftPlayer;
@@ -40,6 +41,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
@@ -138,7 +140,7 @@ public class MusicPlayer {
 
         // 托盘引入
         tray = display.getSystemTray();
-        MusicPlayerTray trayutil = new MusicPlayerTray(shell, tray);
+        MusicPlayerTray trayutil = new MusicPlayerTray(shell, tray, this::exit);
         trayutil.tray();
 
         Composite composite = new Composite(shell, SWT.NONE);
@@ -238,11 +240,13 @@ public class MusicPlayer {
                 }
 
                 if (!player.pausing()) {
-                    start.setImage(Utils.getImage("start.png"));
-                    player.pause();
-                } else {
                     start.setImage(Utils.getImage("stop.png"));
+                    player.pause();
+                    stopRefresh();
+                } else {
+                    start.setImage(Utils.getImage("start.png"));
                     player.resume(0);
+                    startRefresh(foot, timeLabel1);
                 }
             }
         });
@@ -508,15 +512,22 @@ public class MusicPlayer {
      * @param table 表格对象
      */
     public void initPlayer(Shell shell, Table table) {
-        var wrapper = new QueryWrapper<>(SongEntity.class, "song");
-        var list = wrapper.list();
-
-        if (CollUtil.isEmpty(list)) {
-            // 当本地没有存放数据时，自动唤起文件选择窗口添加歌曲
-            var choice = new SongChoose();
-            Toolkit.getDefaultToolkit().beep();
-            choice.open(shell);
+        List<SongEntity> list;
+        try {
+            var wrapper = new QueryWrapper<>(SongEntity.class, "song");
             list = wrapper.list();
+
+            if (CollUtil.isEmpty(list)) {
+                // 当本地没有存放数据时，自动唤起文件选择窗口添加歌曲
+                var choice = new SongChoose();
+                Toolkit.getDefaultToolkit().beep();
+                choice.open(shell);
+                list = wrapper.list();
+            }
+        } catch (RuntimeException exception) {
+            log.error("初始化播放列表异常", exception);
+            showError("无法读取或更新播放列表，请检查数据库和文件权限。");
+            return;
         }
 
         if (CollUtil.isEmpty(list)) {
@@ -528,6 +539,7 @@ public class MusicPlayer {
 
     private void initSongTable(List<SongEntity> list, Table table) {
         table.removeAll();
+        Constant.PLAYING_LIST.clear();
         IntStream.range(0, list.size()).forEach(i -> Constant.PLAYING_LIST.put(i, list.get(i)));
 
         int index = 0;
@@ -566,22 +578,32 @@ public class MusicPlayer {
         Constant.PLAYING_SONG = Constant.PLAYING_LIST.get(Constant.PLAYING_INDEX);
         Constant.PLAYING_SONG_LENGTH = Constant.PLAYING_SONG.getLength();
         try {
-            player.load(Constant.PLAYING_SONG.getSongPath());
-            player.play();
-            Constant.MUSIC_PLAYER_PLAYING_STATE = true;
-        } catch (Exception e) {
-            log.error("选择歌曲播放异常！", e);
+            PlaybackStarter.start(player, Constant.PLAYING_SONG.getSongPath());
+        } catch (MusicPlayerError exception) {
+            log.error("选择歌曲播放异常", exception);
+            resetPlaybackUi();
+            showError("无法播放所选歌曲，请检查文件格式和音频设备。");
+            return;
         }
 
-        initLyric();
-        startRefresh(foot, timeLabel1);
-        updateSongListsColor(lists, Constant.PLAYING_SONG);
+        try {
+            Constant.MUSIC_PLAYER_PLAYING_STATE = true;
+            initLyric();
+            startRefresh(foot, timeLabel1);
+            updateSongListsColor(lists, Constant.PLAYING_SONG);
+        } catch (RuntimeException exception) {
+            player.stop();
+            log.error("播放界面更新异常", exception);
+            resetPlaybackUi();
+            showError("歌曲已停止，播放器界面更新失败。");
+        }
     }
 
     private void updateSongListsColor(Table table, SongEntity entity) {
         start.setImage(Utils.getImage("start.png"));
         timeLabel1.setText(Utils.format(0));
-        timeLabel2.setText(Utils.format(entity.getLength().intValue()));
+        var duration = PlaybackProgress.duration(player.duration(), entity.getLength());
+        timeLabel2.setText(Utils.format((int) duration));
 
         TableItem[] items = table.getItems();
         for (int i = 0, len = items.length; i < len; i++) {
@@ -659,53 +681,97 @@ public class MusicPlayer {
             return;
         }
 
-        var lyric = LrcParser.parse(FileUtil.readUtf8Lines(path.toFile()));
-        Constant.PLAYING_LYRIC = !lyric.isEmpty();
-        for (var line : lyric) {
-            var item = new TableItem(lyrics, SWT.NONE);
-            item.setText(new String[] { line.tag(), line.text() });
-            item.setData("time", line.seconds());
+        try {
+            var lyric = LrcParser.parse(FileUtil.readUtf8Lines(path.toFile()));
+            Constant.PLAYING_LYRIC = !lyric.isEmpty();
+            for (var line : lyric) {
+                var item = new TableItem(lyrics, SWT.NONE);
+                item.setText(new String[] { line.tag(), line.text() });
+                item.setData("time", line.seconds());
+            }
+        } catch (RuntimeException exception) {
+            log.error("歌词加载异常: {}", path, exception);
+            Constant.PLAYING_LYRIC = false;
+            lyrics.removeAll();
+            showError("歌曲已开始播放，但歌词文件无法读取。");
         }
     }
 
     private void startRefresh(Composite comp, Label currentTimeLabel) {
-        if (refreshTask != null) {
-            display.timerExec(-1, refreshTask);
-        }
+        stopRefresh();
 
         refreshTask = new Runnable() {
             @Override
             public void run() {
-                if (shell.isDisposed() || comp.isDisposed() || !player.playing()) {
+                if (shell.isDisposed() || comp.isDisposed()) {
+                    return;
+                }
+                if (!player.playing()) {
+                    resetPlaybackUi();
                     return;
                 }
 
                 var position = player.position();
-                var duration = player.duration();
-                if (duration <= 0 && Constant.PLAYING_SONG.getLength() != null) {
-                    duration = Constant.PLAYING_SONG.getLength();
-                }
+                var duration = PlaybackProgress.duration(
+                        player.duration(), Constant.PLAYING_SONG.getLength());
 
                 comp.redraw();
                 updateLyric(position);
                 progress.setSelection(PlaybackProgress.percentage(position, duration));
                 currentTimeLabel.setText(Utils.format((int) position));
+                timeLabel2.setText(Utils.format((int) duration));
                 display.timerExec(100, this);
             }
         };
         display.timerExec(0, refreshTask);
     }
 
+    private void stopRefresh() {
+        if (refreshTask != null && display != null && !display.isDisposed()) {
+            display.timerExec(-1, refreshTask);
+            refreshTask = null;
+        }
+    }
+
+    private void resetPlaybackUi() {
+        Constant.MUSIC_PLAYER_PLAYING_STATE = false;
+        Constant.PLAYING_LYRIC = false;
+        stopRefresh();
+        if (start != null && !start.isDisposed()) {
+            start.setImage(Utils.getImage("stop.png"));
+        }
+        if (progress != null && !progress.isDisposed()) {
+            progress.setSelection(0);
+        }
+        if (timeLabel1 != null && !timeLabel1.isDisposed()) {
+            timeLabel1.setText(Utils.format(0));
+        }
+        if (lyrics != null && !lyrics.isDisposed()) {
+            lyrics.removeAll();
+        }
+    }
+
+    private void showError(String message) {
+        var box = new MessageBox(shell, SWT.OK | SWT.ICON_ERROR);
+        box.setText("MusicPlayer");
+        box.setMessage(message);
+        box.open();
+    }
+
     /**
      * 退出并释放关联的托盘与播放器进程硬件资源
      */
     private void exit() {
-        if (refreshTask != null) {
-            display.timerExec(-1, refreshTask);
+        stopRefresh();
+        if (player != null) {
+            player.close();
         }
-        tray.dispose();
-        player.close();
-        shell.dispose();
+        if (tray != null && !tray.isDisposed()) {
+            tray.dispose();
+        }
+        if (shell != null && !shell.isDisposed()) {
+            shell.dispose();
+        }
         // 置于最后执行以保证前面的指令能正常被触发
         System.exit(0);
     }

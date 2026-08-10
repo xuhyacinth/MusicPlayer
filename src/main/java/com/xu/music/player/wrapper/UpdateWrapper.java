@@ -22,7 +22,7 @@ public class UpdateWrapper<T> extends BasicWrapper<T> {
             throw new DataBaseError("参数错误");
         }
         this.data = data;
-        this.table = table;
+        this.table = requireIdentifier(table);
     }
 
     public SqlCommand updateCommand() {
@@ -62,25 +62,13 @@ public class UpdateWrapper<T> extends BasicWrapper<T> {
         return execute(insertCommand());
     }
 
-    public int delete(String lastSql) {
-        if (StrUtil.isNotBlank(lastSql)) {
-            last(lastSql);
-        }
+    public int delete() {
         return execute(deleteCommand());
     }
 
     private int execute(SqlCommand command) {
         Helper helper = new NewHelper();
         return helper.update(command.sql(), command.parameterArray());
-    }
-
-    public UpdateWrapper<T> apply(String sql, Object... values) {
-        addCondition("(" + sql + ")", values);
-        return this;
-    }
-
-    public UpdateWrapper<T> apply(boolean condition, String sql, Object... values) {
-        return condition ? apply(sql, values) : this;
     }
 
     public UpdateWrapper<T> eq(String field, Object value) {
@@ -90,15 +78,6 @@ public class UpdateWrapper<T> extends BasicWrapper<T> {
 
     public UpdateWrapper<T> eq(boolean condition, String field, Object value) {
         return condition ? eq(field, value) : this;
-    }
-
-    public UpdateWrapper<T> last(String sql) {
-        this.last = sql;
-        return this;
-    }
-
-    public UpdateWrapper<T> last(boolean condition, String sql) {
-        return condition ? last(sql) : this;
     }
 
     public UpdateWrapper<T> like(String field, Object value) {

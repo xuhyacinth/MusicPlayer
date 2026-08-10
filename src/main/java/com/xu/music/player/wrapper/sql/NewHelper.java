@@ -1,7 +1,6 @@
 package com.xu.music.player.wrapper.sql;
 
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.time.LocalDate;
@@ -48,31 +47,14 @@ import java.sql.Timestamp;
 public class NewHelper implements Helper {
 
     private static final Path DEFAULT_DATABASE = Path.of("lib", "sqlite", "db", "MusicPlayer.db");
-    private static final String MAC_OS = "lib/sqlite/sqlite-tools-osx-x64-3460000/sqlite3";
-    private static final String LINUX = "lib/sqlite/sqlite-tools-linux-x64-3460000/sqlite3";
-    private static final String WINDOWS = "lib/sqlite/sqlite-tools-win-x64-3460000/sqlite3.exe";
-
     private static final DateTimeFormatter DATE_TIME = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     private final Path database;
 
     static {
         try {
-            String path;
-            switch (SysType.getSystemMainType().type) {
-                case 2:
-                case 3:
-                    path = new File(MAC_OS).getCanonicalPath();
-                    break;
-                case 4:
-                    path = new File(LINUX).getCanonicalPath();
-                    break;
-                default:
-                    path = new File(WINDOWS).getCanonicalPath();
-            }
-            System.setProperty("java.library.path", path + ";" + System.getProperty("java.library.path"));
             Class.forName("org.sqlite.JDBC");
-        } catch (Exception e) {
+        } catch (ClassNotFoundException e) {
             throw new DataBaseError(e.getMessage(), e);
         }
     }

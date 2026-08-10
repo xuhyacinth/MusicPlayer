@@ -23,7 +23,7 @@ public class InsertWrapper<T> extends BasicWrapper<T> {
             throw new DataBaseError("参数错误！");
         }
         this.data = data;
-        this.table = table;
+        this.table = requireIdentifier(table);
     }
 
     public SqlCommand command() {

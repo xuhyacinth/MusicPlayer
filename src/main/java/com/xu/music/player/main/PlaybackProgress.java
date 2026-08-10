@@ -14,4 +14,13 @@ public final class PlaybackProgress {
         }
         return Math.clamp((int) Math.round(position * 100 / duration), 0, 100);
     }
+
+    public static double duration(double reportedDuration, Double storedDuration) {
+        if (Double.isFinite(reportedDuration) && reportedDuration > 0) {
+            return reportedDuration;
+        }
+        return storedDuration != null && Double.isFinite(storedDuration) && storedDuration > 0
+                ? storedDuration
+                : 0;
+    }
 }
