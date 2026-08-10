@@ -47,3 +47,4 @@ dependency-reduced-pom.xml
 .idea/misc.xml
 .idea/workspace.xml
 .idea/jarRepositories.xml
+/.idea/

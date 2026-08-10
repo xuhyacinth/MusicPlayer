@@ -13,9 +13,9 @@
     <properties>
         <java.version>25</java.version>
         <lombok.version>1.18.36</lombok.version>
+        <slf4j.version>2.0.17</slf4j.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <slf4j.version>2.0.17</slf4j.version>
     </properties>
 
     <dependencies>

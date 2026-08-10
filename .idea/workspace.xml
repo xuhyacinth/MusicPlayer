@@ -11,12 +11,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d80f8f9d-1d6c-42ec-878e-b4abc86527ba" name="Changes" comment="dev:&#10;1、修改服务启动">
-      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/main/MusicPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/main/MusicPlayer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/InsertWrapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xu/music/player/wrapper/InsertWrapper.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,7 +33,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="Kotlin-SWT-V1.0.0.0" />
+        <entry key="$PROJECT_DIR$" value="Java-SWT-V1.0.0" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -75,7 +71,7 @@
     <option name="generalSettings">
       <MavenGeneralSettings>
         <option name="customMavenHome" value="D:\Apache\apache-maven-3.9.1" />
-        <option name="localRepository" value="E:\Maven\Repository" />
+        <option name="localRepository" value="$MAVEN_REPOSITORY$" />
         <option name="mavenHomeTypeForPersistence" value="CUSTOM" />
         <option name="userSettingsFile" value="C:\Users\xuyq\.m2\settings.xml" />
       </MavenGeneralSettings>
@@ -84,6 +80,65 @@
   <component name="McpProjectServerCommands">
     <commands />
     <urls />
+  </component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.2193266722980693" />
+      <entry key="MS500" value="2.506517608972028" />
+      <entry key="S2" value="4.837158876413236" />
+      <entry key="S5" value="6.952528693213312" />
+      <entry key="S10" value="8.222401596772235" />
+      <entry key="S30" value="9.338462961406519" />
+      <entry key="S60" value="9.673711178119236" />
+      <entry key="M2" value="10.064586283590945" />
+      <entry key="M5" value="11.222415459139562" />
+      <entry key="M10" value="12.23844178659252" />
+      <entry key="M15" value="12.721209932909282" />
+      <entry key="M30" value="13.301649422974036" />
+      <entry key="H1" value="13.634666354181496" />
+      <entry key="H2" value="13.8131011895438" />
+      <entry key="H4" value="13.905467545478809" />
+      <entry key="D1" value="13.984091992698009" />
+      <entry key="W1" value="13.997723661739897" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="1.9573907702927308E-293" />
+      <entry key="S2" value="6.651496762589377E-74" />
+      <entry key="S5" value="5.360036580431332E-30" />
+      <entry key="S10" value="2.315175280714472E-15" />
+      <entry key="S30" value="1.3229028708834334E-5" />
+      <entry key="S60" value="0.0036371731755354087" />
+      <entry key="M2" value="0.06030898088622795" />
+      <entry key="M5" value="0.32520169152382133" />
+      <entry key="M10" value="0.570264580281663" />
+      <entry key="M15" value="0.6876766296312111" />
+      <entry key="M30" value="0.8292627024237921" />
+      <entry key="H1" value="0.9106386233977738" />
+      <entry key="H2" value="0.9542738723227067" />
+      <entry key="H4" value="0.9768694243975022" />
+      <entry key="D1" value="0.9961072157036273" />
+      <entry key="W1" value="0.999442957933829" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="1.1845105480871851" />
+      <entry key="MS500" value="2.490574115841094" />
+      <entry key="S2" value="4.827872434216752" />
+      <entry key="S5" value="6.9460265813237845" />
+      <entry key="S10" value="8.218222031431608" />
+      <entry key="S30" value="9.336798590500617" />
+      <entry key="S60" value="9.67632063610153" />
+      <entry key="M2" value="10.123203631768769" />
+      <entry key="M5" value="11.54473845665172" />
+      <entry key="M10" value="12.806245169946685" />
+      <entry key="M15" value="13.406918929514584" />
+      <entry key="M30" value="14.129731096737567" />
+      <entry key="H1" value="14.544657758025721" />
+      <entry key="H2" value="14.767036244570836" />
+      <entry key="H4" value="14.882163623224335" />
+      <entry key="D1" value="14.980169758442749" />
+      <entry key="W1" value="14.997162398692954" />
+    </decayedShown>
   </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
@@ -96,49 +151,49 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.AudioLength.executor&quot;: &quot;Run&quot;,
-    &quot;Application.AudioPlaybackProgress.executor&quot;: &quot;Run&quot;,
-    &quot;Application.MusicPlayer (1).executor&quot;: &quot;Run&quot;,
-    &quot;Application.MusicPlayer.executor&quot;: &quot;Debug&quot;,
-    &quot;Application.SineWaveSynth.executor&quot;: &quot;Run&quot;,
-    &quot;Application.SplitExample.executor&quot;: &quot;Debug&quot;,
-    &quot;Application.SwtDraw.executor&quot;: &quot;Debug&quot;,
-    &quot;Application.Test.executor&quot;: &quot;Run&quot;,
-    &quot;Application.TikaCore.executor&quot;: &quot;Run&quot;,
-    &quot;Application.TransparentProgressBar.executor&quot;: &quot;Run&quot;,
-    &quot;Kotlin.MusicPlayer.executor&quot;: &quot;Run&quot;,
-    &quot;Kotlin.SongChoose.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.MusicPlayer [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.MusicPlayer [install].executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;SONARLINT_PRECOMMIT_ANALYSIS&quot;: &quot;true&quot;,
-    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;Java-SWT-V1.0.0.0&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/Code/Learn/MusicPlayer&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;项目&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;MavenSettings&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;,
-    &quot;应用程序.MusicPlayer.executor&quot;: &quot;Debug&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.AudioLength.executor": "Run",
+    "Application.AudioPlaybackProgress.executor": "Run",
+    "Application.MusicPlayer (1).executor": "Run",
+    "Application.MusicPlayer.executor": "Debug",
+    "Application.SineWaveSynth.executor": "Run",
+    "Application.SplitExample.executor": "Debug",
+    "Application.SwtDraw.executor": "Debug",
+    "Application.Test.executor": "Run",
+    "Application.TikaCore.executor": "Run",
+    "Application.TransparentProgressBar.executor": "Run",
+    "Kotlin.MusicPlayer.executor": "Run",
+    "Kotlin.SongChoose.executor": "Run",
+    "Maven.MusicPlayer [clean].executor": "Run",
+    "Maven.MusicPlayer [install].executor": "Run",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "SONARLINT_PRECOMMIT_ANALYSIS": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "swt/v1.1.0",
+    "ignore.virus.scanning.warn.message": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/Code/learn/MusicPlayer",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "模块",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "MavenSettings",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true",
+    "应用程序.MusicPlayer.executor": "Debug"
   }
-}</component>
+}]]></component>
   <component name="QodanaReportsService">
     <option name="descriptions">
       <ReportDescription localRun="true" path="C:\Users\xuyq\AppData\Local\Temp\qodana_output\qodana.sarif.json" reportGuid="eb1e36b7-8c28-4660-8d2d-b077f1ffd20b" reportId="MusicPlayer/qodana/2024-10-08" />
@@ -176,6 +231,14 @@
         <item itemvalue="应用程序.MusicPlayer" />
       </list>
     </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-63390994e64e-intellij.indexing.shared.core-IU-262.8665.337" />
+        <option value="bundled-js-predefined-d6986cc7102b-4abd2a77f808-JavaScript-IU-262.8665.337" />
+      </set>
+    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -425,7 +488,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="origin/Java-SWT-V1.0.0.0" />
+                        <option value="origin/Kotlin-SWT-V1.0.0" />
                       </list>
                     </value>
                   </entry>
