@@ -13,7 +13,7 @@ import javax.sound.sampled.AudioInputStream;
  * @date 2024年6月4日19点07分
  * @since SWT-V1.0.0.0
  */
-public interface Player {
+public interface Player extends AutoCloseable {
 
     /**
      * 加载音频
@@ -111,7 +111,7 @@ public interface Player {
     /**
      * 获取音频播放位置
      *
-     * @return 播放位置
+     * @return 播放位置（秒）
      * @date 2019年10月31日19:06:39
      */
     double position();
@@ -119,7 +119,7 @@ public interface Player {
     /**
      * 获取音频总时长
      *
-     * @return 音频总时长
+     * @return 音频总时长（秒）
      * @date 2019年10月31日19:06:39
      */
     double duration();
@@ -139,5 +139,20 @@ public interface Player {
      * @date 2019年10月31日19:06:39
      */
     boolean pausing();
+
+    /**
+     * 获取不可变语义的频谱快照。
+     */
+    default double[] spectrumSnapshot() {
+        return new double[0];
+    }
+
+    /**
+     * 释放播放器资源。
+     */
+    @Override
+    default void close() {
+        stop();
+    }
 
 }
