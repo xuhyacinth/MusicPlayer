@@ -554,6 +554,9 @@ public class MusicPlayer {
             var msg = Utils.tips(shell, null, "未发现歌曲，现在添加歌曲？");
             if (msg.open() == SWT.YES) {
                 initPlayer(shell, lists);
+                if (CollUtil.isEmpty(Constant.PLAYING_LIST)) {
+                    return;
+                }
             } else {
                 Utils.tips(shell, null, "未发现歌曲，不能播放歌曲。").open();
                 return;
@@ -564,15 +567,10 @@ public class MusicPlayer {
             Constant.PLAYING_INDEX = Integer.parseInt(index);
         } else {
             if (null == Constant.PLAYING_INDEX) {
-                Constant.PLAYING_INDEX = 0;
+                Constant.PLAYING_INDEX = next ? 0 : Constant.PLAYING_LIST.size() - 1;
             } else {
-                Constant.PLAYING_INDEX += next ? 1 : -1;
-            }
-            if (Constant.PLAYING_INDEX > Constant.PLAYING_LIST.size() - 1) {
-                Constant.PLAYING_INDEX = 0;
-            }
-            if (Constant.PLAYING_INDEX < 0) {
-                Constant.PLAYING_INDEX = Constant.PLAYING_LIST.size() + 1;
+                Constant.PLAYING_INDEX = PlaylistNavigator.move(
+                        Constant.PLAYING_INDEX, Constant.PLAYING_LIST.size(), next ? 1 : -1);
             }
         }
 
