@@ -5,11 +5,6 @@ target/
 
 ### IntelliJ IDEA ###
 .idea/
-.idea/modules.xml
-.idea/jarRepositories.xml
-.idea/compiler.xml
-.idea/workspace.xml
-.idea/sonarlint/
 *.iws
 *.iml
 *.ipr
@@ -34,17 +29,7 @@ build/
 !**/src/test/**/build/
 
 ### VS Code ###
+.vscode/
 
 ### Mac OS ###
 .DS_Store
-/.idea/**
-/.vscode/
-dependency-reduced-pom.xml
-.idea/workspace.xml
-.idea/misc.xml
-.idea/jarRepositories.xml
-.idea/jarRepositories.xml
-.idea/misc.xml
-.idea/workspace.xml
-.idea/jarRepositories.xml
-/.idea/
