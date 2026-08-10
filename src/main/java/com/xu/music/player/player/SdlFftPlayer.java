@@ -21,15 +21,9 @@ import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.SourceDataLine;
 
 import java.util.Deque;
-import java.util.LinkedList;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import org.apache.commons.math3.complex.Complex;
-import org.apache.commons.math3.transform.DftNormalization;
-import org.apache.commons.math3.transform.FastFourierTransformer;
-import org.apache.commons.math3.transform.TransformType;
 
 /**
  * SourceDataLine 音频播放
@@ -43,16 +37,12 @@ public class SdlFftPlayer implements Player {
     private static final Logger log = LoggerFactory.getLogger(SdlFftPlayer.class);
 
     /**
-     * 环形采样数组以极致优化性能，规避对象装箱拆箱及垃圾回收开销
-     */
-    private static final double[] SRC_ARRAY = new double[Constant.SPECTRUM_TOTAL_NUMBER];
-    private static int srcWriteIndex = 0;
-    private static int srcCount = 0;
-
-    /**
      * FFT 提取出的频域能量阵列结果（声明为基于并发的队列用于防由于截断数组引起的并发修改异常）
      */
     public static final Deque<Double> TRANS = new ConcurrentLinkedDeque<>();
+
+    private final PcmSpectrumAnalyzer spectrumAnalyzer =
+            new PcmSpectrumAnalyzer(Constant.SPECTRUM_TOTAL_NUMBER);
 
     /**
      * 线程池 (采用 JDK 21 虚拟线程以极致优化异步开销)
@@ -185,17 +175,19 @@ public class SdlFftPlayer implements Player {
             }
 
             this.duration = getAudioDuration(this.audio, this.audio.getFormat());
-            byte[] buff = new byte[4];
-            int channels = this.audio.getFormat().getChannels();
-            float rate = this.audio.getFormat().getSampleRate();
-            while (audio.read(buff) != -1 && playing) {
+            var format = this.audio.getFormat();
+            var frameSize = format.getFrameSize();
+            var bufferSize = Math.max(frameSize, 4096 / frameSize * frameSize);
+            var buffer = new byte[bufferSize];
+            int read;
+            while (playing && (read = audio.read(buffer)) != -1) {
                 synchronized (this) {
                     while (this.paused) {
                         wait();
                     }
                 }
-                setSpectrum(buff, channels, (int) rate);
-                this.data.write(buff, 0, 4);
+                spectrumAnalyzer.accept(buffer, 0, read, format);
+                this.data.write(buffer, 0, read);
             }
             data.drain();
             data.stop();
@@ -215,12 +207,7 @@ public class SdlFftPlayer implements Player {
             return;
         }
 
-        // 重置环形缓冲区
-        synchronized (SRC_ARRAY) {
-            srcWriteIndex = 0;
-            srcCount = 0;
-            java.util.Arrays.fill(SRC_ARRAY, 0.0);
-        }
+        spectrumAnalyzer.reset();
 
         this.playing = true;
         EXECUTOR.submit(this::start);
@@ -229,7 +216,6 @@ public class SdlFftPlayer implements Player {
 
     private void startFftTask() {
         EXECUTOR.submit(() -> {
-            FastFourierTransformer localFft = new FastFourierTransformer(DftNormalization.STANDARD);
             while (playing) {
                 if (paused) {
                     try {
@@ -240,30 +226,15 @@ public class SdlFftPlayer implements Player {
                     continue;
                 }
 
-                double[] input = null;
-                synchronized (SRC_ARRAY) {
-                    if (srcCount >= Constant.SPECTRUM_TOTAL_NUMBER) {
-                        input = new double[Constant.SPECTRUM_TOTAL_NUMBER];
-                        int readIdx = srcWriteIndex;
-                        for (int i = 0; i < Constant.SPECTRUM_TOTAL_NUMBER; i++) {
-                            input[i] = SRC_ARRAY[readIdx];
-                            readIdx = (readIdx + 1) % Constant.SPECTRUM_TOTAL_NUMBER;
-                        }
+                try {
+                    spectrumAnalyzer.updateSpectrum();
+                    var snapshot = spectrumAnalyzer.spectrumSnapshot();
+                    TRANS.clear();
+                    for (var magnitude : snapshot) {
+                        TRANS.add(magnitude);
                     }
-                }
-
-                if (input != null) {
-                    try {
-                        Complex[] complex = localFft.transform(input, TransformType.FORWARD);
-                        Deque<Double> tempTrans = new LinkedList<>();
-                        for (int i = 0; i < Constant.SPECTRUM_TOTAL_NUMBER; i++) {
-                            tempTrans.add(complex[i].abs());
-                        }
-                        TRANS.clear();
-                        TRANS.addAll(tempTrans);
-                    } catch (Exception e) {
-                        log.error("FFT 计算异常", e);
-                    }
+                } catch (Exception e) {
+                    log.error("FFT 计算异常", e);
                 }
 
                 try {
@@ -336,43 +307,6 @@ public class SdlFftPlayer implements Player {
      */
     public static double getAudioDuration(AudioInputStream audio, AudioFormat format) {
         return audio.getFrameLength() * format.getFrameSize() / (format.getSampleRate() * format.getChannels() * (format.getSampleSizeInBits() / 8.0));
-    }
-
-    private void setSpectrum(byte[] buff, int channels, int sample) {
-        if (buff.length != 4) {
-            return;
-        }
-
-        double val = 0.0;
-        // Stereo
-        if (channels == 2) {
-            if (sample == 16) {
-                short left = (short) ((buff[1] << 8) | (buff[0] & 0xFF));
-                short right = (short) ((buff[3] << 8) | (buff[2] & 0xFF));
-                val = (left + right) / 2.0 / 32768.0;
-            } else {
-                // Assuming 8-bit samples
-                double left = (buff[0] & 0xFF) / 128.0 - 1.0;
-                double right = (buff[1] & 0xFF) / 128.0 - 1.0;
-                val = (left + right) / 2.0;
-            }
-        } else {
-            // Mono
-            if (sample == 16) {
-                val = (short) ((buff[1] << 8) | (buff[0] & 0xFF)) / 32768.0;
-            } else {
-                // Assuming 8-bit samples
-                val = (buff[0] & 0xFF) / 128.0 - 1.0;
-            }
-        }
-
-        synchronized (SRC_ARRAY) {
-            SRC_ARRAY[srcWriteIndex] = val;
-            srcWriteIndex = (srcWriteIndex + 1) % Constant.SPECTRUM_TOTAL_NUMBER;
-            if (srcCount < Constant.SPECTRUM_TOTAL_NUMBER) {
-                srcCount++;
-            }
-        }
     }
 
 }
