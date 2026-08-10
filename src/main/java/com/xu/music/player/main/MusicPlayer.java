@@ -14,6 +14,7 @@ import cn.hutool.core.util.StrUtil;
 
 import com.xu.music.player.constant.Constant;
 import com.xu.music.player.entity.SongEntity;
+import com.xu.music.player.lyric.LrcParser;
 import com.xu.music.player.player.Player;
 import com.xu.music.player.player.SdlFftPlayer;
 import com.xu.music.player.tray.MusicPlayerTray;
@@ -610,21 +611,6 @@ public class MusicPlayer {
 
     }
 
-    private double parseLrcTime(String timeStr) {
-        try {
-            timeStr = timeStr.replace("[", "").replace("]", "").trim();
-            String[] parts = timeStr.split(":");
-            if (parts.length < 2) {
-                return -1.0;
-            }
-            double minutes = Double.parseDouble(parts[0]);
-            double seconds = Double.parseDouble(parts[1]);
-            return minutes * 60 + seconds;
-        } catch (Exception e) {
-            return -1.0;
-        }
-    }
-
     private void updateLyric(double currentPosition) {
         if (!Constant.PLAYING_LYRIC) {
             return;
@@ -672,29 +658,24 @@ public class MusicPlayer {
     }
 
     private void initLyric() {
+        Constant.PLAYING_LYRIC = false;
+        lyrics.removeAll();
+
         if (StrUtil.isBlank(Constant.PLAYING_SONG.getLyricPath())) {
             return;
         }
 
-        Constant.PLAYING_LYRIC = false;
         var path = Paths.get(Constant.PLAYING_SONG.getLyricPath());
         if (!Files.exists(path)) {
             return;
         }
 
-        Constant.PLAYING_LYRIC = true;
-        lyrics.removeAll();
-        var lyric = FileUtil.readUtf8Lines(path.toFile());
-        for (var s : lyric) {
-            var parts = s.split("(?<=\\])", 2);
-            if (parts.length < 2) {
-                continue;
-            }
-
-            double lyricTime = parseLrcTime(parts[0]);
+        var lyric = LrcParser.parse(FileUtil.readUtf8Lines(path.toFile()));
+        Constant.PLAYING_LYRIC = !lyric.isEmpty();
+        for (var line : lyric) {
             var item = new TableItem(lyrics, SWT.NONE);
-            item.setText(new String[] { parts[0], parts[1] });
-            item.setData("time", lyricTime);
+            item.setText(new String[] { line.tag(), line.text() });
+            item.setData("time", line.seconds());
         }
     }
 
