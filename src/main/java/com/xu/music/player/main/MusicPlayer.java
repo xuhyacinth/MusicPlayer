@@ -23,8 +23,6 @@ import com.xu.music.player.window.SongChoose;
 import com.xu.music.player.wrapper.QueryWrapper;
 
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.stream.IntStream;
 
 import org.eclipse.swt.SWT;
@@ -59,11 +57,8 @@ public class MusicPlayer {
 
     private static final Logger log = LoggerFactory.getLogger(MusicPlayer.class);
 
-    // 定时器，用于刷新 UI 和更新进度
-    private Timer timer = new Timer(true);
-
-    // 当前播放歌曲所处的时间位置（以 0.1 秒为步进单位）
-    private double position;
+    // SWT UI 刷新任务
+    private Runnable refreshTask;
 
     // SWT 主窗口实例
     protected Shell shell;
@@ -424,16 +419,12 @@ public class MusicPlayer {
             int height = listener.height;
             int length = width / 25;
 
-            if (CollUtil.isEmpty(SdlFftPlayer.TRANS)) {
-                return;
-            }
-
             // 获取 FFT 数据快照
-            Object[] transSnapshot = SdlFftPlayer.TRANS.toArray();
+            var transSnapshot = player.spectrumSnapshot();
             if (transSnapshot.length < 2)
                 return;
 
-            int validDataLen = transSnapshot.length / 2;
+            int validDataLen = transSnapshot.length;
             if (length <= 0)
                 return;
 
@@ -457,11 +448,8 @@ public class MusicPlayer {
                 double sum = 0;
                 int count = 0;
                 for (int b = binStart; b < binEnd && b < validDataLen; b++) {
-                    Object obj = transSnapshot[b];
-                    if (obj != null) {
-                        sum += Math.abs(((Double) obj).doubleValue());
-                        count++;
-                    }
+                    sum += Math.abs(transSnapshot[b]);
+                    count++;
                 }
 
                 double avgMagnitude = count > 0 ? (sum / count) : 0;
@@ -586,13 +574,14 @@ public class MusicPlayer {
         }
 
         initLyric();
-        spectrum(foot, timeLabel2);
+        startRefresh(foot, timeLabel1);
         updateSongListsColor(lists, Constant.PLAYING_SONG);
     }
 
     private void updateSongListsColor(Table table, SongEntity entity) {
         start.setImage(Utils.getImage("start.png"));
-        timeLabel1.setText(Utils.format(entity.getLength().intValue()));
+        timeLabel1.setText(Utils.format(0));
+        timeLabel2.setText(Utils.format(entity.getLength().intValue()));
 
         TableItem[] items = table.getItems();
         for (int i = 0, len = items.length; i < len; i++) {
@@ -679,49 +668,43 @@ public class MusicPlayer {
         }
     }
 
-    private void spectrum(Composite comp, Label label) {
-        timer.cancel();
-        position = 0;
-        timer = new Timer(true);
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                display.asyncExec(() -> {
-                    // 频谱面板
-                    if (!comp.isDisposed()) {
-                        update();
-                        comp.redraw();
-                    }
-                    // 歌词
-                    updateLyric(position);
-                    // 进度条
-                    progress.setSelection((int) ((int) position / (Constant.PLAYING_SONG.getLength() / 100)));
-                    // 实时播放时间
-                    label.setText(Utils.format((int) position));
-                });
-            }
-        }, 0, 100);
-    }
-
-    /**
-     * 更新频谱数据。
-     * 定时器调用该方法不断刷新图形以便于显示底部的跳动频谱条
-     */
-    public void update() {
-        if (!player.playing()) {
-            return;
+    private void startRefresh(Composite comp, Label currentTimeLabel) {
+        if (refreshTask != null) {
+            display.timerExec(-1, refreshTask);
         }
 
-        // 歌曲播放进度累进
-        position += 0.1;
+        refreshTask = new Runnable() {
+            @Override
+            public void run() {
+                if (shell.isDisposed() || comp.isDisposed() || !player.playing()) {
+                    return;
+                }
+
+                var position = player.position();
+                var duration = player.duration();
+                if (duration <= 0 && Constant.PLAYING_SONG.getLength() != null) {
+                    duration = Constant.PLAYING_SONG.getLength();
+                }
+
+                comp.redraw();
+                updateLyric(position);
+                progress.setSelection(PlaybackProgress.percentage(position, duration));
+                currentTimeLabel.setText(Utils.format((int) position));
+                display.timerExec(100, this);
+            }
+        };
+        display.timerExec(0, refreshTask);
     }
 
     /**
      * 退出并释放关联的托盘与播放器进程硬件资源
      */
     private void exit() {
+        if (refreshTask != null) {
+            display.timerExec(-1, refreshTask);
+        }
         tray.dispose();
-        player.stop();
+        player.close();
         shell.dispose();
         // 置于最后执行以保证前面的指令能正常被触发
         System.exit(0);
