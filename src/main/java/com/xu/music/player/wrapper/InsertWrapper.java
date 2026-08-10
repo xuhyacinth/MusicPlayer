@@ -1,64 +1,58 @@
 package com.xu.music.player.wrapper;
 
+import cn.hutool.core.util.StrUtil;
 import com.xu.music.player.hander.DataBaseError;
 import com.xu.music.player.wrapper.sql.Helper;
 import com.xu.music.player.wrapper.sql.NewHelper;
-
-import cn.hutool.core.util.StrUtil;
+import com.xu.music.player.wrapper.sql.SqlCommand;
 
 import java.lang.reflect.Field;
-
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
- * 插入
- *
- * @param <T>
- * @author hyacinth
- * @date 2024年6月4日19点07分
- * @since SWT-V1.0.0.0
+ * 参数化插入 Wrapper。
  */
 public class InsertWrapper<T> extends BasicWrapper<T> {
 
     private final T data;
 
-    public InsertWrapper(T t, String table) {
-        if (null == t || StrUtil.isBlank(table)) {
+    public InsertWrapper(T data, String table) {
+        if (data == null || StrUtil.isBlank(table)) {
             throw new DataBaseError("参数错误！");
         }
-        this.data = t;
+        this.data = data;
         this.table = table;
     }
 
-    public int insert() throws DataBaseError {
-        String sql = sql();
-        Helper helper = new NewHelper();
-        return helper.insert(sql);
-    }
-
-    private String sql() throws DataBaseError {
+    public SqlCommand command() {
         try {
-            Field[] fields = this.data.getClass().getDeclaredFields();
-            String sql = "insert into " + super.table;
-            List<String> fieldsList = new LinkedList<>();
-            List<Object> valuesList = new LinkedList<>();
-            for (Field field : fields) {
+            var fields = new ArrayList<String>();
+            var values = new ArrayList<>();
+            for (Field field : data.getClass().getDeclaredFields()) {
                 if (StrUtil.equals("serialVersionUID", field.getName())) {
                     continue;
                 }
                 field.setAccessible(true);
-                Object value = field.get(data);
-                if (null != value) {
-                    fieldsList.add(dealField(field.getName()));
-                    valuesList.add(field.get(data));
+                var value = field.get(data);
+                if (value != null) {
+                    fields.add(dealField(field.getName()));
+                    values.add(value);
                 }
             }
-            sql = sql + "(" + String.join(", ", fieldsList) + ") values(" + dealValue(valuesList) + ")";
-            return sql;
-        } catch (Exception e) {
-            throw new DataBaseError(e.getMessage(), e);
+
+            var placeholders = String.join(",", Collections.nCopies(fields.size(), "?"));
+            var sql = "insert into " + table + "(" + String.join(", ", fields) + ") values(" + placeholders + ")";
+            return new SqlCommand(sql, List.copyOf(values));
+        } catch (IllegalAccessException exception) {
+            throw new DataBaseError(exception.getMessage(), exception);
         }
     }
 
+    public int insert() throws DataBaseError {
+        Helper helper = new NewHelper();
+        var command = command();
+        return helper.insert(command.sql(), command.parameterArray());
+    }
 }

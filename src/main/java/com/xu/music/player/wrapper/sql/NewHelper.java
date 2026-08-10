@@ -3,6 +3,12 @@ package com.xu.music.player.wrapper.sql;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.lang.reflect.Field;
+import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.IoUtil;
@@ -11,10 +17,9 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 
 import com.xu.music.player.hander.DataBaseError;
-import com.xu.music.player.utils.Utils;
-
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -31,7 +36,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 
 /**
@@ -43,10 +47,14 @@ import java.sql.Timestamp;
  */
 public class NewHelper implements Helper {
 
-    private static final String DATABASE = "lib/sqlite/db/MusicPlayer.db";
+    private static final Path DEFAULT_DATABASE = Path.of("lib", "sqlite", "db", "MusicPlayer.db");
     private static final String MAC_OS = "lib/sqlite/sqlite-tools-osx-x64-3460000/sqlite3";
     private static final String LINUX = "lib/sqlite/sqlite-tools-linux-x64-3460000/sqlite3";
     private static final String WINDOWS = "lib/sqlite/sqlite-tools-win-x64-3460000/sqlite3.exe";
+
+    private static final DateTimeFormatter DATE_TIME = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    private final Path database;
 
     static {
         try {
@@ -67,6 +75,14 @@ public class NewHelper implements Helper {
         } catch (Exception e) {
             throw new DataBaseError(e.getMessage(), e);
         }
+    }
+
+    public NewHelper() {
+        this(DEFAULT_DATABASE);
+    }
+
+    public NewHelper(Path database) {
+        this.database = database.toAbsolutePath().normalize();
     }
 
     /**
@@ -90,7 +106,7 @@ public class NewHelper implements Helper {
     @Override
     public Connection getConn() {
         try {
-            return DriverManager.getConnection("jdbc:sqlite:" + DATABASE);
+            return DriverManager.getConnection("jdbc:sqlite:" + database);
         } catch (Exception e) {
             throw new DataBaseError(e.getMessage(), e);
         }
@@ -103,17 +119,10 @@ public class NewHelper implements Helper {
 
     @Override
     public int update(String sql, Object... params) {
-        try (Connection conn = this.getConn()) {
-            if (ArrayUtil.isEmpty(params)) {
-                try (Statement state = conn.createStatement()) {
-                    return state.executeUpdate(sql);
-                }
-            } else {
-                try (PreparedStatement state = conn.prepareStatement(sql)) {
-                    setValues(state, params);
-                    return state.executeUpdate(); // 修复: prepared statement 不应传入 sql 参数，以防丢失绑定参数
-                }
-            }
+        try (Connection conn = this.getConn();
+             PreparedStatement state = conn.prepareStatement(sql)) {
+            setValues(state, params);
+            return state.executeUpdate();
         } catch (Exception e) {
             throw new DataBaseError(e.getMessage(), e); // 不再吞掉异常，方便捕获上层错误
         }
@@ -193,34 +202,17 @@ public class NewHelper implements Helper {
             for (int i = 0; i < params.size(); i++) {
                 Object object = params.get(i);
                 if (null == object) {
-                    state.setString(i + 1, "");
+                    state.setObject(i + 1, null);
                     continue;
                 }
-                String type = object.getClass().getSimpleName();
-                switch (type) {
-                    case "SerialBlob":
-                        state.setBlob(i + 1, (Blob) params.get(i));
-                        break;
-                    case "Integer":
-                        state.setInt(i + 1, Integer.parseInt(String.valueOf(object)));
-                        break;
-                    case "Double":
-                        state.setDouble(i + 1, Double.parseDouble(String.valueOf(object)));
-                        break;
-                    case "Float":
-                        state.setFloat(i + 1, Float.parseFloat(String.valueOf(object)));
-                        break;
-                    case "Long":
-                        state.setLong(i + 1, Long.parseLong(String.valueOf(object)));
-                        break;
-                    case "Short":
-                        state.setShort(i + 1, Short.parseShort(String.valueOf(object)));
-                        break;
-                    case "Timestamp":
-                        state.setTimestamp(i + 1, (Timestamp) params.get(i));
-                        break;
-                    default:
-                        state.setString(i + 1, String.valueOf(object));
+                switch (object) {
+                    case Blob blob -> state.setBlob(i + 1, blob);
+                    case byte[] bytes -> state.setBytes(i + 1, bytes);
+                    case Timestamp timestamp -> state.setTimestamp(i + 1, timestamp);
+                    case Date date -> state.setString(i + 1, DATE_TIME.format(
+                            date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()));
+                    case LocalDateTime dateTime -> state.setString(i + 1, DATE_TIME.format(dateTime));
+                    default -> state.setObject(i + 1, object);
                 }
             }
         } catch (SQLException e) {
@@ -272,17 +264,37 @@ public class NewHelper implements Helper {
                     continue;
                 }
                 field.setAccessible(true);
-                String name = field.getType().getSimpleName();
-                if (StrUtil.equalsAny(name, "Date", "LocalDate", "LocalTime", "LocalDateTime")) {
-                    field.set(t, Utils.formatDateTime(object));
-                } else {
-                    field.set(t, object);
-                }
+                field.set(t, convertValue(field.getType(), object));
             }
             return t;
         } catch (Exception e) {
             throw new DataBaseError(e.getMessage(), e);
         }
+    }
+
+    private Object convertValue(Class<?> targetType, Object value) {
+        if (targetType.isInstance(value)) {
+            return value;
+        }
+        if (!(value instanceof CharSequence text)) {
+            return value;
+        }
+
+        var raw = text.toString();
+        if (targetType == Date.class) {
+            var local = LocalDateTime.parse(raw, DATE_TIME);
+            return Date.from(local.atZone(ZoneId.systemDefault()).toInstant());
+        }
+        if (targetType == LocalDateTime.class) {
+            return LocalDateTime.parse(raw, DATE_TIME);
+        }
+        if (targetType == LocalDate.class) {
+            return LocalDate.parse(raw);
+        }
+        if (targetType == LocalTime.class) {
+            return LocalTime.parse(raw);
+        }
+        return value;
     }
 
     /**
