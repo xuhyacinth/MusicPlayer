@@ -200,6 +200,7 @@ public class MusicPlayer {
         composite1.setLayout(new GridLayout(1, false));
 
         ToolBar toolBar = new ToolBar(composite1, SWT.FLAT);
+        toolBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         ToolItem addMusic = new ToolItem(toolBar, SWT.PUSH);
         addMusic.setImage(Utils.getImage("addMusic.png"));
         addMusic.setToolTipText("添加歌曲");
@@ -211,7 +212,7 @@ public class MusicPlayer {
         });
 
         lists = new Table(composite1, SWT.FULL_SELECTION);
-        lists.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        lists.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         lists.setHeaderVisible(true);
 
         TableColumn tableColumn = new TableColumn(lists, SWT.NONE);
