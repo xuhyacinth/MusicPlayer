@@ -2,6 +2,7 @@ package com.xu.music.player.main;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -10,9 +11,9 @@ public class PlaybackRequestGateTest {
     @Test
     public void acceptsCurrentSnapshotWhenNothingIsPlaying() {
         var gate = new PlaybackRequestGate();
-        gate.beginRequest();
-        var generation = gate.snapshot();
+        var generation = gate.beginRequest();
 
+        assertEquals(generation, gate.snapshot());
         assertTrue(gate.accepts(generation, false));
     }
 
@@ -20,9 +21,12 @@ public class PlaybackRequestGateTest {
     public void rejectsSnapshotAfterNewerRequestBegins() {
         var gate = new PlaybackRequestGate();
         var completedGeneration = gate.beginRequest();
-        gate.beginRequest();
+        var currentGeneration = gate.beginRequest();
 
+        assertTrue(currentGeneration > completedGeneration);
+        assertEquals(currentGeneration, gate.snapshot());
         assertFalse(gate.accepts(completedGeneration, false));
+        assertTrue(gate.accepts(currentGeneration, false));
     }
 
     @Test
