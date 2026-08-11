@@ -23,8 +23,12 @@ public class SongFileAvailabilityTest {
     }
 
     @Test
-    public void unavailablePathsAreNotPlayable() {
-        assertFalse(SongFileAvailability.isPlayable(songWithPath("missing.mp3")));
+    public void unavailablePathsAreNotPlayable() throws Exception {
+        File missingFile = new File(temporaryFolder.getRoot(), "missing.mp3");
+        File directory = temporaryFolder.newFolder("music-directory");
+
+        assertFalse(SongFileAvailability.isPlayable(songWithPath(missingFile.getPath())));
+        assertFalse(SongFileAvailability.isPlayable(songWithPath(directory.getPath())));
         assertFalse(SongFileAvailability.isPlayable(songWithPath("  ")));
         assertFalse(SongFileAvailability.isPlayable(songWithPath("invalid\0path")));
         assertFalse(SongFileAvailability.isPlayable(null));
