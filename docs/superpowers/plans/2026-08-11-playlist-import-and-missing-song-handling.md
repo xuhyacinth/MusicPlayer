@@ -997,7 +997,7 @@ mvn clean test
 mvn clean package
 ```
 
-Expected: 13 test classes and 38 tests pass; `target/MusicPlayer-2.0.0.0.jar` is created.
+Expected: 14 test classes and 42 tests pass; `target/MusicPlayer-2.0.0.0.jar` is created.
 
 - [ ] **Step 6: Commit the SWT wiring**
 
@@ -1021,7 +1021,7 @@ Add these points to “功能概览”:
 - 上一曲、下一曲和自然播放结束会按方向跳过缺失文件；
 ```
 
-In the virtual-thread section, explain that only the current Session's natural EOF emits a completion callback, and that the callback returns to SWT through `Display.asyncExec`. Change the test count to “13 个测试类、38 个测试用例”, add bounded missing-file scan, EOF filtering and database-only deletion to the coverage list, and remove “播放完成后自动下一曲” from “可继续练习”.
+In the virtual-thread section, explain that only the current Session's natural EOF emits a completion callback, and that the callback returns to SWT through `Display.asyncExec`. Change the test count to “14 个测试类、42 个测试用例”, add bounded missing-file scan, EOF filtering and database-only deletion to the coverage list, and remove “播放完成后自动下一曲” from “可继续练习”.
 
 - [ ] **Step 2: Run formatting, test and package checks**
 
@@ -1033,7 +1033,7 @@ mvn clean test
 mvn clean package
 ```
 
-Expected: no whitespace errors, 38 tests pass, and the shaded JAR is rebuilt.
+Expected: no whitespace errors, 42 tests pass, and the shaded JAR is rebuilt.
 
 - [ ] **Step 3: Perform the Windows SWT smoke test**
 
