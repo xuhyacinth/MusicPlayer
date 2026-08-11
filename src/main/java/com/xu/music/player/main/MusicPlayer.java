@@ -538,13 +538,12 @@ public class MusicPlayer {
                 choice.open(shell);
                 list = querySongs();
             }
+            applyPlaylist(list, table);
         } catch (RuntimeException exception) {
             log.error("初始化播放列表异常", exception);
             showError("无法读取或更新播放列表，请检查数据库和文件权限。");
             return;
         }
-
-        applyPlaylist(list, table);
     }
 
     private void addSongs() {
