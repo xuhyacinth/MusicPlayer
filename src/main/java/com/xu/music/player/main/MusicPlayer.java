@@ -24,7 +24,6 @@ import com.xu.music.player.window.SongChoose;
 import com.xu.music.player.wrapper.QueryWrapper;
 
 import java.util.List;
-import java.util.stream.IntStream;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -37,6 +36,8 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -48,6 +49,8 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Tray;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 
 /**
  * 主页面
@@ -194,9 +197,21 @@ public class MusicPlayer {
 
         Composite composite1 = new Composite(sashForm1, SWT.NONE);
         composite1.setBackgroundMode(SWT.INHERIT_FORCE);
-        composite1.setLayout(new FillLayout(SWT.HORIZONTAL));
+        composite1.setLayout(new GridLayout(1, false));
+
+        ToolBar toolBar = new ToolBar(composite1, SWT.NONE);
+        ToolItem addMusic = new ToolItem(toolBar, SWT.PUSH);
+        addMusic.setImage(Utils.getImage("addMusic.png"));
+        addMusic.setToolTipText("添加歌曲");
+        addMusic.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent event) {
+                addSongs();
+            }
+        });
 
         lists = new Table(composite1, SWT.FULL_SELECTION);
+        lists.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         lists.setHeaderVisible(true);
 
         TableColumn tableColumn = new TableColumn(lists, SWT.NONE);
@@ -514,15 +529,14 @@ public class MusicPlayer {
     public void initPlayer(Shell shell, Table table) {
         List<SongEntity> list;
         try {
-            var wrapper = new QueryWrapper<>(SongEntity.class, "song");
-            list = wrapper.list();
+            list = querySongs();
 
             if (CollUtil.isEmpty(list)) {
                 // 当本地没有存放数据时，自动唤起文件选择窗口添加歌曲
                 var choice = new SongChoose();
                 Toolkit.getDefaultToolkit().beep();
                 choice.open(shell);
-                list = wrapper.list();
+                list = querySongs();
             }
         } catch (RuntimeException exception) {
             log.error("初始化播放列表异常", exception);
@@ -530,24 +544,59 @@ public class MusicPlayer {
             return;
         }
 
-        if (CollUtil.isEmpty(list)) {
+        applyPlaylist(list, table);
+    }
+
+    private void addSongs() {
+        try {
+            new SongChoose().open(shell);
+            reloadPlaylist();
+        } catch (RuntimeException exception) {
+            log.error("添加歌曲异常", exception);
+            showError("添加歌曲失败，请检查文件和数据库权限。");
+        }
+    }
+
+    private List<SongEntity> querySongs() {
+        return new QueryWrapper<>(SongEntity.class, "song").list();
+    }
+
+    private void reloadPlaylist() {
+        applyPlaylist(querySongs(), lists);
+    }
+
+    private void applyPlaylist(List<SongEntity> source, Table table) {
+        SongEntity previousSong = Constant.PLAYING_SONG;
+        String playingSongId = previousSong == null ? null : previousSong.getId();
+        PlaylistSnapshot snapshot = PlaylistSnapshot.from(source, playingSongId);
+
+        table.removeAll();
+        Constant.PLAYING_LIST.clear();
+        snapshot.songs().forEach((index, entity) -> {
+            Constant.PLAYING_LIST.put(index, entity);
+            var item = new TableItem(table, SWT.NONE);
+            item.setText(new String[] { String.valueOf(index), entity.getName() });
+        });
+
+        Constant.PLAYING_INDEX = snapshot.playingIndex();
+        if (snapshot.playingIndex() == null) {
+            if (previousSong != null) {
+                player.stop();
+                clearCurrentSong();
+                resetPlaybackUi();
+            }
             return;
         }
 
-        initSongTable(list, table);
+        Constant.PLAYING_SONG = snapshot.songs().get(snapshot.playingIndex());
+        Constant.PLAYING_SONG_LENGTH = Constant.PLAYING_SONG.getLength();
+        updateSongSelection(table);
     }
 
-    private void initSongTable(List<SongEntity> list, Table table) {
-        table.removeAll();
-        Constant.PLAYING_LIST.clear();
-        IntStream.range(0, list.size()).forEach(i -> Constant.PLAYING_LIST.put(i, list.get(i)));
-
-        int index = 0;
-        for (var entity : list) {
-            var item = new TableItem(table, SWT.NONE);
-            item.setText(new String[] { String.valueOf(index), entity.getName() });
-            index++;
-        }
+    private void clearCurrentSong() {
+        Constant.PLAYING_SONG = null;
+        Constant.PLAYING_INDEX = null;
+        Constant.PLAYING_SONG_LENGTH = 0;
     }
 
     private void next(String index, boolean next) {
@@ -605,21 +654,23 @@ public class MusicPlayer {
         var duration = PlaybackProgress.duration(player.duration(), entity.getLength());
         timeLabel2.setText(Utils.format((int) duration));
 
+        updateSongSelection(table);
+    }
+
+    private void updateSongSelection(Table table) {
+        Integer activeIndex = Constant.PLAYING_INDEX;
         TableItem[] items = table.getItems();
         for (int i = 0, len = items.length; i < len; i++) {
-            if (i == Constant.PLAYING_INDEX) {
+            if (activeIndex != null && i == activeIndex) {
                 items[i].setBackground(Utils.getColor(SWT.COLOR_GRAY));
             } else {
                 items[i].setBackground(Utils.getColor(SWT.COLOR_WHITE));
             }
         }
 
-        if (entity.getIndex() <= 7) {
-            table.setTopIndex(entity.getIndex());
-        } else {
-            table.setTopIndex(entity.getIndex() - 7);
+        if (activeIndex != null) {
+            table.setTopIndex(Math.max(0, activeIndex - 7));
         }
-
     }
 
     private void updateLyric(double currentPosition) {
