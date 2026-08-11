@@ -33,6 +33,32 @@ public class DatabaseMappingTest {
     }
 
     @Test
+    public void deletingSongRecordDoesNotDeleteAudioFile() throws Exception {
+        var database = Files.createTempFile("music-player-", ".db");
+        var audio = Files.createTempFile("music-player-", ".wav");
+        try {
+            var helper = new NewHelper(database);
+            helper.update("create table song (id text primary key, song_path text)");
+            helper.update("insert into song(id, song_path) values(?, ?)", "missing", audio.toString());
+            helper.update("insert into song(id, song_path) values(?, ?)", "keep", "keep.wav");
+
+            var song = new SongEntity();
+            song.setId("missing");
+
+            var deleted = new UpdateWrapper<>(song, "song", helper)
+                    .eq("id", song.getId())
+                    .delete();
+
+            assertEquals(1, deleted);
+            assertEquals(1, helper.select("select * from song where id = ?", SongEntity.class, "keep").size());
+            assertTrue(Files.isRegularFile(audio));
+        } finally {
+            Files.deleteIfExists(database);
+            Files.deleteIfExists(audio);
+        }
+    }
+
+    @Test
     public void bundledPlaylistReferencesExistingFiles() {
         var songs = List.of("1", "2", "3", "4").stream()
                 .flatMap(id -> new QueryWrapper<>(SongEntity.class, "song")

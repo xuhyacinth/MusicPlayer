@@ -16,13 +16,19 @@ import java.util.List;
 public class UpdateWrapper<T> extends BasicWrapper<T> {
 
     private final T data;
+    private final Helper helper;
 
     public UpdateWrapper(T data, String table) {
-        if (data == null || StrUtil.isBlank(table)) {
+        this(data, table, new NewHelper());
+    }
+
+    public UpdateWrapper(T data, String table, Helper helper) {
+        if (data == null || StrUtil.isBlank(table) || helper == null) {
             throw new DataBaseError("参数错误");
         }
         this.data = data;
         this.table = requireIdentifier(table);
+        this.helper = helper;
     }
 
     public SqlCommand updateCommand() {
@@ -67,7 +73,6 @@ public class UpdateWrapper<T> extends BasicWrapper<T> {
     }
 
     private int execute(SqlCommand command) {
-        Helper helper = new NewHelper();
         return helper.update(command.sql(), command.parameterArray());
     }
 
