@@ -71,11 +71,11 @@ Shade 插件生成的是包含 Java 依赖、当前平台 SWT 和图片资源的
 - `lib/sqlite/db/MusicPlayer.db`；
 - `lib/song/` 中的示例歌曲与歌词。
 
-[`scripts/verify-shaded-jar.ps1`](scripts/verify-shaded-jar.ps1) 用于检查可执行 JAR 的主类、清单、添加歌曲图标和目标平台 SWT 原生库。验证 macOS 包时还必须显式指定 Mach-O 架构：
+SWT 3.134 的 `Library.isLoadable` 从 Shade JAR 加载原生库时，需要 Manifest 提供与目标平台一致的 `SWT-OS` 和 `SWT-Arch`。各 Maven Profile 会通过 Shade 写入这两个属性；[`scripts/verify-shaded-jar.ps1`](scripts/verify-shaded-jar.ps1) 会同时检查它们、主类、添加歌曲图标和目标平台 SWT 原生库。脚本的操作系统与架构参数均为必填，例如验证两个 macOS 包：
 
 ```powershell
-& '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.(jnilib|dylib)$' -MacArchitecture x86_64
-& '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.(jnilib|dylib)$' -MacArchitecture arm64
+& '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.(jnilib|dylib)$' -ExpectedSwtOS macosx -ExpectedSwtArchitecture x86_64
+& '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.(jnilib|dylib)$' -ExpectedSwtOS macosx -ExpectedSwtArchitecture aarch64
 ```
 
 ## 播放链路

@@ -177,7 +177,23 @@ Change the JFace dependency version while retaining its existing SWT and OSGi ex
 </dependency>
 ```
 
-All four platform profiles continue to use `${swt.version}`.
+All four platform profiles continue to use `${swt.version}`. SWT 3.134 also needs platform metadata when `Library.isLoadable` resolves natives from a shaded JAR. Define these properties in the matching profiles:
+
+| Profile | `swt.os` | `swt.arch` |
+| --- | --- | --- |
+| `windows-x64` | `win32` | `x86_64` |
+| `linux-x64` | `linux` | `x86_64` |
+| `macos-x64` | `macosx` | `x86_64` |
+| `macos-arm64` | `macosx` | `aarch64` |
+
+Pass the profile properties through the existing Shade manifest transformer, preserving the exact attribute names:
+
+```xml
+<manifestEntries>
+    <SWT-OS>${swt.os}</SWT-OS>
+    <SWT-Arch>${swt.arch}</SWT-Arch>
+</manifestEntries>
+```
 
 - [ ] **Step 2: Test and package the native Windows profile on JDK 25**
 
@@ -205,51 +221,114 @@ param(
     [Parameter(Mandatory = $true)]
     [string] $NativePattern,
 
-    [ValidateSet('x86_64', 'arm64')]
-    [string] $MacArchitecture
+    [Parameter(Mandatory = $true)]
+    [ValidateSet('win32', 'linux', 'macosx')]
+    [string] $ExpectedSwtOS,
+
+    [Parameter(Mandatory = $true)]
+    [ValidateSet('x86_64', 'aarch64')]
+    [string] $ExpectedSwtArchitecture
 )
+
+Set-StrictMode -Version Latest
+$ErrorActionPreference = 'Stop'
 
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 
 $repository = Split-Path -Parent $PSScriptRoot
-$jarPath = Resolve-Path (Join-Path $repository 'target/MusicPlayer-2.0.0.0.jar')
+$jarPath = Resolve-Path -LiteralPath (Join-Path $repository 'target/MusicPlayer-2.0.0.0.jar')
 $archive = [System.IO.Compression.ZipFile]::OpenRead($jarPath)
 try {
-    $entries = @($archive.Entries | ForEach-Object { $_.FullName })
-    $swtNatives = @($entries | Where-Object {
-        $_ -notmatch '/' -and $_ -match '(?i)^(lib)?swt.*\.(dll|so|jnilib|dylib)$'
+    $entries = @($archive.Entries)
+    $entryNames = @($entries | ForEach-Object { $_.FullName })
+    $swtNativeEntries = @($entries | Where-Object {
+        $_.FullName -notmatch '/' -and $_.FullName -match '(?i)^(lib)?swt.*\.(dll|so|jnilib|dylib)$'
     })
+    $swtNatives = @($swtNativeEntries | ForEach-Object { $_.FullName })
+
     if ($swtNatives.Count -eq 0) {
-        throw 'Shade JAR 中没有 SWT 原生库'
+        throw 'Shaded JAR contains no root-level SWT native libraries.'
     }
-    if (@($swtNatives | Where-Object { $_ -notmatch $NativePattern }).Count -gt 0) {
-        throw "Shade JAR 混入了其他平台 SWT 原生库: $swtNatives"
+
+    $unexpectedNatives = @($swtNatives | Where-Object { $_ -notmatch $NativePattern })
+    if ($unexpectedNatives.Count -gt 0) {
+        throw "Shaded JAR contains SWT native libraries for another platform: $unexpectedNatives"
     }
-    if ($entries -notcontains 'com/xu/music/player/main/MusicPlayer.class') {
-        throw 'Shade JAR 缺少主类'
+
+    $macNativeEntries = @($swtNativeEntries | Where-Object {
+        $_.FullName -match '(?i)\.(jnilib|dylib)$'
+    })
+    if ($macNativeEntries.Count -gt 0) {
+        $expectedCpuType = switch ($ExpectedSwtArchitecture) {
+            'x86_64' { [uint32] 0x01000007 }
+            'aarch64' { [uint32] 0x0100000C }
+        }
+
+        foreach ($nativeEntry in $macNativeEntries) {
+            $stream = $nativeEntry.Open()
+            try {
+                $header = [byte[]]::new(8)
+                $bytesRead = 0
+                while ($bytesRead -lt $header.Length) {
+                    $read = $stream.Read($header, $bytesRead, $header.Length - $bytesRead)
+                    if ($read -eq 0) {
+                        break
+                    }
+                    $bytesRead += $read
+                }
+            } finally {
+                $stream.Dispose()
+            }
+
+            if ($bytesRead -ne $header.Length) {
+                throw "macOS native library has an incomplete Mach-O header: $($nativeEntry.FullName)"
+            }
+            if ($header[0] -ne 0xCF -or $header[1] -ne 0xFA -or
+                $header[2] -ne 0xED -or $header[3] -ne 0xFE) {
+                throw "macOS native library is not a little-endian Mach-O 64-bit binary: $($nativeEntry.FullName)"
+            }
+
+            $cpuType = [BitConverter]::ToUInt32($header, 4)
+            if ($cpuType -ne $expectedCpuType) {
+                throw "macOS native library architecture mismatch for $($nativeEntry.FullName): expected $ExpectedSwtArchitecture, CPU type 0x$($cpuType.ToString('X8')) found."
+            }
+        }
     }
-    if ($entries -notcontains 'com/xu/music/player/image/addMusic.png') {
-        throw 'Shade JAR 缺少添加歌曲图标'
+
+    if ($entryNames -notcontains 'com/xu/music/player/main/MusicPlayer.class') {
+        throw 'Shaded JAR is missing the application main class.'
+    }
+
+    if ($entryNames -notcontains 'com/xu/music/player/image/addMusic.png') {
+        throw 'Shaded JAR is missing the add-song icon.'
     }
 
     $manifestEntry = $archive.GetEntry('META-INF/MANIFEST.MF')
     if ($null -eq $manifestEntry) {
-        throw 'Shade JAR 缺少清单文件'
+        throw 'Shaded JAR is missing META-INF/MANIFEST.MF.'
     }
+
     $reader = [System.IO.StreamReader]::new($manifestEntry.Open())
     try {
         $manifest = $reader.ReadToEnd()
     } finally {
         $reader.Dispose()
     }
-    if ($manifest -notmatch 'Main-Class: com\.xu\.music\.player\.main\.MusicPlayer') {
-        throw 'Shade JAR 主类清单不正确'
+
+    if ($manifest -cnotmatch '(?m)^Main-Class: com\.xu\.music\.player\.main\.MusicPlayer\r?$') {
+        throw 'Shaded JAR has an unexpected Main-Class manifest entry.'
+    }
+    if ($manifest -cnotmatch "(?m)^SWT-OS: $([Regex]::Escape($ExpectedSwtOS))\r?$") {
+        throw "Shaded JAR has an unexpected SWT-OS manifest entry; expected $ExpectedSwtOS."
+    }
+    if ($manifest -cnotmatch "(?m)^SWT-Arch: $([Regex]::Escape($ExpectedSwtArchitecture))\r?$") {
+        throw "Shaded JAR has an unexpected SWT-Arch manifest entry; expected $ExpectedSwtArchitecture."
     }
 } finally {
     $archive.Dispose()
 }
 
-Write-Output "Shade JAR 校验通过: $($swtNatives -join ', ')"
+Write-Output "Shaded JAR verification passed: $($swtNatives -join ', ')"
 ```
 
 - [ ] **Step 4: Inspect the Windows JAR and independently package foreign profiles**
@@ -260,22 +339,22 @@ Run each build under JDK 25 and inspect its JAR before the next `clean` replaces
 $originalJavaHome = $env:JAVA_HOME
 try {
     $env:JAVA_HOME = 'D:\Env\JDK\jdk-25.0.4'
-    & '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.dll$'
+    & '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.dll$' -ExpectedSwtOS win32 -ExpectedSwtArchitecture x86_64
 
     mvn "-P!windows-x64,linux-x64" -DskipTests clean package
-    & '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.so$'
+    & '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.so$' -ExpectedSwtOS linux -ExpectedSwtArchitecture x86_64
 
     mvn "-P!windows-x64,macos-x64" -DskipTests clean package
-    & '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.(jnilib|dylib)$' -MacArchitecture x86_64
+    & '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.(jnilib|dylib)$' -ExpectedSwtOS macosx -ExpectedSwtArchitecture x86_64
 
     mvn "-P!windows-x64,macos-arm64" -DskipTests clean package
-    & '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.(jnilib|dylib)$' -MacArchitecture arm64
+    & '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.(jnilib|dylib)$' -ExpectedSwtOS macosx -ExpectedSwtArchitecture aarch64
 } finally {
     $env:JAVA_HOME = $originalJavaHome
 }
 ```
 
-Expected: every build succeeds; the root-level SWT native files match only the selected target extension, and macOS native headers match the selected architecture. SQLite JDBC's nested multi-platform natives under `org/sqlite/native/` are intentionally outside this SWT check.
+Expected: every build succeeds; the manifest's `SWT-OS` and `SWT-Arch` values match the selected profile, the root-level SWT native files match only the selected target extension, and macOS native headers match the selected architecture. SQLite JDBC's nested multi-platform natives under `org/sqlite/native/` are intentionally outside this SWT check.
 
 - [ ] **Step 5: Rebuild the host JAR after cross-platform checks**
 
@@ -286,7 +365,7 @@ $originalJavaHome = $env:JAVA_HOME
 try {
     $env:JAVA_HOME = 'D:\Env\JDK\jdk-25.0.4'
     mvn -Pwindows-x64 clean package
-    & '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.dll$'
+    & '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.dll$' -ExpectedSwtOS win32 -ExpectedSwtArchitecture x86_64
 } finally {
     $env:JAVA_HOME = $originalJavaHome
 }
@@ -419,15 +498,15 @@ $originalJavaHome = $env:JAVA_HOME
 try {
     $env:JAVA_HOME = 'D:\Env\JDK\jdk-25.0.4'
     mvn -Pwindows-x64 clean package
-    & '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.dll$'
+    & '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.dll$' -ExpectedSwtOS win32 -ExpectedSwtArchitecture x86_64
     mvn "-P!windows-x64,linux-x64" -DskipTests clean package
-    & '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.so$'
+    & '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.so$' -ExpectedSwtOS linux -ExpectedSwtArchitecture x86_64
     mvn "-P!windows-x64,macos-x64" -DskipTests clean package
-    & '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.(jnilib|dylib)$' -MacArchitecture x86_64
+    & '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.(jnilib|dylib)$' -ExpectedSwtOS macosx -ExpectedSwtArchitecture x86_64
     mvn "-P!windows-x64,macos-arm64" -DskipTests clean package
-    & '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.(jnilib|dylib)$' -MacArchitecture arm64
+    & '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.(jnilib|dylib)$' -ExpectedSwtOS macosx -ExpectedSwtArchitecture aarch64
     mvn -Pwindows-x64 clean package
-    & '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.dll$'
+    & '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.dll$' -ExpectedSwtOS win32 -ExpectedSwtArchitecture x86_64
 } finally {
     $env:JAVA_HOME = $originalJavaHome
 }

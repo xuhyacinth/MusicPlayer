@@ -134,6 +134,8 @@
 
 JFace 与 SWT 必须作为一组升级。保留 MP3SPI 1.9.5.4、JFLAC 1.5.2 和 JUnit 4.13.2。Surefire 不采用 `3.6.0-M1`，SLF4J 不采用 `2.1.0-alpha1`。
 
+SWT 3.134 的 `Library.isLoadable` 从 Shade JAR 加载原生库时依赖 Manifest 平台信息。四个 Profile 分别提供 `win32/x86_64`、`linux/x86_64`、`macosx/x86_64` 和 `macosx/aarch64`，Shade 的 `ManifestResourceTransformer` 将其写为大小写严格的 `SWT-OS` 与 `SWT-Arch`。
+
 依赖来源：
 
 - [SQLite JDBC 3.53.2.1](https://central.sonatype.com/artifact/org.xerial/sqlite-jdbc/3.53.2.1)
@@ -174,12 +176,16 @@ mvn clean package
 
 ```powershell
 mvn -Pwindows-x64 clean package
-mvn -P!windows-x64,linux-x64 -DskipTests clean package
-mvn -P!windows-x64,macos-x64 -DskipTests clean package
-mvn -P!windows-x64,macos-arm64 -DskipTests clean package
+& '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.dll$' -ExpectedSwtOS win32 -ExpectedSwtArchitecture x86_64
+mvn "-P!windows-x64,linux-x64" -DskipTests clean package
+& '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.so$' -ExpectedSwtOS linux -ExpectedSwtArchitecture x86_64
+mvn "-P!windows-x64,macos-x64" -DskipTests clean package
+& '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.(jnilib|dylib)$' -ExpectedSwtOS macosx -ExpectedSwtArchitecture x86_64
+mvn "-P!windows-x64,macos-arm64" -DskipTests clean package
+& '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.(jnilib|dylib)$' -ExpectedSwtOS macosx -ExpectedSwtArchitecture aarch64
 ```
 
-对每个包检查 Shade JAR 存在、主类清单正确、只包含目标平台 SWT 原生库。Windows 包进行 UI 冒烟检查；其他平台只声明交叉依赖解析与打包成功。
+对每个包检查 Shade JAR 存在、主类清单正确、`SWT-OS`/`SWT-Arch` 与 Profile 一致，并且只包含目标平台 SWT 原生库；macOS 包还检查 Mach-O CPU 类型。Windows 包进行 UI 冒烟检查；其他平台只声明交叉依赖解析与打包成功。
 
 ### 人工 UI 验收
 
