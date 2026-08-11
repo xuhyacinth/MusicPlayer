@@ -40,6 +40,7 @@ import org.eclipse.swt.widgets.Shell;
 public class Utils {
 
     private static final Logger log = LoggerFactory.getLogger(Utils.class);
+    static final int CONFIRMATION_STYLE = SWT.YES | SWT.NO | SWT.CANCEL | SWT.ICON_WARNING;
 
     private Utils() {
 
@@ -124,7 +125,7 @@ public class Utils {
      */
     public static MessageBox tips(Shell shell, String title, String content) {
         Toolkit.getDefaultToolkit().beep();
-        MessageBox message = new MessageBox(shell, SWT.YES | SWT.ICON_WARNING | SWT.NO);
+        MessageBox message = new MessageBox(shell, CONFIRMATION_STYLE);
         message.setText(title);
         message.setMessage(content);
         return message;
