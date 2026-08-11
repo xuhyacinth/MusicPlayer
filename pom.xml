@@ -177,6 +177,10 @@
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>com.xu.music.player.main.MusicPlayer</mainClass>
+                                    <manifestEntries>
+                                        <SWT-OS>${swt.os}</SWT-OS>
+                                        <SWT-Arch>${swt.arch}</SWT-Arch>
+                                    </manifestEntries>
                                 </transformer>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
                             </transformers>
@@ -198,6 +202,10 @@
                     <arch>amd64</arch>
                 </os>
             </activation>
+            <properties>
+                <swt.os>win32</swt.os>
+                <swt.arch>x86_64</swt.arch>
+            </properties>
             <dependencies>
                 <dependency>
                     <groupId>org.eclipse.platform</groupId>
@@ -221,6 +229,10 @@
                     <arch>amd64</arch>
                 </os>
             </activation>
+            <properties>
+                <swt.os>linux</swt.os>
+                <swt.arch>x86_64</swt.arch>
+            </properties>
             <dependencies>
                 <dependency>
                     <groupId>org.eclipse.platform</groupId>
@@ -244,6 +256,10 @@
                     <arch>x86_64</arch>
                 </os>
             </activation>
+            <properties>
+                <swt.os>macosx</swt.os>
+                <swt.arch>x86_64</swt.arch>
+            </properties>
             <dependencies>
                 <dependency>
                     <groupId>org.eclipse.platform</groupId>
@@ -267,6 +283,10 @@
                     <arch>aarch64</arch>
                 </os>
             </activation>
+            <properties>
+                <swt.os>macosx</swt.os>
+                <swt.arch>aarch64</swt.arch>
+            </properties>
             <dependencies>
                 <dependency>
                     <groupId>org.eclipse.platform</groupId>

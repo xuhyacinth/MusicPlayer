@@ -2,8 +2,13 @@ param(
     [Parameter(Mandatory = $true)]
     [string] $NativePattern,
 
-    [ValidateSet('x86_64', 'arm64')]
-    [string] $MacArchitecture
+    [Parameter(Mandatory = $true)]
+    [ValidateSet('win32', 'linux', 'macosx')]
+    [string] $ExpectedSwtOS,
+
+    [Parameter(Mandatory = $true)]
+    [ValidateSet('x86_64', 'aarch64')]
+    [string] $ExpectedSwtArchitecture
 )
 
 Set-StrictMode -Version Latest
@@ -35,13 +40,9 @@ try {
         $_.FullName -match '(?i)\.(jnilib|dylib)$'
     })
     if ($macNativeEntries.Count -gt 0) {
-        if ([string]::IsNullOrWhiteSpace($MacArchitecture)) {
-            throw 'MacArchitecture is required when verifying macOS native libraries.'
-        }
-
-        $expectedCpuType = switch ($MacArchitecture) {
+        $expectedCpuType = switch ($ExpectedSwtArchitecture) {
             'x86_64' { [uint32] 0x01000007 }
-            'arm64' { [uint32] 0x0100000C }
+            'aarch64' { [uint32] 0x0100000C }
         }
 
         foreach ($nativeEntry in $macNativeEntries) {
@@ -70,7 +71,7 @@ try {
 
             $cpuType = [BitConverter]::ToUInt32($header, 4)
             if ($cpuType -ne $expectedCpuType) {
-                throw "macOS native library architecture mismatch for $($nativeEntry.FullName): expected $MacArchitecture, CPU type 0x$($cpuType.ToString('X8')) found."
+                throw "macOS native library architecture mismatch for $($nativeEntry.FullName): expected $ExpectedSwtArchitecture, CPU type 0x$($cpuType.ToString('X8')) found."
             }
         }
     }
@@ -97,6 +98,12 @@ try {
 
     if ($manifest -notmatch '(?m)^Main-Class: com\.xu\.music\.player\.main\.MusicPlayer\r?$') {
         throw 'Shaded JAR has an unexpected Main-Class manifest entry.'
+    }
+    if ($manifest -notmatch "(?m)^SWT-OS: $([Regex]::Escape($ExpectedSwtOS))\r?$") {
+        throw "Shaded JAR has an unexpected SWT-OS manifest entry; expected $ExpectedSwtOS."
+    }
+    if ($manifest -notmatch "(?m)^SWT-Arch: $([Regex]::Escape($ExpectedSwtArchitecture))\r?$") {
+        throw "Shaded JAR has an unexpected SWT-Arch manifest entry; expected $ExpectedSwtArchitecture."
     }
 } finally {
     $archive.Dispose()
