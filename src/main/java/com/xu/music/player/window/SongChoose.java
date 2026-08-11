@@ -34,16 +34,19 @@ public class SongChoose {
      *
      * @param shell 文件对话框
      * @date 2024年6月4日19点07分
+     * @return 成功导入的歌曲数
      * @since idea
      */
-    public void open(Shell shell) {
+    public int open(Shell shell) {
         try {
             FileDialog dialog = new FileDialog(shell, SWT.OPEN | SWT.MULTI);
             dialog.setFilterExtensions(new String[]{"*.mp3", "*.MP3", "*.wav", "*.WAV", "*.flac", "*.FLAC", "*.pcm", "*.PCM"});
-            dialog.open();
+            if (dialog.open() == null) {
+                return 0;
+            }
             String[] files = dialog.getFileNames();
             if (ArrayUtil.isEmpty(files)) {
-                return;
+                return 0;
             }
 
             int currentCount = 0;
@@ -57,6 +60,7 @@ public class SongChoose {
                 // 忽略异常，默认从0开始排序
             }
 
+            int importedCount = 0;
             for (String file : files) {
                 String paths = dialog.getFilterPath() + File.separator + file;
                 File audioFile = new File(paths);
@@ -94,14 +98,16 @@ public class SongChoose {
                 }
 
                 song.setFlag(1);
-                song.setIndex(++currentCount);
+                song.setIndex(currentCount + importedCount + 1);
                 song.setCreateTime(new Date());
                 song.setUpdateTime(new Date());
 
                 // 插入数据库
                 InsertWrapper<SongEntity> insertWrapper = new InsertWrapper<>(song, "song");
                 insertWrapper.insert();
+                importedCount++;
             }
+            return importedCount;
         } catch (Exception e) {
             throw new RuntimeException("导入歌曲失败", e);
         }

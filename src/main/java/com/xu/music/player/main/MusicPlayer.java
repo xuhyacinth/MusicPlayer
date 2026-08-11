@@ -199,7 +199,7 @@ public class MusicPlayer {
         composite1.setBackgroundMode(SWT.INHERIT_FORCE);
         composite1.setLayout(new GridLayout(1, false));
 
-        ToolBar toolBar = new ToolBar(composite1, SWT.NONE);
+        ToolBar toolBar = new ToolBar(composite1, SWT.FLAT);
         ToolItem addMusic = new ToolItem(toolBar, SWT.PUSH);
         addMusic.setImage(Utils.getImage("addMusic.png"));
         addMusic.setToolTipText("添加歌曲");
@@ -211,7 +211,7 @@ public class MusicPlayer {
         });
 
         lists = new Table(composite1, SWT.FULL_SELECTION);
-        lists.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        lists.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         lists.setHeaderVisible(true);
 
         TableColumn tableColumn = new TableColumn(lists, SWT.NONE);
@@ -547,10 +547,21 @@ public class MusicPlayer {
     }
 
     private void addSongs() {
+        boolean importFinished = false;
         try {
-            new SongChoose().open(shell);
-            reloadPlaylist();
+            int importedCount = new SongChoose().open(shell);
+            importFinished = true;
+            if (importedCount > 0) {
+                reloadPlaylist();
+            }
         } catch (RuntimeException exception) {
+            if (!importFinished) {
+                try {
+                    reloadPlaylist();
+                } catch (RuntimeException reloadException) {
+                    exception.addSuppressed(reloadException);
+                }
+            }
             log.error("添加歌曲异常", exception);
             showError("添加歌曲失败，请检查文件和数据库权限。");
         }
@@ -795,6 +806,9 @@ public class MusicPlayer {
         }
         if (timeLabel1 != null && !timeLabel1.isDisposed()) {
             timeLabel1.setText(Utils.format(0));
+        }
+        if (timeLabel2 != null && !timeLabel2.isDisposed()) {
+            timeLabel2.setText(Utils.format(0));
         }
         if (lyrics != null && !lyrics.isDisposed()) {
             lyrics.removeAll();

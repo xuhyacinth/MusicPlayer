@@ -7,6 +7,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 
 public class PlaylistSnapshotTest {
 
@@ -40,6 +41,13 @@ public class PlaylistSnapshotTest {
         PlaylistSnapshot snapshot = PlaylistSnapshot.from(List.of(songWithoutId), null);
 
         assertNull(snapshot.playingIndex());
+    }
+
+    @Test
+    public void songsMapIsUnmodifiable() {
+        PlaylistSnapshot snapshot = PlaylistSnapshot.from(List.of(song("first")), null);
+
+        assertThrows(UnsupportedOperationException.class, () -> snapshot.songs().put(1, song("second")));
     }
 
     private SongEntity song(String id) {
