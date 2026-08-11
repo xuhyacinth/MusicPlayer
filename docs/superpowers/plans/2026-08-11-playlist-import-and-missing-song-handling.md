@@ -253,34 +253,38 @@ import static org.junit.Assert.assertEquals;
 public class PlaybackCompletionNotifierTest {
 
     @Test
-    public void notifiesNaturalCompletionOfCurrentSession() {
-        var calls = new AtomicInteger();
+    public void currentNaturalCompletionCallsListenerOnce() {
         var notifier = new PlaybackCompletionNotifier();
-        notifier.setListener(calls::incrementAndGet);
+        var firstCalls = new AtomicInteger();
+        var secondCalls = new AtomicInteger();
+        notifier.setListener(firstCalls::incrementAndGet);
+        var completionListener = notifier.snapshot();
+        notifier.setListener(secondCalls::incrementAndGet);
 
-        notifier.notifyIfNatural(true, true);
+        notifier.notifyIfNatural(completionListener, true, true);
 
-        assertEquals(1, calls.get());
+        assertEquals(1, firstCalls.get());
+        assertEquals(0, secondCalls.get());
     }
 
     @Test
-    public void ignoresNonEofTermination() {
-        var calls = new AtomicInteger();
+    public void nonEofDoesNotCallListener() {
         var notifier = new PlaybackCompletionNotifier();
+        var calls = new AtomicInteger();
         notifier.setListener(calls::incrementAndGet);
 
-        notifier.notifyIfNatural(false, true);
+        notifier.notifyIfNatural(notifier.snapshot(), false, true);
 
         assertEquals(0, calls.get());
     }
 
     @Test
-    public void ignoresCompletionOfReplacedSession() {
-        var calls = new AtomicInteger();
+    public void replacedCompletionDoesNotCallListener() {
         var notifier = new PlaybackCompletionNotifier();
+        var calls = new AtomicInteger();
         notifier.setListener(calls::incrementAndGet);
 
-        notifier.notifyIfNatural(true, false);
+        notifier.notifyIfNatural(notifier.snapshot(), true, false);
 
         assertEquals(0, calls.get());
     }
@@ -309,16 +313,22 @@ import java.util.concurrent.atomic.AtomicReference;
 
 final class PlaybackCompletionNotifier {
 
-    private static final Runnable NO_OP = () -> { };
+    private static final Runnable NO_OP = () -> {
+    };
+
     private final AtomicReference<Runnable> listener = new AtomicReference<>(NO_OP);
 
-    void setListener(Runnable replacement) {
-        listener.set(Objects.requireNonNullElse(replacement, NO_OP));
+    void setListener(Runnable listener) {
+        this.listener.set(Objects.requireNonNullElse(listener, NO_OP));
     }
 
-    void notifyIfNatural(boolean reachedEof, boolean completedCurrentSession) {
+    Runnable snapshot() {
+        return listener.get();
+    }
+
+    void notifyIfNatural(Runnable completionListener, boolean reachedEof, boolean completedCurrentSession) {
         if (reachedEof && completedCurrentSession) {
-            listener.get().run();
+            completionListener.run();
         }
     }
 }
@@ -345,10 +355,35 @@ public void onNaturalCompletion(Runnable listener) {
 }
 ```
 
+In `play()`, snapshot the listener before creating and starting the Session tasks so that later listener replacements cannot change an older Session's completion callback:
+
+```java
+@Override
+public synchronized void play() {
+    var session = sessions.current();
+    if (session == null || session.playing()) {
+        return;
+    }
+
+    var completionListener = completionNotifier.snapshot();
+    var sequence = taskSequence.incrementAndGet();
+    var playbackThread = Thread.ofVirtual()
+            .name("music-playback-" + sequence)
+            .unstarted(() -> runPlayback(session, completionListener));
+    var spectrumThread = Thread.ofVirtual()
+            .name("music-spectrum-" + sequence)
+            .unstarted(() -> runSpectrum(session));
+    session.attachTasks(playbackThread, spectrumThread);
+    session.start();
+    playbackThread.start();
+    spectrumThread.start();
+}
+```
+
 Replace `runPlayback` with:
 
 ```java
-private void runPlayback(PlaybackSession session) {
+private void runPlayback(PlaybackSession session, Runnable completionListener) {
     var reachedEof = false;
     try {
         var format = session.format();
@@ -376,6 +411,7 @@ private void runPlayback(PlaybackSession session) {
             session.line().write(buffer, 0, alignedLength);
         }
     } catch (InterruptedException exception) {
+        reachedEof = false;
         Thread.currentThread().interrupt();
     } catch (Exception exception) {
         reachedEof = false;
@@ -387,9 +423,9 @@ private void runPlayback(PlaybackSession session) {
         var completedCurrentSession = sessions.complete(session);
         session.close();
         try {
-            completionNotifier.notifyIfNatural(reachedEof, completedCurrentSession);
+            completionNotifier.notifyIfNatural(completionListener, reachedEof, completedCurrentSession);
         } catch (RuntimeException exception) {
-            log.error("播放完成回调异常", exception);
+            log.error("Natural playback completion callback failed", exception);
         }
     }
 }
@@ -425,31 +461,56 @@ Create `PlaybackRequestGateTest`:
 ```java
 package com.xu.music.player.main;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class PlaybackRequestGateTest {
 
     @Test
-    public void acceptsCurrentCompletionWhenNothingIsPlaying() {
+    public void acceptsCurrentSnapshotWhenNothingIsPlaying() {
         var gate = new PlaybackRequestGate();
-        assertTrue(gate.accepts(gate.snapshot(), false));
+        var generation = gate.beginRequest();
+
+        assertEquals(generation, gate.snapshot());
+        assertTrue(gate.accepts(generation, false));
     }
 
     @Test
-    public void newerExplicitRequestInvalidatesQueuedCompletion() {
+    public void rejectsSnapshotAfterNewerRequestBegins() {
         var gate = new PlaybackRequestGate();
-        var queuedGeneration = gate.snapshot();
+        var completedGeneration = gate.beginRequest();
+        var currentGeneration = gate.beginRequest();
+
+        assertTrue(currentGeneration > completedGeneration);
+        assertEquals(currentGeneration, gate.snapshot());
+        assertFalse(gate.accepts(completedGeneration, false));
+        assertTrue(gate.accepts(currentGeneration, false));
+    }
+
+    @Test
+    public void rejectsCurrentSnapshotWhileReplacementPlayerIsPlaying() {
+        var gate = new PlaybackRequestGate();
+        var generation = gate.beginRequest();
+
+        assertFalse(gate.accepts(generation, true));
+    }
+
+    @Test
+    public void failedNewRequestInvalidatesBoundOldCompletion() {
+        var gate = new PlaybackRequestGate();
+        var oldGeneration = gate.beginRequest();
+        var accepted = new AtomicBoolean(true);
+        Runnable oldCompletion = () -> accepted.set(gate.accepts(oldGeneration, false));
+
         gate.beginRequest();
-        assertFalse(gate.accepts(queuedGeneration, false));
-    }
+        oldCompletion.run();
 
-    @Test
-    public void runningReplacementPlaybackRejectsCompletion() {
-        var gate = new PlaybackRequestGate();
-        assertFalse(gate.accepts(gate.snapshot(), true));
+        assertFalse(accepted.get());
     }
 }
 ```
@@ -499,7 +560,7 @@ Run:
 mvn -q -Dtest=PlaybackRequestGateTest test
 ```
 
-Expected: 3 tests pass.
+Expected: 4 tests pass.
 
 - [ ] **Step 5: Commit the concurrency guard**
 
@@ -843,24 +904,7 @@ Add the field:
 private final PlaybackRequestGate playbackRequests = new PlaybackRequestGate();
 ```
 
-Immediately after creating `player`, register:
-
-```java
-player.onNaturalCompletion(() -> {
-    var completedGeneration = playbackRequests.snapshot();
-    var currentDisplay = display;
-    if (currentDisplay == null || currentDisplay.isDisposed()) {
-        return;
-    }
-    currentDisplay.asyncExec(() -> {
-        if (shell == null || shell.isDisposed()
-                || !playbackRequests.accepts(completedGeneration, player.playing())) {
-            return;
-        }
-        playRelative(1, true);
-    });
-});
-```
+Do not register one global completion callback after creating `player`. Each playback request binds its returned generation to the Session callback in `playSong`, as shown in Step 3.
 
 - [ ] **Step 2: Make double-click the only table gesture that starts playback**
 
@@ -896,23 +940,23 @@ Delete `next(String index, boolean next)` and add:
 
 ```java
 private void playSelected(int index) {
-    playbackRequests.beginRequest();
-    var song = Constant.PLAYING_LIST.get(index);
+    long requestGeneration = playbackRequests.beginRequest();
+    SongEntity song = Constant.PLAYING_LIST.get(index);
     if (!SongFileAvailability.isPlayable(song)) {
         confirmDeleteMissingSong(song);
         return;
     }
-    playSong(index, song);
+    playSong(index, song, requestGeneration);
 }
 
 private void playRelative(int direction, boolean playbackAlreadyEnded) {
-    playbackRequests.beginRequest();
-    var result = PlaylistNavigator.findPlayable(
+    long requestGeneration = playbackRequests.beginRequest();
+    var playableIndex = PlaylistNavigator.findPlayable(
             Constant.PLAYING_INDEX,
             Constant.PLAYING_LIST.size(),
             direction,
             index -> SongFileAvailability.isPlayable(Constant.PLAYING_LIST.get(index)));
-    if (result.isEmpty()) {
+    if (playableIndex.isEmpty()) {
         if (playbackAlreadyEnded || !player.playing()) {
             resetPlaybackUi();
         }
@@ -920,15 +964,16 @@ private void playRelative(int direction, boolean playbackAlreadyEnded) {
         return;
     }
 
-    var index = result.getAsInt();
-    playSong(index, Constant.PLAYING_LIST.get(index));
+    int index = playableIndex.getAsInt();
+    playSong(index, Constant.PLAYING_LIST.get(index), requestGeneration);
 }
 
-private void playSong(int index, SongEntity song) {
+private void playSong(int index, SongEntity song, long requestGeneration) {
     Constant.PLAYING_INDEX = index;
     Constant.PLAYING_SONG = song;
     Constant.PLAYING_SONG_LENGTH = song.getLength();
     try {
+        player.onNaturalCompletion(() -> scheduleNaturalAdvance(requestGeneration));
         PlaybackStarter.start(player, song.getSongPath());
     } catch (MusicPlayerError exception) {
         log.error("选择歌曲播放异常", exception);
@@ -948,6 +993,19 @@ private void playSong(int index, SongEntity song) {
         resetPlaybackUi();
         showError("歌曲已停止，播放器界面更新失败。");
     }
+}
+
+private void scheduleNaturalAdvance(long completedGeneration) {
+    Display playbackDisplay = display;
+    if (playbackDisplay == null || playbackDisplay.isDisposed()) {
+        return;
+    }
+    playbackDisplay.asyncExec(() -> {
+        if (shell != null && !shell.isDisposed()
+                && playbackRequests.accepts(completedGeneration, player.playing())) {
+            playRelative(1, true);
+        }
+    });
 }
 ```
 
