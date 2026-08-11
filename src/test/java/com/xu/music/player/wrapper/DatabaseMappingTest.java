@@ -2,7 +2,9 @@ package com.xu.music.player.wrapper;
 
 import com.xu.music.player.entity.SongEntity;
 import com.xu.music.player.wrapper.sql.NewHelper;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,6 +15,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class DatabaseMappingTest {
+
+    @Rule
+    public final TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     @Test
     public void sqliteTextTimestampMapsToDate() throws Exception {
@@ -34,28 +39,23 @@ public class DatabaseMappingTest {
 
     @Test
     public void deletingSongRecordDoesNotDeleteAudioFile() throws Exception {
-        var database = Files.createTempFile("music-player-", ".db");
-        var audio = Files.createTempFile("music-player-", ".wav");
-        try {
-            var helper = new NewHelper(database);
-            helper.update("create table song (id text primary key, song_path text)");
-            helper.update("insert into song(id, song_path) values(?, ?)", "missing", audio.toString());
-            helper.update("insert into song(id, song_path) values(?, ?)", "keep", "keep.wav");
+        var database = temporaryFolder.newFile("music-player.db").toPath();
+        var audio = temporaryFolder.newFile("music-player.wav").toPath();
+        var helper = new NewHelper(database);
+        helper.update("create table song (id text primary key, song_path text)");
+        helper.update("insert into song(id, song_path) values(?, ?)", "missing", audio.toString());
+        helper.update("insert into song(id, song_path) values(?, ?)", "keep", "keep.wav");
 
-            var song = new SongEntity();
-            song.setId("missing");
+        var song = new SongEntity();
+        song.setId("missing");
 
-            var deleted = new UpdateWrapper<>(song, "song", helper)
-                    .eq("id", song.getId())
-                    .delete();
+        var deleted = new UpdateWrapper<>(song, "song", helper)
+                .eq("id", song.getId())
+                .delete();
 
-            assertEquals(1, deleted);
-            assertEquals(1, helper.select("select * from song where id = ?", SongEntity.class, "keep").size());
-            assertTrue(Files.isRegularFile(audio));
-        } finally {
-            Files.deleteIfExists(database);
-            Files.deleteIfExists(audio);
-        }
+        assertEquals(1, deleted);
+        assertEquals(1, helper.select("select * from song where id = ?", SongEntity.class, "keep").size());
+        assertTrue(Files.isRegularFile(audio));
     }
 
     @Test

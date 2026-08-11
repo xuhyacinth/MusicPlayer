@@ -61,19 +61,18 @@ public class UpdateWrapper<T> extends BasicWrapper<T> {
     }
 
     public int update() {
-        return execute(updateCommand());
+        var command = updateCommand();
+        return helper.update(command.sql(), command.parameterArray());
     }
 
     public int insert() {
-        return execute(insertCommand());
+        var command = insertCommand();
+        return helper.insert(command.sql(), command.parameterArray());
     }
 
     public int delete() {
-        return execute(deleteCommand());
-    }
-
-    private int execute(SqlCommand command) {
-        return helper.update(command.sql(), command.parameterArray());
+        var command = deleteCommand();
+        return helper.delete(command.sql(), command.parameterArray());
     }
 
     public UpdateWrapper<T> eq(String field, Object value) {
