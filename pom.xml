@@ -13,7 +13,7 @@
     <properties>
         <java.version>25</java.version>
         <slf4j.version>2.0.18</slf4j.version>
-        <swt.version>3.127.0</swt.version>
+        <swt.version>3.134.0</swt.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
@@ -73,7 +73,7 @@
         <dependency>
             <groupId>org.eclipse.platform</groupId>
             <artifactId>org.eclipse.jface</artifactId>
-            <version>3.35.0</version>
+            <version>3.39.100</version>
             <exclusions>
                 <exclusion>
                     <artifactId>org.eclipse.swt</artifactId>
