@@ -22,6 +22,7 @@ import com.xu.music.player.tray.MusicPlayerTray;
 import com.xu.music.player.utils.Utils;
 import com.xu.music.player.window.SongChoose;
 import com.xu.music.player.wrapper.QueryWrapper;
+import com.xu.music.player.wrapper.UpdateWrapper;
 
 import java.util.List;
 
@@ -87,8 +88,7 @@ public class MusicPlayer {
     private int clickX, clickY;
     // 总播放时间标签
     private Label timeLabel2;
-    // 双击选择状态标志位
-    private boolean chose = true;
+    private final PlaybackRequestGate playbackRequests = new PlaybackRequestGate();
     // 播放/暂停控制按钮
     private Label start;
     // 是否按下了界面以进行拖拽移动
@@ -368,17 +368,9 @@ public class MusicPlayer {
         lists.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseDoubleClick(MouseEvent e) {
-                chose = true;
-            }
-        });
-        lists.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                if (chose) {
-                    TableItem[] items = lists.getSelection();
-                    String id = items[0].getText(0).trim();
-                    // 下一曲
-                    next(id, true);
+                int selectedIndex = lists.getSelectionIndex();
+                if (selectedIndex >= 0) {
+                    playSelected(selectedIndex);
                 }
             }
         });
@@ -392,7 +384,7 @@ public class MusicPlayer {
 
             @Override
             public void mouseUp(MouseEvent e) {
-                next(null, false);// 上一曲
+                playRelative(-1, false);
                 prev.setImage(Utils.getImage("lastsong-1.png"));
             }
         });
@@ -406,7 +398,7 @@ public class MusicPlayer {
 
             @Override
             public void mouseUp(MouseEvent e) {
-                next(null, true);// 下一曲
+                playRelative(1, false);
                 next.setImage(Utils.getImage("nextsong-1.png"));
             }
         });
@@ -610,35 +602,42 @@ public class MusicPlayer {
         Constant.PLAYING_SONG_LENGTH = 0;
     }
 
-    private void next(String index, boolean next) {
-        if (CollUtil.isEmpty(Constant.PLAYING_LIST)) {
-            var msg = Utils.tips(shell, null, "未发现歌曲，现在添加歌曲？");
-            if (msg.open() == SWT.YES) {
-                initPlayer(shell, lists);
-                if (CollUtil.isEmpty(Constant.PLAYING_LIST)) {
-                    return;
-                }
-            } else {
-                Utils.tips(shell, null, "未发现歌曲，不能播放歌曲。").open();
-                return;
+    private void playSelected(int index) {
+        long requestGeneration = playbackRequests.beginRequest();
+        SongEntity song = Constant.PLAYING_LIST.get(index);
+        if (!SongFileAvailability.isPlayable(song)) {
+            confirmDeleteMissingSong(song);
+            return;
+        }
+        playSong(index, song, requestGeneration);
+    }
+
+    private void playRelative(int direction, boolean playbackAlreadyEnded) {
+        long requestGeneration = playbackRequests.beginRequest();
+        var playableIndex = PlaylistNavigator.findPlayable(
+                Constant.PLAYING_INDEX,
+                Constant.PLAYING_LIST.size(),
+                direction,
+                index -> SongFileAvailability.isPlayable(Constant.PLAYING_LIST.get(index)));
+        if (playableIndex.isEmpty()) {
+            if (playbackAlreadyEnded || !player.playing()) {
+                resetPlaybackUi();
             }
+            showInfo("没有可播放的歌曲。");
+            return;
         }
 
-        if (StrUtil.isNotBlank(index)) {
-            Constant.PLAYING_INDEX = Integer.parseInt(index);
-        } else {
-            if (null == Constant.PLAYING_INDEX) {
-                Constant.PLAYING_INDEX = next ? 0 : Constant.PLAYING_LIST.size() - 1;
-            } else {
-                Constant.PLAYING_INDEX = PlaylistNavigator.move(
-                        Constant.PLAYING_INDEX, Constant.PLAYING_LIST.size(), next ? 1 : -1);
-            }
-        }
+        int index = playableIndex.getAsInt();
+        playSong(index, Constant.PLAYING_LIST.get(index), requestGeneration);
+    }
 
-        Constant.PLAYING_SONG = Constant.PLAYING_LIST.get(Constant.PLAYING_INDEX);
-        Constant.PLAYING_SONG_LENGTH = Constant.PLAYING_SONG.getLength();
+    private void playSong(int index, SongEntity song, long requestGeneration) {
+        Constant.PLAYING_INDEX = index;
+        Constant.PLAYING_SONG = song;
+        Constant.PLAYING_SONG_LENGTH = song.getLength();
         try {
-            PlaybackStarter.start(player, Constant.PLAYING_SONG.getSongPath());
+            player.onNaturalCompletion(() -> scheduleNaturalAdvance(requestGeneration));
+            PlaybackStarter.start(player, song.getSongPath());
         } catch (MusicPlayerError exception) {
             log.error("选择歌曲播放异常", exception);
             resetPlaybackUi();
@@ -650,12 +649,45 @@ public class MusicPlayer {
             Constant.MUSIC_PLAYER_PLAYING_STATE = true;
             initLyric();
             startRefresh(foot, timeLabel1);
-            updateSongListsColor(lists, Constant.PLAYING_SONG);
+            updateSongListsColor(lists, song);
         } catch (RuntimeException exception) {
             player.stop();
             log.error("播放界面更新异常", exception);
             resetPlaybackUi();
             showError("歌曲已停止，播放器界面更新失败。");
+        }
+    }
+
+    private void scheduleNaturalAdvance(long completedGeneration) {
+        Display playbackDisplay = display;
+        if (playbackDisplay == null || playbackDisplay.isDisposed()) {
+            return;
+        }
+        playbackDisplay.asyncExec(() -> {
+            if (shell != null && !shell.isDisposed()
+                    && playbackRequests.accepts(completedGeneration, player.playing())) {
+                playRelative(1, true);
+            }
+        });
+    }
+
+    private void confirmDeleteMissingSong(SongEntity song) {
+        if (song == null) {
+            showInfo("歌曲记录不存在。");
+            return;
+        }
+
+        var confirmation = Utils.tips(shell, "MusicPlayer", "歌曲文件不存在，是否从播放列表删除？");
+        if (confirmation.open() != SWT.YES) {
+            return;
+        }
+
+        try {
+            new UpdateWrapper<>(song, "song").eq("id", song.getId()).delete();
+            reloadPlaylist();
+        } catch (RuntimeException exception) {
+            log.error("删除歌曲记录异常", exception);
+            showInfo("无法删除歌曲记录，请检查数据库权限。");
         }
     }
 
@@ -818,6 +850,13 @@ public class MusicPlayer {
 
     private void showError(String message) {
         var box = new MessageBox(shell, SWT.OK | SWT.ICON_ERROR);
+        box.setText("MusicPlayer");
+        box.setMessage(message);
+        box.open();
+    }
+
+    private void showInfo(String message) {
+        var box = new MessageBox(shell, SWT.OK | SWT.ICON_INFORMATION);
         box.setText("MusicPlayer");
         box.setMessage(message);
         box.open();

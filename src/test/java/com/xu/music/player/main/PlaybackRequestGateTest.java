@@ -1,5 +1,7 @@
 package com.xu.music.player.main;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -35,5 +37,18 @@ public class PlaybackRequestGateTest {
         var generation = gate.beginRequest();
 
         assertFalse(gate.accepts(generation, true));
+    }
+
+    @Test
+    public void failedNewRequestInvalidatesBoundOldCompletion() {
+        var gate = new PlaybackRequestGate();
+        var oldGeneration = gate.beginRequest();
+        var accepted = new AtomicBoolean(true);
+        Runnable oldCompletion = () -> accepted.set(gate.accepts(oldGeneration, false));
+
+        gate.beginRequest();
+        oldCompletion.run();
+
+        assertFalse(accepted.get());
     }
 }
