@@ -23,6 +23,21 @@
 - 64 位 Windows、Linux 或 macOS；
 - 可用的系统音频输出设备。
 
+### 关键依赖版本
+
+| 组件 | 版本 |
+| --- | --- |
+| Hutool | 5.8.47 |
+| SQLite JDBC | 3.53.2.1 |
+| JTransforms | 3.2 |
+| Eclipse JFace | 3.39.100 |
+| Eclipse SWT | 3.134.0 |
+| SLF4J | 2.0.18 |
+
+项目保留 MP3SPI 1.9.5.4、JFLAC 1.5.2 和 JUnit 4.13.2。依赖升级只采用稳定版本，不使用 Alpha、Milestone 等预发布版本，也不引入与当前需求无关的新主版本。
+
+项目以 Java 25 为发布目标；最终自动验证使用 JDK 25.0.4 和 Maven 3.9.16。
+
 Maven 会按当前操作系统和 JVM 架构自动选择 SWT：
 
 | Profile | 平台 | SWT artifact | 当前验证范围 |
@@ -55,6 +70,13 @@ Shade 插件生成的是包含 Java 依赖、当前平台 SWT 和图片资源的
 
 - `lib/sqlite/db/MusicPlayer.db`；
 - `lib/song/` 中的示例歌曲与歌词。
+
+[`scripts/verify-shaded-jar.ps1`](scripts/verify-shaded-jar.ps1) 用于检查可执行 JAR 的主类、清单、添加歌曲图标和目标平台 SWT 原生库。验证 macOS 包时还必须显式指定 Mach-O 架构：
+
+```powershell
+& '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.(jnilib|dylib)$' -MacArchitecture x86_64
+& '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.(jnilib|dylib)$' -MacArchitecture arm64
+```
 
 ## 播放链路
 

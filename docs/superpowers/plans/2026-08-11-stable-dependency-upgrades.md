@@ -52,7 +52,7 @@ try {
 }
 ```
 
-Expected: Maven reports Java 25.0.4, 13 test classes and 38 tests pass after the functional plan, and `target/MusicPlayer-2.0.0.0.jar` is created.
+Expected: Maven reports Java 25.0.4, 14 test classes and 42 tests pass after the functional plan, and `target/MusicPlayer-2.0.0.0.jar` is created.
 
 - [ ] **Step 3: Record the available updates without changing the POM**
 
@@ -91,7 +91,7 @@ Update the inline dependency versions:
 <dependency>
     <groupId>org.xerial</groupId>
     <artifactId>sqlite-jdbc</artifactId>
-    <version>3.53.2.0</version>
+    <version>3.53.2.1</version>
     <exclusions>
         <exclusion>
             <artifactId>slf4j-api</artifactId>
@@ -118,7 +118,7 @@ mvn -DskipTests dependency:resolve
 mvn dependency:tree "-Dincludes=cn.hutool:hutool-all,org.xerial:sqlite-jdbc,com.github.wendykierp:JTransforms,org.slf4j:slf4j-api,org.slf4j:slf4j-simple"
 ```
 
-Expected: the tree contains Hutool 5.8.47, SQLite JDBC 3.53.2.0, JTransforms 3.2 and SLF4J 2.0.18, with no SLF4J 2.1 alpha artifact.
+Expected: the tree contains Hutool 5.8.47, SQLite JDBC 3.53.2.1, JTransforms 3.2 and SLF4J 2.0.18, with no SLF4J 2.1 alpha artifact.
 
 - [ ] **Step 3: Run the complete test and package gates on JDK 25**
 
@@ -135,7 +135,7 @@ try {
 }
 ```
 
-Expected: 38 tests pass and the Windows shaded JAR is produced.
+Expected: 42 tests pass and the Windows shaded JAR is produced.
 
 - [ ] **Step 4: Commit the common-library upgrade**
 
@@ -194,7 +194,7 @@ try {
 }
 ```
 
-Expected: 38 tests pass and the application packages with SWT 3.134.0 for Windows x64.
+Expected: 42 tests pass and the application packages with SWT 3.134.0 for Windows x64.
 
 - [ ] **Step 3: Create the reusable shaded-JAR inspection script**
 
@@ -203,7 +203,10 @@ Create `scripts/verify-shaded-jar.ps1`:
 ```powershell
 param(
     [Parameter(Mandatory = $true)]
-    [string] $NativePattern
+    [string] $NativePattern,
+
+    [ValidateSet('x86_64', 'arm64')]
+    [string] $MacArchitecture
 )
 
 Add-Type -AssemblyName System.IO.Compression.FileSystem
@@ -263,16 +266,16 @@ try {
     & '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.so$'
 
     mvn "-P!windows-x64,macos-x64" -DskipTests clean package
-    & '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.(jnilib|dylib)$'
+    & '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.(jnilib|dylib)$' -MacArchitecture x86_64
 
     mvn "-P!windows-x64,macos-arm64" -DskipTests clean package
-    & '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.(jnilib|dylib)$'
+    & '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.(jnilib|dylib)$' -MacArchitecture arm64
 } finally {
     $env:JAVA_HOME = $originalJavaHome
 }
 ```
 
-Expected: every build succeeds; the root-level SWT native files match only the selected target extension. SQLite JDBC's nested multi-platform natives under `org/sqlite/native/` are intentionally outside this SWT check.
+Expected: every build succeeds; the root-level SWT native files match only the selected target extension, and macOS native headers match the selected architecture. SQLite JDBC's nested multi-platform natives under `org/sqlite/native/` are intentionally outside this SWT check.
 
 - [ ] **Step 5: Rebuild the host JAR after cross-platform checks**
 
@@ -318,7 +321,7 @@ Apply these versions without changing plugin configuration:
 <version>3.15.0</version>
 
 <artifactId>maven-surefire-plugin</artifactId>
-<version>3.5.5</version>
+<version>3.5.6</version>
 
 <artifactId>maven-shade-plugin</artifactId>
 <version>3.6.2</version>
@@ -336,7 +339,7 @@ mvn help:effective-pom -Doutput=target/effective-pom.xml
 Select-String -Path 'target/effective-pom.xml' -Pattern 'maven-clean-plugin|maven-jar-plugin|maven-compiler-plugin|maven-surefire-plugin|maven-shade-plugin' -Context 0,1
 ```
 
-Expected: validation succeeds and the effective POM shows 3.5.0, 3.5.1, 3.15.0, 3.5.5 and 3.6.2 for the selected plugins.
+Expected: validation succeeds and the effective POM shows 3.5.0, 3.5.1, 3.15.0, 3.5.6 and 3.6.2 for the selected plugins.
 
 - [ ] **Step 3: Run test and package gates on JDK 25**
 
@@ -353,7 +356,7 @@ try {
 }
 ```
 
-Expected: 38 tests pass and Shade 3.6.2 produces the executable JAR.
+Expected: 42 tests pass and Shade 3.6.2 produces the executable JAR.
 
 - [ ] **Step 4: Commit the plugin upgrade**
 
@@ -377,7 +380,7 @@ Add a “关键依赖版本” subsection after environment requirements:
 | 组件 | 版本 |
 | --- | --- |
 | Hutool | 5.8.47 |
-| SQLite JDBC | 3.53.2.0 |
+| SQLite JDBC | 3.53.2.1 |
 | JTransforms | 3.2 |
 | Eclipse JFace | 3.39.100 |
 | Eclipse SWT | 3.134.0 |
@@ -405,7 +408,7 @@ try {
 git diff --check
 ```
 
-Expected: Maven reports Java 25.0.4, all 38 tests pass, package succeeds and no whitespace errors are reported.
+Expected: Maven reports Java 25.0.4, all 42 tests pass, package succeeds and no whitespace errors are reported.
 
 - [ ] **Step 3: Repeat isolated SWT packages and inspect every artifact**
 
@@ -420,9 +423,9 @@ try {
     mvn "-P!windows-x64,linux-x64" -DskipTests clean package
     & '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.so$'
     mvn "-P!windows-x64,macos-x64" -DskipTests clean package
-    & '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.(jnilib|dylib)$'
+    & '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.(jnilib|dylib)$' -MacArchitecture x86_64
     mvn "-P!windows-x64,macos-arm64" -DskipTests clean package
-    & '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.(jnilib|dylib)$'
+    & '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.(jnilib|dylib)$' -MacArchitecture arm64
     mvn -Pwindows-x64 clean package
     & '.\scripts\verify-shaded-jar.ps1' -NativePattern '\.dll$'
 } finally {

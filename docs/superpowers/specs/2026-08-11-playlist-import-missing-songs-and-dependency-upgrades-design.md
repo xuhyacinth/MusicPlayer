@@ -121,7 +121,7 @@
 | 组件 | 当前版本 | 目标版本 |
 | --- | --- | --- |
 | Hutool | 5.8.36 | 5.8.47 |
-| SQLite JDBC | 3.45.3.0 | 3.53.2.0 |
+| SQLite JDBC | 3.45.3.0 | 3.53.2.1 |
 | JTransforms | 3.1 | 3.2 |
 | Eclipse JFace | 3.35.0 | 3.39.100 |
 | Eclipse SWT | 3.127.0 | 3.134.0 |
@@ -129,14 +129,14 @@
 | Maven Clean Plugin | 3.4.0 | 3.5.0 |
 | Maven Compiler Plugin | 3.13.0 | 3.15.0 |
 | Maven JAR Plugin | 3.4.2 | 3.5.1 |
-| Maven Surefire Plugin | 3.5.2 | 3.5.5 |
+| Maven Surefire Plugin | 3.5.2 | 3.5.6 |
 | Maven Shade Plugin | 3.6.1 | 3.6.2 |
 
 JFace 与 SWT 必须作为一组升级。保留 MP3SPI 1.9.5.4、JFLAC 1.5.2 和 JUnit 4.13.2。Surefire 不采用 `3.6.0-M1`，SLF4J 不采用 `2.1.0-alpha1`。
 
 依赖来源：
 
-- [SQLite JDBC 3.53.2.0](https://central.sonatype.com/artifact/org.xerial/sqlite-jdbc/3.53.2.0)
+- [SQLite JDBC 3.53.2.1](https://central.sonatype.com/artifact/org.xerial/sqlite-jdbc/3.53.2.1)
 - [JTransforms 3.2](https://central.sonatype.com/artifact/com.github.wendykierp/JTransforms)
 - [Eclipse JFace 3.39.100](https://central.sonatype.com/artifact/org.eclipse.platform/org.eclipse.jface)
 - [SLF4J 稳定版本说明](https://www.slf4j.org/download.html)
