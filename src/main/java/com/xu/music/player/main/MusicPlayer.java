@@ -687,7 +687,7 @@ public class MusicPlayer {
             reloadPlaylist();
         } catch (RuntimeException exception) {
             log.error("删除歌曲记录异常", exception);
-            showInfo("无法删除歌曲记录，请检查数据库权限。");
+            showError("无法删除歌曲记录，请检查数据库权限。");
         }
     }
 
