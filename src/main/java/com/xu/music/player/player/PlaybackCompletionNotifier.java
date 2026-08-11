@@ -14,9 +14,13 @@ final class PlaybackCompletionNotifier {
         this.listener.set(Objects.requireNonNullElse(listener, NO_OP));
     }
 
-    void notifyIfNatural(boolean reachedEof, boolean completedCurrentSession) {
+    Runnable snapshot() {
+        return listener.get();
+    }
+
+    void notifyIfNatural(Runnable completionListener, boolean reachedEof, boolean completedCurrentSession) {
         if (reachedEof && completedCurrentSession) {
-            listener.get().run();
+            completionListener.run();
         }
     }
 }

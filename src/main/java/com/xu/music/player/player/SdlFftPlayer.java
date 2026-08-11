@@ -128,10 +128,11 @@ public final class SdlFftPlayer implements Player {
             return;
         }
 
+        var completionListener = completionNotifier.snapshot();
         var sequence = taskSequence.incrementAndGet();
         var playbackThread = Thread.ofVirtual()
                 .name("music-playback-" + sequence)
-                .unstarted(() -> runPlayback(session));
+                .unstarted(() -> runPlayback(session, completionListener));
         var spectrumThread = Thread.ofVirtual()
                 .name("music-spectrum-" + sequence)
                 .unstarted(() -> runSpectrum(session));
@@ -141,7 +142,7 @@ public final class SdlFftPlayer implements Player {
         spectrumThread.start();
     }
 
-    private void runPlayback(PlaybackSession session) {
+    private void runPlayback(PlaybackSession session, Runnable completionListener) {
         var reachedEof = false;
         try {
             var format = session.format();
@@ -181,7 +182,7 @@ public final class SdlFftPlayer implements Player {
             var completedCurrentSession = sessions.complete(session);
             session.close();
             try {
-                completionNotifier.notifyIfNatural(reachedEof, completedCurrentSession);
+                completionNotifier.notifyIfNatural(completionListener, reachedEof, completedCurrentSession);
             } catch (RuntimeException exception) {
                 log.error("Natural playback completion callback failed", exception);
             }

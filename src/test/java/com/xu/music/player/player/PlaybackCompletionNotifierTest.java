@@ -11,12 +11,16 @@ public class PlaybackCompletionNotifierTest {
     @Test
     public void currentNaturalCompletionCallsListenerOnce() {
         var notifier = new PlaybackCompletionNotifier();
-        var calls = new AtomicInteger();
-        notifier.setListener(calls::incrementAndGet);
+        var firstCalls = new AtomicInteger();
+        var secondCalls = new AtomicInteger();
+        notifier.setListener(firstCalls::incrementAndGet);
+        var completionListener = notifier.snapshot();
+        notifier.setListener(secondCalls::incrementAndGet);
 
-        notifier.notifyIfNatural(true, true);
+        notifier.notifyIfNatural(completionListener, true, true);
 
-        assertEquals(1, calls.get());
+        assertEquals(1, firstCalls.get());
+        assertEquals(0, secondCalls.get());
     }
 
     @Test
@@ -25,7 +29,7 @@ public class PlaybackCompletionNotifierTest {
         var calls = new AtomicInteger();
         notifier.setListener(calls::incrementAndGet);
 
-        notifier.notifyIfNatural(false, true);
+        notifier.notifyIfNatural(notifier.snapshot(), false, true);
 
         assertEquals(0, calls.get());
     }
@@ -36,7 +40,7 @@ public class PlaybackCompletionNotifierTest {
         var calls = new AtomicInteger();
         notifier.setListener(calls::incrementAndGet);
 
-        notifier.notifyIfNatural(true, false);
+        notifier.notifyIfNatural(notifier.snapshot(), true, false);
 
         assertEquals(0, calls.get());
     }

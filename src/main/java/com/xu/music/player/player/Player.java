@@ -141,7 +141,7 @@ public interface Player extends AutoCloseable {
     boolean pausing();
 
     /**
-     * 设置当前歌曲自然播放结束时的回调。
+     * 设置后续启动的播放会话自然播放结束时的回调。
      *
      * @param listener 回调；传入 {@code null} 时清除回调
      */
