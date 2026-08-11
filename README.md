@@ -72,7 +72,7 @@ flowchart LR
     Timer --> Progress["进度条与 LRC 高亮"]
 ```
 
-入口是 `com.xu.music.player.main.MusicPlayer`。SWT 事件循环负责窗口事件，播放和频谱任务运行在独立虚拟线程中；后台线程不直接修改 SWT 控件，UI 只通过 `Display.timerExec` 读取播放器快照并刷新界面。
+入口是 `com.xu.music.player.main.MusicPlayer`。SWT 事件循环负责窗口事件，播放和频谱任务运行在独立虚拟线程中；后台线程不直接修改 SWT 控件，周期状态通过 `Display.timerExec` 读取播放器快照，自然完成通知通过 `Display.asyncExec` 回到 UI 线程。
 
 ## 建议学习顺序
 
@@ -167,7 +167,7 @@ lib/song/                          示例音频与歌词
 
 ## 测试
 
-`mvn test` 默认执行测试，不再跳过。目前 13 个测试类、41 个测试用例覆盖：
+`mvn test` 默认执行测试，不再跳过。目前 14 个测试类、42 个测试用例覆盖：
 
 - 播放列表前后回绕、空列表，以及按方向有界扫描并跳过缺失歌曲；
 - 自然 EOF 通知只接受当前 Session，播放请求代次会过滤过期完成回调；
