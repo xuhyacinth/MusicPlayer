@@ -25,6 +25,7 @@ public final class SdlFftPlayer implements Player {
     private static final Logger log = LoggerFactory.getLogger(SdlFftPlayer.class);
 
     private final PlaybackSessionSlot sessions = new PlaybackSessionSlot();
+    private final PlaybackCompletionNotifier completionNotifier = new PlaybackCompletionNotifier();
     private final AtomicLong taskSequence = new AtomicLong();
 
     private SdlFftPlayer() {
@@ -141,6 +142,7 @@ public final class SdlFftPlayer implements Player {
     }
 
     private void runPlayback(PlaybackSession session) {
+        var reachedEof = false;
         try {
             var format = session.format();
             var frameSize = format.getFrameSize();
@@ -155,6 +157,7 @@ public final class SdlFftPlayer implements Player {
 
                 var read = session.audio().read(buffer);
                 if (read == -1) {
+                    reachedEof = true;
                     session.line().drain();
                     break;
                 }
@@ -166,15 +169,22 @@ public final class SdlFftPlayer implements Player {
                 session.line().write(buffer, 0, alignedLength);
             }
         } catch (InterruptedException exception) {
+            reachedEof = false;
             Thread.currentThread().interrupt();
         } catch (Exception exception) {
+            reachedEof = false;
             if (session.playing()) {
                 log.error("音频播放任务异常", exception);
             }
         } finally {
             session.markStopped();
-            sessions.complete(session);
+            var completedCurrentSession = sessions.complete(session);
             session.close();
+            try {
+                completionNotifier.notifyIfNatural(reachedEof, completedCurrentSession);
+            } catch (RuntimeException exception) {
+                log.error("Natural playback completion callback failed", exception);
+            }
         }
     }
 
@@ -253,6 +263,11 @@ public final class SdlFftPlayer implements Player {
     public boolean pausing() {
         var session = sessions.current();
         return session != null && session.paused();
+    }
+
+    @Override
+    public void onNaturalCompletion(Runnable listener) {
+        completionNotifier.setListener(listener);
     }
 
     @Override

@@ -141,6 +141,14 @@ public interface Player extends AutoCloseable {
     boolean pausing();
 
     /**
+     * 设置当前歌曲自然播放结束时的回调。
+     *
+     * @param listener 回调；传入 {@code null} 时清除回调
+     */
+    default void onNaturalCompletion(Runnable listener) {
+    }
+
+    /**
      * 获取不可变语义的频谱快照。
      */
     default double[] spectrumSnapshot() {
