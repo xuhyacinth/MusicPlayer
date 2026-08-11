@@ -96,13 +96,13 @@ try {
         $reader.Dispose()
     }
 
-    if ($manifest -notmatch '(?m)^Main-Class: com\.xu\.music\.player\.main\.MusicPlayer\r?$') {
+    if ($manifest -cnotmatch '(?m)^Main-Class: com\.xu\.music\.player\.main\.MusicPlayer\r?$') {
         throw 'Shaded JAR has an unexpected Main-Class manifest entry.'
     }
-    if ($manifest -notmatch "(?m)^SWT-OS: $([Regex]::Escape($ExpectedSwtOS))\r?$") {
+    if ($manifest -cnotmatch "(?m)^SWT-OS: $([Regex]::Escape($ExpectedSwtOS))\r?$") {
         throw "Shaded JAR has an unexpected SWT-OS manifest entry; expected $ExpectedSwtOS."
     }
-    if ($manifest -notmatch "(?m)^SWT-Arch: $([Regex]::Escape($ExpectedSwtArchitecture))\r?$") {
+    if ($manifest -cnotmatch "(?m)^SWT-Arch: $([Regex]::Escape($ExpectedSwtArchitecture))\r?$") {
         throw "Shaded JAR has an unexpected SWT-Arch manifest entry; expected $ExpectedSwtArchitecture."
     }
 } finally {
