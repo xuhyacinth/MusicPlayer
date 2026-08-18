@@ -4,13 +4,20 @@ import java.awt.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
+import java.util.List;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.StrUtil;
 
 import com.xu.music.player.constant.Constant;
 import com.xu.music.player.entity.SongEntity;
@@ -24,40 +31,15 @@ import com.xu.music.player.window.SongChoose;
 import com.xu.music.player.wrapper.QueryWrapper;
 import com.xu.music.player.wrapper.UpdateWrapper;
 
-import java.util.List;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.events.ControlAdapter;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseTrackAdapter;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.ProgressBar;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Tray;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.StrUtil;
 
 /**
  * 主页面
  *
- * @since 2024年6月4日19点07分
  * @version swt-java/v1.0.0
+ * @since 2024年6月4日19点07分
  */
 public class MusicPlayer {
 
@@ -97,7 +79,14 @@ public class MusicPlayer {
     /**
      * 程序的主入口，初始化并展示播放器
      */
-    public static void main(String[] args) {
+    static void main() {
+        log.info("""
+                        \n---------------------------------------------------------
+                        软件版本:{}
+                        操作系统:{}, 系统架构:{}, JDK版本:{}
+                        ---------------------------------------------------------
+                        """, Constant.VERSION, System.getProperty("os.name"),
+                System.getProperty("os.arch"), System.getProperty("java.version"));
         try {
             MusicPlayer window = new MusicPlayer();
             window.open();
@@ -578,7 +567,7 @@ public class MusicPlayer {
         snapshot.songs().forEach((index, entity) -> {
             Constant.PLAYING_LIST.put(index, entity);
             var item = new TableItem(table, SWT.NONE);
-            item.setText(new String[] { String.valueOf(index), entity.getName() });
+            item.setText(new String[]{String.valueOf(index), entity.getName()});
         });
 
         Constant.PLAYING_INDEX = snapshot.playingIndex();
@@ -780,7 +769,7 @@ public class MusicPlayer {
             Constant.PLAYING_LYRIC = !lyric.isEmpty();
             for (var line : lyric) {
                 var item = new TableItem(lyrics, SWT.NONE);
-                item.setText(new String[] { line.tag(), line.text() });
+                item.setText(new String[]{line.tag(), line.text()});
                 item.setData("time", line.seconds());
             }
         } catch (RuntimeException exception) {

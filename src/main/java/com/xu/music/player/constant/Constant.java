@@ -1,5 +1,6 @@
 package com.xu.music.player.constant;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import com.xu.music.player.entity.SongEntity;
@@ -22,6 +23,7 @@ import org.eclipse.swt.graphics.Color;
  */
 public class Constant implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private Constant() {
@@ -38,6 +40,8 @@ public class Constant implements Serializable {
             COLORS.add(Utils.getColor(i));
         }
     }
+
+    public static final String VERSION = "swt-java/v1.0.0";
 
     /**
      * 频谱长度
