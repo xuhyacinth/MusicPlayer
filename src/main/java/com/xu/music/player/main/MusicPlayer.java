@@ -572,6 +572,9 @@ public class MusicPlayer {
     }
 
     private void applyCurrentSearch() {
+        if (lists == null || lists.isDisposed()) {
+            return;
+        }
         applyCurrentSearch(lists);
     }
 
