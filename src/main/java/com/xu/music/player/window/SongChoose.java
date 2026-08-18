@@ -20,8 +20,8 @@ import java.util.Map;
 
 /**
  * @author hyacinth
- * @date 2024年6月4日19点07分
- * @since SWT-V1.0.0.0
+ * @since 2024年6月4日19点07分
+ * @version swt-java/v1.0.0
  */
 public class SongChoose {
 
@@ -33,7 +33,7 @@ public class SongChoose {
      * 歌曲选择并插入数据库
      *
      * @param shell 文件对话框
-     * @date 2024年6月4日19点07分
+     * @since 2024年6月4日19点07分
      * @return 成功导入的歌曲数
      * @since idea
      */

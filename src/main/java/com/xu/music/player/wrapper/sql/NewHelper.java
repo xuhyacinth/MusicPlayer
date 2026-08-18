@@ -41,8 +41,8 @@ import java.sql.Timestamp;
  * 数据库操作
  *
  * @author hyacinth
- * @date 2024年6月4日19点07分
- * @since SWT-V1.0.0.0
+ * @since 2024年6月4日19点07分
+ * @version SWT-V1.0.0.0
  */
 public class NewHelper implements Helper {
 
@@ -72,7 +72,7 @@ public class NewHelper implements Helper {
      *
      * @param str 字符串
      * @return 结果
-     * @date 2024年6月4日19点07分
+     * @since 2024年6月4日19点07分
      * @since idea
      */
     private static String underline(String str) {
@@ -158,7 +158,7 @@ public class NewHelper implements Helper {
      *
      * @param state 预编译对象
      * @param obj   预编译数据
-     * @date 2024年6月4日19点07分
+     * @since 2024年6月4日19点07分
      * @since idea
      */
     public void setValues(PreparedStatement state, Object... obj) {
@@ -173,7 +173,7 @@ public class NewHelper implements Helper {
      *
      * @param state  预编译对象
      * @param params 预编译数据
-     * @date 2024年6月4日19点07分
+     * @since 2024年6月4日19点07分
      * @since idea
      */
     public void setValues(PreparedStatement state, List<Object> params) {
@@ -208,7 +208,7 @@ public class NewHelper implements Helper {
      * @param map   值
      * @param field 字段
      * @return 结果
-     * @date 2024年6月4日19点07分
+     * @since 2024年6月4日19点07分
      * @since idea
      */
     private Object getValue(Map<String, Object> map, Field field) {
@@ -230,7 +230,7 @@ public class NewHelper implements Helper {
      * @param cls 类
      * @param <T> 泛型
      * @return 结果
-     * @date 2024年6月4日19点07分
+     * @since 2024年6月4日19点07分
      * @since idea
      */
     private <T> T convert(Map<String, Object> map, Class<T> cls) {
@@ -284,7 +284,7 @@ public class NewHelper implements Helper {
      *
      * @param blob Blob
      * @return 字节数组
-     * @date 2024年6月4日19点07分
+     * @since 2024年6月4日19点07分
      * @since idea
      */
     private byte[] blob2byte(Blob blob) {
@@ -310,7 +310,7 @@ public class NewHelper implements Helper {
      * @param len    长度
      * @return 结果
      * @throws Exception 异常
-     * @date 2024年6月4日19点07分
+     * @since 2024年6月4日19点07分
      * @since idea
      */
     private Map<String, Object> setValue(ResultSet result, String[] col, int len) throws Exception {

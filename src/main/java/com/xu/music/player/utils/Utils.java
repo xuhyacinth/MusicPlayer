@@ -34,8 +34,8 @@ import org.eclipse.swt.widgets.Shell;
 /**
  * 通用工具
  *
- * @date 2024年6月4日19点07分
- * @since SWT-V1.0.0.0
+ * @since 2024年6月4日19点07分
+ * @version swt-java/v1.0.0
  */
 public class Utils {
 
@@ -62,8 +62,8 @@ public class Utils {
      * @param y      y
      * @param width  宽
      * @param height 高
-     * @date 2024年6月4日19点07分
-     * @since SWT-V1.0.0.0
+     * @since 2024年6月4日19点07分
+     * @version swt-java/v1.0.0
      */
     public static void draw(GC gc, int x, int y, int width, int height) {
         // 设置条形的颜色
@@ -78,8 +78,8 @@ public class Utils {
      *
      * @param name 图片文件名称
      * @return 图片
-     * @date 2024年6月4日19点07分
-     * @since SWT-V1.0.0.0
+     * @since 2024年6月4日19点07分
+     * @version swt-java/v1.0.0
      */
     public static Image getImage(String name) {
         if (CACHE.containsKey(name)) {
@@ -120,8 +120,8 @@ public class Utils {
      * @param title   题目
      * @param content 内容
      * @return MessageBox
-     * @date 2024年6月4日19点07分
-     * @since SWT-V1.0.0.0
+     * @since 2024年6月4日19点07分
+     * @version swt-java/v1.0.0
      */
     public static MessageBox tips(Shell shell, String title, String content) {
         Toolkit.getDefaultToolkit().beep();
@@ -136,8 +136,8 @@ public class Utils {
      *
      * @param time 时间
      * @return 时间
-     * @date 2024年6月4日19点07分
-     * @since SWT-V1.0.0.0
+     * @since 2024年6月4日19点07分
+     * @version swt-java/v1.0.0
      */
     public static String format(double time) {
         if (time < 10) {
@@ -163,8 +163,8 @@ public class Utils {
      *
      * @param time 时间
      * @return 时间
-     * @date 2024年6月4日19点07分
-     * @since SWT-V1.0.0.0
+     * @since 2024年6月4日19点07分
+     * @version swt-java/v1.0.0
      */
     public static String format(int time) {
         if (time < 10) {
@@ -189,8 +189,8 @@ public class Utils {
      *
      * @param id 颜色码
      * @return 颜色
-     * @date 2024年6月4日19点07分
-     * @since SWT-V1.0.0.0
+     * @since 2024年6月4日19点07分
+     * @version swt-java/v1.0.0
      */
     public static Color getColor(int id) {
         Display display = Display.getCurrent();
@@ -204,8 +204,8 @@ public class Utils {
      * @param height 高
      * @param style  样式
      * @return 字体
-     * @date 2024年6月4日19点07分
-     * @since SWT-V1.0.0.0
+     * @since 2024年6月4日19点07分
+     * @version swt-java/v1.0.0
      */
     public static Font getFont(String name, int height, int style) {
         return getFont(name, height, style, false, false);
@@ -220,8 +220,8 @@ public class Utils {
      * @param strikeout strikeout
      * @param underline 下划线
      * @return 字体
-     * @date 2024年6月4日19点07分
-     * @since SWT-V1.0.0.0
+     * @since 2024年6月4日19点07分
+     * @version swt-java/v1.0.0
      */
     public static Font getFont(String name, int size, int style, boolean strikeout, boolean underline) {
         String fontName = name + '|' + size + '|' + style + '|' + strikeout + '|' + underline;
@@ -263,7 +263,7 @@ public class Utils {
      *
      * @param date 日期
      * @return 字符串
-     * @date 2024年6月7日12点55分
+     * @since 2024年6月7日12点55分
      * @since idea
      */
     public static String formatDateTime(Object date) {

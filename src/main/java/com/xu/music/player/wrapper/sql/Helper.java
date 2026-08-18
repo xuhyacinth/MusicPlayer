@@ -8,8 +8,8 @@ import java.sql.Connection;
 /**
  * 数据库操作
  *
- * @date 2024年6月4日19点07分
- * @since SWT-V1.0.0.0
+ * @since 2024年6月4日19点07分
+ * @version swt-java/v1.0.0
  */
 public interface Helper {
 
@@ -17,7 +17,7 @@ public interface Helper {
      * 获取连接
      *
      * @return Connection
-     * @date 2024年6月4日19点07分
+     * @since 2024年6月4日19点07分
      * @since idea
      */
     Connection getConn();
@@ -28,7 +28,7 @@ public interface Helper {
      * @param sql    全sql
      * @param params 数据
      * @return 结果
-     * @date 2024年6月4日19点07分
+     * @since 2024年6月4日19点07分
      * @since idea
      */
     int insert(String sql, Object... params);
@@ -39,7 +39,7 @@ public interface Helper {
      * @param sql    全sql
      * @param params 数据
      * @return 结果
-     * @date 2024年6月4日19点07分
+     * @since 2024年6月4日19点07分
      * @since idea
      */
     int update(String sql, Object... params);
@@ -50,7 +50,7 @@ public interface Helper {
      * @param sql    全sql
      * @param params 数据
      * @return 结果
-     * @date 2024年6月4日19点07分
+     * @since 2024年6月4日19点07分
      * @since idea
      */
     int delete(String sql, Object... params);
@@ -62,7 +62,7 @@ public interface Helper {
      * @param cls    类
      * @param params 数据
      * @return 结果
-     * @date 2024年6月4日19点07分
+     * @since 2024年6月4日19点07分
      * @since idea
      */
     <T> List<T> select(String sql, Class<T> cls, Object... params);
@@ -73,7 +73,7 @@ public interface Helper {
      * @param sql    全sql
      * @param params 数据
      * @return 结果
-     * @date 2024年6月4日19点07分
+     * @since 2024年6月4日19点07分
      * @since idea
      */
     List<Map<String, Object>> select(String sql, Object... params);

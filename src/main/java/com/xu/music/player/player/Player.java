@@ -10,8 +10,8 @@ import javax.sound.sampled.AudioInputStream;
  * 音频播放
  *
  * @author hyacinth
- * @date 2024年6月4日19点07分
- * @since SWT-V1.0.0.0
+ * @since 2024年6月4日19点07分
+ * @version swt-java/v1.0.0
  */
 public interface Player extends AutoCloseable {
 
@@ -20,7 +20,7 @@ public interface Player extends AutoCloseable {
      *
      * @param url 音频文件url
      * @throws Exception 异常
-     * @date 2019年10月31日19:06:39
+     * @since 2019年10月31日19:06:39
      */
     void load(URL url) throws Exception;
 
@@ -29,7 +29,7 @@ public interface Player extends AutoCloseable {
      *
      * @param file 音频文件
      * @throws Exception 异常
-     * @date 2019年10月31日19:06:39
+     * @since 2019年10月31日19:06:39
      */
     void load(File file) throws Exception;
 
@@ -38,7 +38,7 @@ public interface Player extends AutoCloseable {
      *
      * @param path 文件路径
      * @throws Exception 异常
-     * @date 2019年10月31日19:06:39
+     * @since 2019年10月31日19:06:39
      */
     void load(String path) throws Exception;
 
@@ -47,7 +47,7 @@ public interface Player extends AutoCloseable {
      *
      * @param stream 音频文件输入流
      * @throws Exception 异常
-     * @date 2019年10月31日19:06:39
+     * @since 2019年10月31日19:06:39
      */
     void load(AudioInputStream stream) throws Exception;
 
@@ -57,7 +57,7 @@ public interface Player extends AutoCloseable {
      * @param encoding Encoding
      * @param stream   AudioInputStream
      * @throws Exception 异常
-     * @date 2019年10月31日19:06:39
+     * @since 2019年10月31日19:06:39
      */
     void load(AudioFormat.Encoding encoding, AudioInputStream stream) throws Exception;
 
@@ -67,14 +67,14 @@ public interface Player extends AutoCloseable {
      * @param format AudioFormat
      * @param stream AudioInputStream
      * @throws Exception 异常
-     * @date 2019年10月31日19:06:39
+     * @since 2019年10月31日19:06:39
      */
     void load(AudioFormat format, AudioInputStream stream) throws Exception;
 
     /**
      * 暂停播放
      *
-     * @date 2019年10月31日19:06:39
+     * @since 2019年10月31日19:06:39
      */
     void pause();
 
@@ -82,21 +82,21 @@ public interface Player extends AutoCloseable {
      * 继续播放
      *
      * @param duration 音频位置
-     * @date 2019年10月31日19:06:39
+     * @since 2019年10月31日19:06:39
      */
     void resume(long duration);
 
     /**
      * 开始播放
      *
-     * @date 2019年10月31日19:06:39
+     * @since 2019年10月31日19:06:39
      */
     void play();
 
     /**
      * 结束播放
      *
-     * @date 2019年10月31日19:06:39
+     * @since 2019年10月31日19:06:39
      */
     void stop();
 
@@ -104,7 +104,7 @@ public interface Player extends AutoCloseable {
      * 设置音量
      *
      * @param volume 音量
-     * @date 2019年10月31日19:06:39
+     * @since 2019年10月31日19:06:39
      */
     void volume(float volume);
 
@@ -112,7 +112,7 @@ public interface Player extends AutoCloseable {
      * 获取音频播放位置
      *
      * @return 播放位置（秒）
-     * @date 2019年10月31日19:06:39
+     * @since 2019年10月31日19:06:39
      */
     double position();
 
@@ -120,7 +120,7 @@ public interface Player extends AutoCloseable {
      * 获取音频总时长
      *
      * @return 音频总时长（秒）
-     * @date 2019年10月31日19:06:39
+     * @since 2019年10月31日19:06:39
      */
     double duration();
 
@@ -128,7 +128,7 @@ public interface Player extends AutoCloseable {
      * 是否正在播放
      *
      * @return 是否正在播放
-     * @date 2019年10月31日19:06:39
+     * @since 2019年10月31日19:06:39
      */
     boolean playing();
 
@@ -136,7 +136,7 @@ public interface Player extends AutoCloseable {
      * 是否正在
      *
      * @return 是否正在播放
-     * @date 2019年10月31日19:06:39
+     * @since 2019年10月31日19:06:39
      */
     boolean pausing();
 

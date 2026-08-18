@@ -56,8 +56,8 @@ import org.eclipse.swt.widgets.ToolItem;
 /**
  * 主页面
  *
- * @date 2024年6月4日19点07分
- * @since SWT-V1.0.0.0
+ * @since 2024年6月4日19点07分
+ * @version swt-java/v1.0.0
  */
 public class MusicPlayer {
 
