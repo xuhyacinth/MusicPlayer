@@ -45,6 +45,8 @@ import cn.hutool.core.util.StrUtil;
 public class MusicPlayer {
 
     private static final Logger log = LoggerFactory.getLogger(MusicPlayer.class);
+    private static final int PLAYLIST_PANE_WEIGHT = 220;
+    private static final int LYRIC_PANE_WEIGHT = 664;
 
     // SWT UI 刷新任务
     private Runnable refreshTask;
@@ -292,7 +294,7 @@ public class MusicPlayer {
         timeLabel2.setBounds(775, 4, 73, 20);
 
         sashForm.setWeights(1, 5, 1);
-        sashForm1.setWeights(156, 728);
+        sashForm1.setWeights(PLAYLIST_PANE_WEIGHT, LYRIC_PANE_WEIGHT);
 
         // 界面移动
         top.addMouseListener(new MouseAdapter() {
@@ -410,7 +412,7 @@ public class MusicPlayer {
             @Override
             public void controlResized(ControlEvent e) {
                 sashForm.setWeights(1, 5, 1);
-                sashForm1.setWeights(156, 728);
+                sashForm1.setWeights(PLAYLIST_PANE_WEIGHT, LYRIC_PANE_WEIGHT);
             }
         });
 
@@ -484,7 +486,7 @@ public class MusicPlayer {
             @Override
             public void controlResized(ControlEvent e) {
                 sashForm.setWeights(1, 5, 1);
-                sashForm1.setWeights(156, 728);
+                sashForm1.setWeights(PLAYLIST_PANE_WEIGHT, LYRIC_PANE_WEIGHT);
             }
         });
 
@@ -492,7 +494,7 @@ public class MusicPlayer {
             @Override
             public void controlResized(ControlEvent e) {
                 sashForm.setWeights(1, 5, 1);
-                sashForm1.setWeights(156, 728);
+                sashForm1.setWeights(PLAYLIST_PANE_WEIGHT, LYRIC_PANE_WEIGHT);
             }
         });
 
@@ -500,7 +502,7 @@ public class MusicPlayer {
             @Override
             public void controlResized(ControlEvent e) {
                 sashForm.setWeights(1, 5, 1);
-                sashForm1.setWeights(156, 728);
+                sashForm1.setWeights(PLAYLIST_PANE_WEIGHT, LYRIC_PANE_WEIGHT);
             }
         });
 
@@ -508,7 +510,7 @@ public class MusicPlayer {
             @Override
             public void controlResized(ControlEvent e) {
                 sashForm.setWeights(1, 5, 1);
-                sashForm1.setWeights(156, 728);
+                sashForm1.setWeights(PLAYLIST_PANE_WEIGHT, LYRIC_PANE_WEIGHT);
             }
         });
 
