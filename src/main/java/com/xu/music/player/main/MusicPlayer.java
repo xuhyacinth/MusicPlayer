@@ -4,6 +4,7 @@ import java.awt.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
@@ -58,6 +59,10 @@ public class MusicPlayer {
     private Tray tray;
     // 歌曲列表格
     private Table lists;
+    // 数据库中的完整歌曲列表，用于搜索过滤后恢复
+    private List<SongEntity> allSongs = new ArrayList<>();
+    // 歌曲列表搜索输入框
+    private Text songSearch;
     // 歌词列表格
     private Table lyrics;
     // 底部控制与频谱展示面板
@@ -188,8 +193,12 @@ public class MusicPlayer {
         composite1.setBackgroundMode(SWT.INHERIT_FORCE);
         composite1.setLayout(new GridLayout(1, false));
 
-        ToolBar toolBar = new ToolBar(composite1, SWT.FLAT);
-        toolBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        Composite playlistTools = new Composite(composite1, SWT.NONE);
+        playlistTools.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        playlistTools.setLayout(new GridLayout(2, false));
+
+        ToolBar toolBar = new ToolBar(playlistTools, SWT.FLAT);
+        toolBar.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
         ToolItem addMusic = new ToolItem(toolBar, SWT.PUSH);
         addMusic.setImage(Utils.getImage("addMusic.png"));
         addMusic.setToolTipText("添加歌曲");
@@ -199,6 +208,11 @@ public class MusicPlayer {
                 addSongs();
             }
         });
+
+        songSearch = new Text(playlistTools, SWT.SEARCH | SWT.ICON_SEARCH | SWT.CANCEL);
+        songSearch.setMessage("搜索歌曲或歌手");
+        songSearch.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        songSearch.addModifyListener(event -> applyCurrentSearch());
 
         lists = new Table(composite1, SWT.FULL_SELECTION);
         lists.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -509,18 +523,17 @@ public class MusicPlayer {
      * @param table 表格对象
      */
     public void initPlayer(Shell shell, Table table) {
-        List<SongEntity> list;
         try {
-            list = querySongs();
+            allSongs = querySongs();
 
-            if (CollUtil.isEmpty(list)) {
+            if (CollUtil.isEmpty(allSongs)) {
                 // 当本地没有存放数据时，自动唤起文件选择窗口添加歌曲
                 var choice = new SongChoose();
                 Toolkit.getDefaultToolkit().beep();
                 choice.open(shell);
-                list = querySongs();
+                allSongs = querySongs();
             }
-            applyPlaylist(list, table);
+            applyCurrentSearch(table);
         } catch (RuntimeException exception) {
             log.error("初始化播放列表异常", exception);
             showError("无法读取或更新播放列表，请检查数据库和文件权限。");
@@ -554,7 +567,23 @@ public class MusicPlayer {
     }
 
     private void reloadPlaylist() {
-        applyPlaylist(querySongs(), lists);
+        allSongs = querySongs();
+        applyCurrentSearch();
+    }
+
+    private void applyCurrentSearch() {
+        applyCurrentSearch(lists);
+    }
+
+    private void applyCurrentSearch(Table table) {
+        applyPlaylist(SongSearch.filter(allSongs, currentSearchKeyword()), table);
+    }
+
+    private String currentSearchKeyword() {
+        if (songSearch == null || songSearch.isDisposed()) {
+            return "";
+        }
+        return songSearch.getText();
     }
 
     private void applyPlaylist(List<SongEntity> source, Table table) {
@@ -572,17 +601,23 @@ public class MusicPlayer {
 
         Constant.PLAYING_INDEX = snapshot.playingIndex();
         if (snapshot.playingIndex() == null) {
-            if (previousSong != null) {
+            if (previousSong != null && !containsSong(allSongs, playingSongId)) {
                 player.stop();
                 clearCurrentSong();
                 resetPlaybackUi();
             }
+            updateSongSelection(table);
             return;
         }
 
         Constant.PLAYING_SONG = snapshot.songs().get(snapshot.playingIndex());
         Constant.PLAYING_SONG_LENGTH = Constant.PLAYING_SONG.getLength();
         updateSongSelection(table);
+    }
+
+    private boolean containsSong(List<SongEntity> songs, String songId) {
+        return songId != null && songs.stream()
+                .anyMatch(song -> songId.equals(song.getId()));
     }
 
     private void clearCurrentSong() {
