@@ -42,7 +42,7 @@ public final class SdlFftPlayer implements Player {
     @Override
     public synchronized void load(URL url) throws Exception {
         stop();
-        open(AudioSystem.getAudioInputStream(url));
+        open(AudioSystem.getAudioInputStream(url), () -> AudioSystem.getAudioInputStream(url));
     }
 
     @Override
@@ -52,13 +52,13 @@ public final class SdlFftPlayer implements Player {
             throw new MusicPlayerError("音频文件不存在: " + file);
         }
 
-        AudioInputStream stream;
-        if (CharSequenceUtil.endWithIgnoreCase(file.getName(), ".mp3")) {
-            stream = new MpegAudioFileReader().getAudioInputStream(file);
-        } else {
-            stream = AudioSystem.getAudioInputStream(file);
-        }
-        open(stream);
+        open(openFile(file), () -> openFile(file));
+    }
+
+    private static AudioInputStream openFile(File file) throws Exception {
+        return CharSequenceUtil.endWithIgnoreCase(file.getName(), ".mp3")
+                ? new MpegAudioFileReader().getAudioInputStream(file)
+                : AudioSystem.getAudioInputStream(file);
     }
 
     @Override
@@ -85,6 +85,10 @@ public final class SdlFftPlayer implements Player {
     }
 
     private void open(AudioInputStream source) throws Exception {
+        open(source, null);
+    }
+
+    private void open(AudioInputStream source, PlaybackSession.AudioSource reopen) throws Exception {
         AudioInputStream pcm = null;
         SourceDataLine line = null;
         try {
@@ -103,7 +107,16 @@ public final class SdlFftPlayer implements Player {
             line.open(pcmFormat);
 
             var analyzer = new PcmSpectrumAnalyzer(Constant.SPECTRUM_TOTAL_NUMBER);
-            var session = new PlaybackSession(pcm, line, pcmFormat, analyzer);
+            PlaybackSession.AudioSource pcmSource = reopen == null ? null : () -> {
+                var reopened = reopen.open();
+                try {
+                    return AudioSystem.getAudioInputStream(pcmFormat, reopened);
+                } catch (Exception exception) {
+                    reopened.close();
+                    throw exception;
+                }
+            };
+            var session = new PlaybackSession(pcm, line, pcmFormat, analyzer, pcmSource);
             var previous = sessions.replace(session);
             if (previous != null) {
                 previous.close();
@@ -152,22 +165,27 @@ public final class SdlFftPlayer implements Player {
 
             while (session.playing() && !Thread.currentThread().isInterrupted()) {
                 session.awaitIfPaused();
+                session.applyPendingSeek();
                 if (!session.playing()) {
                     break;
+                }
+                if (session.paused() || session.hasPendingSeek()) {
+                    continue;
                 }
 
                 var read = session.audio().read(buffer);
                 if (read == -1) {
-                    reachedEof = true;
-                    session.line().drain();
-                    break;
+                    if (session.awaitPlaybackEnd()) {
+                        reachedEof = true;
+                        break;
+                    }
+                    continue;
                 }
                 var alignedLength = read - read % frameSize;
                 if (alignedLength == 0) {
                     continue;
                 }
-                session.analyzer().accept(buffer, 0, alignedLength, format);
-                session.line().write(buffer, 0, alignedLength);
+                session.write(buffer, alignedLength);
             }
         } catch (InterruptedException exception) {
             reachedEof = false;
@@ -212,6 +230,12 @@ public final class SdlFftPlayer implements Player {
         if (session != null) {
             session.pause();
         }
+    }
+
+    @Override
+    public boolean seek(double seconds) {
+        var session = sessions.current();
+        return session != null && session.requestSeek(seconds);
     }
 
     @Override

@@ -15,6 +15,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.slf4j.Logger;
@@ -70,7 +71,8 @@ public class MusicPlayer {
     // 底部控制与频谱展示面板
     private Composite foot;
     // 进度条组件
-    private ProgressBar progress;
+    private Canvas progress;
+    private int progressPercentage;
     // 当前播放时间标签
     private Label timeLabel1;
     // 界面拖拽时记录的 X, Y 轴坐标
@@ -263,25 +265,45 @@ public class MusicPlayer {
                 if (!player.pausing()) {
                     start.setImage(Utils.getImage("stop.png"));
                     player.pause();
-                    stopRefresh();
                 } else {
                     start.setImage(Utils.getImage("start.png"));
                     player.resume(0);
-                    startRefresh(foot, timeLabel1);
+                    startRefresh(foot);
                 }
             }
         });
         start.setImage(Utils.getImage("stop.png"));
         start.setBounds(98, 18, 32, 32);
 
-        progress = new ProgressBar(foot, SWT.NONE);
-        progress.setEnabled(false);
-        progress.setBounds(238, 25, 610, 17);
-        // 设置进度条的最大长度
-        progress.setMaximum(100);
-        progress.setSelection(0);
-        // 设置进度的条最小程度
-        progress.setMinimum(0);
+        progress = new Canvas(foot, SWT.DOUBLE_BUFFERED);
+        progress.setBounds(238, 24, 610, 20);
+        progress.setCursor(display.getSystemCursor(SWT.CURSOR_HAND));
+        progress.setToolTipText("点击调整播放进度");
+        progress.addPaintListener(event -> {
+            var area = progress.getClientArea();
+            int y = (area.height - 6) / 2;
+            event.gc.setAntialias(SWT.ON);
+            event.gc.setBackground(display.getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW));
+            event.gc.fillRoundRectangle(0, y, area.width, 6, 6, 6);
+            int playedWidth = area.width * progressPercentage / 100;
+            if (playedWidth > 0) {
+                event.gc.setBackground(display.getSystemColor(SWT.COLOR_LIST_SELECTION));
+                event.gc.fillRoundRectangle(0, y, playedWidth, 6, 6, 6);
+            }
+        });
+        progress.addListener(SWT.MouseDown, event -> {
+            if (event.button != 1 || !player.playing() || Constant.PLAYING_SONG == null) {
+                return;
+            }
+            double duration = PlaybackProgress.duration(player.duration(), Constant.PLAYING_SONG.getLength());
+            if (duration <= 0) {
+                return;
+            }
+            double position = PlaybackProgress.positionAt(event.x, progress.getClientArea().width, duration);
+            if (player.seek(position)) {
+                updatePlaybackPosition(position, duration);
+            }
+        });
 
         timeLabel1 = new Label(foot, SWT.NONE);
         timeLabel1.setFont(Utils.getFont("Consolas", 9, SWT.NORMAL));
@@ -677,7 +699,7 @@ public class MusicPlayer {
         try {
             Constant.MUSIC_PLAYER_PLAYING_STATE = true;
             initLyric();
-            startRefresh(foot, timeLabel1);
+            startRefresh(foot);
             updateSongListsColor(lists, song);
         } catch (RuntimeException exception) {
             player.stop();
@@ -820,7 +842,7 @@ public class MusicPlayer {
         }
     }
 
-    private void startRefresh(Composite comp, Label currentTimeLabel) {
+    private void startRefresh(Composite comp) {
         stopRefresh();
 
         refreshTask = new Runnable() {
@@ -839,14 +861,19 @@ public class MusicPlayer {
                         player.duration(), Constant.PLAYING_SONG.getLength());
 
                 comp.redraw();
-                updateLyric(position);
-                progress.setSelection(PlaybackProgress.percentage(position, duration));
-                currentTimeLabel.setText(Utils.format((int) position));
-                timeLabel2.setText(Utils.format((int) duration));
+                updatePlaybackPosition(position, duration);
                 display.timerExec(100, this);
             }
         };
         display.timerExec(0, refreshTask);
+    }
+
+    private void updatePlaybackPosition(double position, double duration) {
+        updateLyric(position);
+        progressPercentage = PlaybackProgress.percentage(position, duration);
+        progress.redraw();
+        timeLabel1.setText(Utils.format((int) position));
+        timeLabel2.setText(Utils.format((int) duration));
     }
 
     private void stopRefresh() {
@@ -864,7 +891,8 @@ public class MusicPlayer {
             start.setImage(Utils.getImage("stop.png"));
         }
         if (progress != null && !progress.isDisposed()) {
-            progress.setSelection(0);
+            progressPercentage = 0;
+            progress.redraw();
         }
         if (timeLabel1 != null && !timeLabel1.isDisposed()) {
             timeLabel1.setText(Utils.format(0));

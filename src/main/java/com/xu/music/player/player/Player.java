@@ -79,6 +79,15 @@ public interface Player extends AutoCloseable {
     void pause();
 
     /**
+     * 请求跳转至指定秒数，保持当前播放或暂停状态。
+     *
+     * @return 是否接受跳转请求；不可重新打开的音频流不支持跳转
+     */
+    default boolean seek(double seconds) {
+        return false;
+    }
+
+    /**
      * 继续播放
      *
      * @param duration 音频位置

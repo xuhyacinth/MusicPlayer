@@ -15,6 +15,13 @@ public final class PlaybackProgress {
         return Math.clamp((int) Math.round(position * 100 / duration), 0, 100);
     }
 
+    public static double positionAt(int x, int width, double duration) {
+        if (width <= 1 || !Double.isFinite(duration) || duration <= 0) {
+            return 0;
+        }
+        return Math.clamp((double) x / (width - 1), 0, 1) * duration;
+    }
+
     public static double duration(double reportedDuration, Double storedDuration) {
         if (Double.isFinite(reportedDuration) && reportedDuration > 0) {
             return reportedDuration;

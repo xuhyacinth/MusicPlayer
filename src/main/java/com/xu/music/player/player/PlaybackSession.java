@@ -11,7 +11,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 final class PlaybackSession implements AutoCloseable {
 
-    private final AudioInputStream audio;
+    @FunctionalInterface
+    interface AudioSource {
+        AudioInputStream open() throws Exception;
+    }
+
+    private volatile AudioInputStream audio;
+    private final AudioSource source;
+    private final double duration;
+    private Double pendingSeek;
+    private Double seekingPosition;
+    private double positionOffset;
+    private long lineFrameOrigin;
     private final SourceDataLine line;
     private final AudioFormat format;
     private final PcmSpectrumAnalyzer analyzer;
@@ -24,7 +35,14 @@ final class PlaybackSession implements AutoCloseable {
 
     PlaybackSession(AudioInputStream audio, SourceDataLine line,
                     AudioFormat format, PcmSpectrumAnalyzer analyzer) {
+        this(audio, line, format, analyzer, null);
+    }
+
+    PlaybackSession(AudioInputStream audio, SourceDataLine line,
+                    AudioFormat format, PcmSpectrumAnalyzer analyzer, AudioSource source) {
         this.audio = audio;
+        this.source = source;
+        this.duration = SdlFftPlayer.getAudioDuration(audio, format);
         this.line = line;
         this.format = format;
         this.analyzer = analyzer;
@@ -46,35 +64,164 @@ final class PlaybackSession implements AutoCloseable {
     }
 
     void pause() {
-        if (!playing || paused) {
-            return;
+        synchronized (pauseMonitor) {
+            if (!playing || paused) {
+                return;
+            }
+            paused = true;
+            line.stop();
         }
-        paused = true;
-        line.stop();
     }
 
     void resume() {
-        if (!playing || !paused) {
-            return;
-        }
         synchronized (pauseMonitor) {
+            if (!playing || !paused) {
+                return;
+            }
             paused = false;
-            line.start();
+            if (seekingPosition == null) {
+                line.start();
+            }
             pauseMonitor.notifyAll();
         }
     }
 
+    boolean requestSeek(double seconds) {
+        synchronized (pauseMonitor) {
+            if (!playing || source == null || !Double.isFinite(seconds)) {
+                return false;
+            }
+            pendingSeek = Math.max(0, duration > 0 ? Math.min(seconds, duration) : seconds);
+            pauseMonitor.notifyAll();
+            return true;
+        }
+    }
+
+    boolean hasPendingSeek() {
+        synchronized (pauseMonitor) {
+            return pendingSeek != null;
+        }
+    }
+
+    // 在播放线程重新解码定位，避免阻塞界面，也支持向前回跳。
+    void applyPendingSeek() throws Exception {
+        double target;
+        synchronized (pauseMonitor) {
+            if (!playing || pendingSeek == null) {
+                return;
+            }
+            target = pendingSeek;
+            pendingSeek = null;
+            seekingPosition = target;
+            line.stop();
+            line.flush();
+        }
+
+        AudioInputStream replacement = null;
+        try {
+            replacement = source.open();
+            long targetFrames = (long) (target * format.getFrameRate());
+            int frameSize = format.getFrameSize();
+            byte[] buffer = new byte[Math.max(frameSize, 16384 / frameSize * frameSize)];
+            long remaining = targetFrames * frameSize;
+            long consumed = 0;
+            while (remaining > 0) {
+                if (!playing || hasPendingSeek() || Thread.currentThread().isInterrupted()) {
+                    return;
+                }
+                int read = replacement.read(buffer, 0, (int) Math.min(buffer.length, remaining));
+                if (read < 0) {
+                    break;
+                }
+                if (read == 0) {
+                    throw new IOException("音频解码未返回有效数据");
+                }
+                consumed += read;
+                remaining -= read;
+            }
+            AudioInputStream previous;
+            synchronized (pauseMonitor) {
+                if (!playing || pendingSeek != null) {
+                    return;
+                }
+                previous = audio;
+                audio = replacement;
+                replacement = null;
+                positionOffset = (double) (consumed / frameSize) / format.getFrameRate();
+                lineFrameOrigin = line.getLongFramePosition();
+                analyzer.reset();
+                seekingPosition = null;
+                if (!paused) {
+                    line.start();
+                }
+            }
+            previous.close();
+        } finally {
+            synchronized (pauseMonitor) {
+                seekingPosition = null;
+            }
+            if (replacement != null) {
+                replacement.close();
+            }
+        }
+    }
+
+    // 只写入设备当前可接收的完整帧，暂停或跳转时不阻塞在音频写入中。
+    void write(byte[] buffer, int length) throws InterruptedException {
+        int offset = 0;
+        int frameSize = format.getFrameSize();
+        while (playing && offset < length) {
+            awaitIfPaused();
+            synchronized (pauseMonitor) {
+                if (!playing || pendingSeek != null) {
+                    return;
+                }
+                if (!paused) {
+                    int writable = Math.min(length - offset, line.available());
+                    writable -= writable % frameSize;
+                    if (writable > 0) {
+                        int written = line.write(buffer, offset, writable);
+                        analyzer.accept(buffer, offset, written, format);
+                        offset += written;
+                    }
+                }
+            }
+            if (offset < length) {
+                Thread.sleep(5);
+            }
+        }
+    }
+
+    // 等待设备播完缓冲区时仍响应暂停和跳转，不把定位操作当作自然结束。
+    boolean awaitPlaybackEnd() throws InterruptedException {
+        while (playing) {
+            awaitIfPaused();
+            synchronized (pauseMonitor) {
+                if (!playing || pendingSeek != null) {
+                    return false;
+                }
+                if (!paused && line.available() >= line.getBufferSize()) {
+                    playing = false;
+                    return true;
+                }
+            }
+            Thread.sleep(5);
+        }
+        return false;
+    }
+
     void awaitIfPaused() throws InterruptedException {
         synchronized (pauseMonitor) {
-            while (paused && playing) {
+            while (paused && playing && pendingSeek == null) {
                 pauseMonitor.wait();
             }
         }
     }
 
     void markStopped() {
-        playing = false;
         synchronized (pauseMonitor) {
+            playing = false;
+            pendingSeek = null;
             paused = false;
             pauseMonitor.notifyAll();
         }
@@ -89,12 +236,19 @@ final class PlaybackSession implements AutoCloseable {
     }
 
     double positionSeconds() {
-        return line.getLongFramePosition() / format.getFrameRate();
+        synchronized (pauseMonitor) {
+            if (pendingSeek != null) {
+                return pendingSeek;
+            }
+            if (seekingPosition != null) {
+                return seekingPosition;
+            }
+            return positionOffset + (line.getLongFramePosition() - lineFrameOrigin) / format.getFrameRate();
+        }
     }
 
     double durationSeconds() {
-        var frames = audio.getFrameLength();
-        return frames < 0 || format.getFrameRate() <= 0 ? 0 : frames / format.getFrameRate();
+        return duration;
     }
 
     AudioInputStream audio() {
