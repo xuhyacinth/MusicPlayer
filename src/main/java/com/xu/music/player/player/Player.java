@@ -110,12 +110,17 @@ public interface Player extends AutoCloseable {
     void stop();
 
     /**
-     * 设置音量
+     * 设置音频设备增益（分贝）
      *
      * @param volume 音量
      * @since 2019年10月31日19:06:39
      */
     void volume(float volume);
+
+    /**
+     * 设置播放音量，范围为 0～100，0 表示静音；切歌后保持当前设置。
+     */
+    void setVolume(int percentage);
 
     /**
      * 获取音频播放位置

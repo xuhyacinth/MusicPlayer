@@ -276,7 +276,7 @@ public class MusicPlayer {
         start.setBounds(98, 18, 32, 32);
 
         progress = new Canvas(foot, SWT.DOUBLE_BUFFERED);
-        progress.setBounds(238, 24, 610, 20);
+        progress.setBounds(238, 24, 578, 20);
         progress.setCursor(display.getSystemCursor(SWT.CURSOR_HAND));
         progress.setToolTipText("点击调整播放进度");
         progress.addPaintListener(event -> {
@@ -313,7 +313,10 @@ public class MusicPlayer {
         timeLabel2 = new Label(foot, SWT.RIGHT);
         timeLabel2.setFont(Utils.getFont("Consolas", 9, SWT.NORMAL));
         timeLabel2.setEnabled(false);
-        timeLabel2.setBounds(775, 4, 73, 20);
+        timeLabel2.setBounds(743, 4, 73, 20);
+
+        var volumeControl = new VolumeControl(foot, player::setVolume);
+        volumeControl.setBounds(834, 18, 32, 32);
 
         sashForm.setWeights(1, 5, 1);
         sashForm1.setWeights(PLAYLIST_PANE_WEIGHT, LYRIC_PANE_WEIGHT);

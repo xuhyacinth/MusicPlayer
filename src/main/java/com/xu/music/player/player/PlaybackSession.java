@@ -26,6 +26,8 @@ final class PlaybackSession implements AutoCloseable {
     private final SourceDataLine line;
     private final AudioFormat format;
     private final PcmSpectrumAnalyzer analyzer;
+    private final PlaybackVolume volume;
+    private byte[] volumeBuffer = new byte[4096];
     private final Object pauseMonitor = new Object();
     private final AtomicBoolean closed = new AtomicBoolean();
     private volatile boolean playing;
@@ -40,7 +42,13 @@ final class PlaybackSession implements AutoCloseable {
 
     PlaybackSession(AudioInputStream audio, SourceDataLine line,
                     AudioFormat format, PcmSpectrumAnalyzer analyzer, AudioSource source) {
+        this(audio, line, format, analyzer, source, new PlaybackVolume());
+    }
+
+    PlaybackSession(AudioInputStream audio, SourceDataLine line, AudioFormat format,
+                    PcmSpectrumAnalyzer analyzer, AudioSource source, PlaybackVolume volume) {
         this.audio = audio;
+        this.volume = volume;
         this.source = source;
         this.duration = SdlFftPlayer.getAudioDuration(audio, format);
         this.line = line;
@@ -180,8 +188,12 @@ final class PlaybackSession implements AutoCloseable {
                     int writable = Math.min(length - offset, line.available());
                     writable -= writable % frameSize;
                     if (writable > 0) {
-                        int written = line.write(buffer, offset, writable);
-                        analyzer.accept(buffer, offset, written, format);
+                        if (volumeBuffer.length < writable) {
+                            volumeBuffer = new byte[writable];
+                        }
+                        volume.apply(buffer, offset, writable, volumeBuffer);
+                        int written = line.write(volumeBuffer, 0, writable);
+                        analyzer.accept(volumeBuffer, 0, written, format);
                         offset += written;
                     }
                 }

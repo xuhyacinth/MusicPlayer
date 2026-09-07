@@ -26,6 +26,7 @@ public final class SdlFftPlayer implements Player {
 
     private final PlaybackSessionSlot sessions = new PlaybackSessionSlot();
     private final PlaybackCompletionNotifier completionNotifier = new PlaybackCompletionNotifier();
+    private final PlaybackVolume playbackVolume = new PlaybackVolume();
     private final AtomicLong taskSequence = new AtomicLong();
 
     private SdlFftPlayer() {
@@ -116,7 +117,7 @@ public final class SdlFftPlayer implements Player {
                     throw exception;
                 }
             };
-            var session = new PlaybackSession(pcm, line, pcmFormat, analyzer, pcmSource);
+            var session = new PlaybackSession(pcm, line, pcmFormat, analyzer, pcmSource, playbackVolume);
             var previous = sessions.replace(session);
             if (previous != null) {
                 previous.close();
@@ -264,6 +265,11 @@ public final class SdlFftPlayer implements Player {
         if (volume >= control.getMinimum() && volume <= control.getMaximum()) {
             control.setValue(volume);
         }
+    }
+
+    @Override
+    public void setVolume(int percentage) {
+        playbackVolume.setPercentage(percentage);
     }
 
     @Override
