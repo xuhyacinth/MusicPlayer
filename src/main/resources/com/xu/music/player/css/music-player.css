@@ -1,0 +1,25 @@
+.add-song-button {
+    -fx-background-color: #e8e8e8;
+    -fx-cursor: hand;
+}
+
+.add-song-button:hover {
+    -fx-background-color: #d0d0d0;
+}
+
+.player-footer {
+    -fx-background-color: #f8f8f8;
+}
+
+.time-label {
+    -fx-font-family: "Consolas";
+    -fx-font-size: 9px;
+}
+
+.lyrics .list-cell {
+    -fx-background-color: white;
+}
+
+.lyrics .list-cell:current {
+    -fx-background-color: #d3d3d3;
+}

@@ -1,46 +1,33 @@
 package com.xu.music.player
 
-import com.xu.music.player.main.MusicPlayerWindow
+import com.xu.music.player.controller.MusicPlayerController
 import com.xu.music.player.tray.MusicPlayerTray
 import javafx.application.Application
-import javafx.application.Platform
+import javafx.fxml.FXMLLoader
+import javafx.scene.Parent
 import javafx.scene.Scene
 import javafx.stage.Stage
 
-/**
- * JavaFX 音乐播放器入口
- *
- * @date 2024年6月10日15点30分
- * @since V1.0.0.0
- */
+/** JavaFX 音乐播放器入口，界面由 FXML 加载。 */
 class MusicPlayer : Application() {
+    private var controller: MusicPlayerController? = null
 
     override fun start(stage: Stage) {
-	    // 使用系统原生窗口装饰（标题栏带最小化/关闭按钮）
-        val window = MusicPlayerWindow(stage)
-        val root = window.createContents()
-        val scene = Scene(root, 900.0, 486.0)
-        stage.scene = scene
+        val loader = FXMLLoader(MusicPlayer::class.java.getResource("view/music-player.fxml"))
+        val root = loader.load<Parent>()
+        val playerController = loader.getController<MusicPlayerController>()
+        controller = playerController
+        stage.scene = Scene(root, 900.0, 486.0)
         stage.title = "MusicPlayer"
-        // 居中显示
-        stage.x = (java.awt.Toolkit.getDefaultToolkit().screenSize.width - 900) / 2.0
-        stage.y = (java.awt.Toolkit.getDefaultToolkit().screenSize.height - 486) / 2.0
-
-        stage.setOnCloseRequest { e ->
-            // 关闭时同时释放托盘与播放器
-            MusicPlayerTray.dispose()
-            window.exit()
-        }
-
+        stage.centerOnScreen()
         stage.show()
-
-        // 初始化系统托盘
         MusicPlayerTray.tray(stage)
+        playerController.attach(stage)
     }
 
     override fun stop() {
+        controller?.dispose()
         MusicPlayerTray.dispose()
-        Platform.exit()
     }
 
     companion object {

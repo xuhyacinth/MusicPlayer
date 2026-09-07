@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.xu.music.player.controller.MusicPlayerController"
+            prefWidth="900.0" prefHeight="486.0" stylesheets="@../css/music-player.css">
+    <center>
+        <HBox>
+            <VBox spacing="4.0" prefWidth="170.0" minWidth="170.0">
+                <Button text="＋ 添加歌曲" prefWidth="170.0" styleClass="add-song-button" onAction="#addSongs"/>
+                <TableView fx:id="lists" editable="false" prefWidth="170.0" minWidth="170.0" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="indexColumn" text="序号" prefWidth="40.0"/>
+                        <TableColumn fx:id="nameColumn" text="歌曲" prefWidth="130.0"/>
+                    </columns>
+                </TableView>
+            </VBox>
+            <ListView fx:id="lyrics" styleClass="lyrics" HBox.hgrow="ALWAYS"/>
+        </HBox>
+    </center>
+    <bottom>
+        <VBox fx:id="foot" spacing="4.0" styleClass="player-footer" onMouseClicked="#changeSpectrumColor">
+            <padding><Insets top="8.0" right="20.0" bottom="8.0" left="20.0"/></padding>
+            <HBox alignment="CENTER_LEFT" maxWidth="Infinity">
+                <Label fx:id="timeLabel1" text="00:00" styleClass="time-label"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="timeLabel2" text="00:00" styleClass="time-label"/>
+            </HBox>
+            <HBox spacing="20.0" alignment="CENTER_LEFT" maxWidth="Infinity">
+                <ImageView fx:id="prev" fitWidth="28.0" fitHeight="28.0" preserveRatio="true"
+                           onMousePressed="#pressPrevious" onMouseReleased="#playPrevious">
+                    <image><Image url="@../image/lastsong-1.png"/></image>
+                </ImageView>
+                <ImageView fx:id="start" fitWidth="28.0" fitHeight="28.0" preserveRatio="true"
+                           onMouseClicked="#togglePlayback">
+                    <image><Image url="@../image/stop.png"/></image>
+                </ImageView>
+                <ImageView fx:id="nextButton" fitWidth="28.0" fitHeight="28.0" preserveRatio="true"
+                           onMousePressed="#pressNext" onMouseReleased="#playNext">
+                    <image><Image url="@../image/nextsong-1.png"/></image>
+                </ImageView>
+                <ProgressBar fx:id="progress" progress="0.0" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+            </HBox>
+            <Canvas fx:id="spectrumCanvas" height="60.0"/>
+        </VBox>
+    </bottom>
+</BorderPane>

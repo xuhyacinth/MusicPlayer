@@ -1,4 +1,4 @@
-package com.xu.music.player.main
+package com.xu.music.player.controller
 
 import com.xu.music.player.constant.Constant
 import com.xu.music.player.entity.SongEntity
@@ -9,14 +9,12 @@ import com.xu.music.player.tray.MusicPlayerTray
 import com.xu.music.player.utils.CommUtils
 import com.xu.music.player.window.SongChoose
 import com.xu.music.player.wrapper.QueryWrapper
+import javafx.fxml.FXML
+import javafx.css.PseudoClass
 import javafx.application.Platform
 import javafx.beans.property.SimpleObjectProperty
-import javafx.geometry.Insets
-import javafx.geometry.Pos
-import javafx.scene.Parent
 import javafx.scene.canvas.Canvas
 import javafx.scene.control.Alert
-import javafx.scene.control.Button
 import javafx.scene.control.ButtonType
 import javafx.scene.control.Label
 import javafx.scene.control.ListCell
@@ -26,13 +24,8 @@ import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
 import javafx.scene.image.ImageView
 import javafx.scene.input.MouseEvent
-import javafx.scene.layout.BorderPane
-import javafx.scene.layout.HBox
-import javafx.scene.layout.Priority
-import javafx.scene.layout.Region
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
-import javafx.scene.text.Font
 import javafx.stage.Stage
 import org.slf4j.LoggerFactory
 import java.nio.file.Files
@@ -50,9 +43,11 @@ import cn.hutool.core.util.StrUtil
  * @date 2024年6月4日19点07分
  * @since SWT-V1.0.0.0
  */
-class MusicPlayerWindow(private val stage: Stage) {
+class MusicPlayerController {
 
-    private val log = LoggerFactory.getLogger(MusicPlayerWindow::class.java)
+    private lateinit var stage: Stage
+
+    private val log = LoggerFactory.getLogger(MusicPlayerController::class.java)
 
     /** 定时器，用于刷新 UI 和更新进度 */
     private var timer = Timer(true)
@@ -64,24 +59,31 @@ class MusicPlayerWindow(private val stage: Stage) {
     private var player: Player = MediaPlayer()
 
     /** 歌曲列表 */
+    @field:FXML
     private lateinit var lists: TableView<SongEntity>
 
     /** 歌词列表 */
+    @field:FXML
     private lateinit var lyrics: ListView<LyricLine>
 
     /** 频谱画布 */
+    @field:FXML
     private lateinit var spectrumCanvas: Canvas
 
     /** 进度条组件 */
+    @field:FXML
     private lateinit var progress: ProgressBar
 
     /** 当前播放时间标签 */
+    @field:FXML
     private lateinit var timeLabel1: Label
 
     /** 总播放时间标签 */
+    @field:FXML
     private lateinit var timeLabel2: Label
 
     /** 播放/暂停控制按钮 */
+    @field:FXML
     private lateinit var start: ImageView
 
     /** 已解析歌词行 */
@@ -99,177 +101,90 @@ class MusicPlayerWindow(private val stage: Stage) {
         "#4682B4", "#DAA520", "#006400", "#FF69B4", "#8B008B", "#556B2F", "#FF4500", "#191970"
     )
 
-    /**
-     * 构建窗口主要内容与 UI 布局
-     *
-     * @return 根节点
-     * @date 2024年6月4日19点07分
-     * @since SWT-V1.0.0.0
-     */
-    fun createContents(): Parent {
-        val root = BorderPane()
+    @field:FXML
+    private lateinit var indexColumn: TableColumn<SongEntity, Int>
 
-        // ==================== 中间栏 ====================
-        val center = HBox()
+    @field:FXML
+    private lateinit var nameColumn: TableColumn<SongEntity, String>
 
-        // 左侧：添加歌曲按钮 + 歌曲列表
-        val leftPane = VBox(4.0)
-        leftPane.prefWidth = 170.0
-        leftPane.minWidth = 170.0
+    @field:FXML
+    private lateinit var foot: VBox
 
-        val addButton = Button("＋ 添加歌曲")
-        addButton.prefWidth = 170.0
-        addButton.style = "-fx-background-color: #e8e8e8; -fx-cursor: hand;"
-        addButton.setOnMouseEntered { addButton.style = "-fx-background-color: #d0d0d0; -fx-cursor: hand;" }
-        addButton.setOnMouseExited { addButton.style = "-fx-background-color: #e8e8e8; -fx-cursor: hand;" }
-        addButton.setOnAction { addSongs() }
+    @field:FXML
+    private lateinit var prev: ImageView
 
-        lists = TableView<SongEntity>()
-        lists.isEditable = false
-        lists.prefWidth = 170.0
-        lists.minWidth = 170.0
-        VBox.setVgrow(lists, Priority.ALWAYS)
+    @field:FXML
+    private lateinit var nextButton: ImageView
 
-        val indexColumn = TableColumn<SongEntity, Int>("序号")
-        indexColumn.prefWidth = 40.0
+    /** FXML 注入完成后绑定动态行为，不在此处访问数据库或弹出窗口。 */
+    @FXML
+    private fun initialize() {
         indexColumn.cellValueFactory = { SimpleObjectProperty(it.value.index ?: 0) }
-
-        val nameColumn = TableColumn<SongEntity, String>("歌曲")
-        nameColumn.prefWidth = 130.0
         nameColumn.cellValueFactory = { SimpleObjectProperty(it.value.name) }
-
-        lists.columns.addAll(indexColumn, nameColumn)
-
-        // 单击列表项即播放
         lists.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
             if (!syncingSelection && newValue != null) {
-                val selected = lists.selectionModel.selectedIndex
-                next(selected.toString(), true)
+                next(lists.selectionModel.selectedIndex.toString(), true)
             }
         }
-
-        leftPane.children.addAll(addButton, lists)
-
-        // 右侧：歌词列表
-        lyrics = ListView<LyricLine>()
-        lyrics.cellFactory = { _: ListView<LyricLine> ->
+        val current = PseudoClass.getPseudoClass("current")
+        lyrics.cellFactory = { _ ->
             object : ListCell<LyricLine>() {
                 override fun updateItem(item: LyricLine?, empty: Boolean) {
                     super.updateItem(item, empty)
-                    if (empty || item == null) {
-                        text = null
-                        style = "-fx-background-color: white;"
-                        return
-                    }
-                    text = item.text
-                    style = if (item == currentLyric) {
-                        "-fx-background-color: #d3d3d3;"
-                    } else {
-                        "-fx-background-color: white;"
-                    }
+                    text = if (empty) null else item?.text
+                    pseudoClassStateChanged(current, !empty && item != null && item == currentLyric)
                 }
             }
         }
-
-        HBox.setHgrow(lyrics, Priority.ALWAYS)
-        center.children.addAll(leftPane, lyrics)
-
-        // ==================== 底部控制栏 ====================
-        val foot = VBox(4.0)
-        foot.style = "-fx-background-color: #f8f8f8;"
-        foot.padding = Insets(8.0, 20.0, 8.0, 20.0)
-
-        // 时间标签行
-        val timeRow = HBox()
-        timeRow.alignment = Pos.CENTER_LEFT
-        timeRow.maxWidth = Double.MAX_VALUE
-        timeLabel1 = Label("00:00")
-        timeLabel1.font = Font("Consolas", 9.0)
-        timeLabel2 = Label("00:00")
-        timeLabel2.font = Font("Consolas", 9.0)
-        val timeSpacer = Region()
-        HBox.setHgrow(timeSpacer, Priority.ALWAYS)
-        timeRow.children.addAll(timeLabel1, timeSpacer, timeLabel2)
-
-        // 控制按钮行
-        val controlRow = HBox(20.0)
-        controlRow.alignment = Pos.CENTER_LEFT
-        controlRow.maxWidth = Double.MAX_VALUE
-
-        val prev = ImageView(CommUtils.getImage("lastsong-1.png"))
-        prev.fitWidth = 28.0
-        prev.fitHeight = 28.0
-        prev.isPreserveRatio = true
-
-        start = ImageView(CommUtils.getImage("stop.png"))
-        start.fitWidth = 28.0
-        start.fitHeight = 28.0
-        start.isPreserveRatio = true
-
-        val next = ImageView(CommUtils.getImage("nextsong-1.png"))
-        next.fitWidth = 28.0
-        next.fitHeight = 28.0
-        next.isPreserveRatio = true
-
-        progress = ProgressBar()
-        progress.progress = 0.0
-        progress.maxWidth = Double.MAX_VALUE
-        HBox.setHgrow(progress, Priority.ALWAYS)
-
-        // 播放/暂停
-        start.setOnMouseClicked { _: MouseEvent ->
-            if (!player.playing()) {
-                return@setOnMouseClicked
-            }
-            if (!player.pausing()) {
-                start.image = CommUtils.getImage("start.png")
-                player.pause()
-            } else {
-                start.image = CommUtils.getImage("stop.png")
-                player.resume(0)
-            }
-        }
-
-        // 上一曲
-        prev.setOnMousePressed { prev.image = CommUtils.getImage("lastsong-2.png") }
-        prev.setOnMouseReleased {
-            prev.image = CommUtils.getImage("lastsong-1.png")
-            next(null, false)
-        }
-
-        // 下一曲
-        next.setOnMousePressed { next.image = CommUtils.getImage("nextsong-2.png") }
-        next.setOnMouseReleased {
-            next.image = CommUtils.getImage("nextsong-1.png")
-            next(null, true)
-        }
-
-        controlRow.children.addAll(prev, start, next, progress)
-
-        // 频谱画布
-        spectrumCanvas = Canvas()
-        spectrumCanvas.height = 60.0
         spectrumCanvas.widthProperty().bind(foot.widthProperty().subtract(40.0))
+    }
 
-        // 双击底部切换频谱颜色
-        foot.setOnMouseClicked { e: MouseEvent ->
-            if (e.clickCount >= 2) {
-                Constant.SPECTRUM_FOREGROUND_COLOR = spectrumColors[SecureRandom().nextInt(spectrumColors.size)]
-            }
-        }
-
-        foot.children.addAll(timeRow, controlRow, spectrumCanvas)
-
-        root.center = center
-        root.bottom = foot
-
-        // 初始化播放列表
+    /** 窗口就绪后加载歌曲并启动刷新，保留空列表时自动导入的行为。 */
+    fun attach(stage: Stage) {
+        this.stage = stage
         initPlayer()
-
-        // 启动定时刷新
         startSpectrumTimer()
+    }
 
-        return root
+    @FXML
+    private fun togglePlayback() {
+        if (!player.playing() && !player.pausing()) return
+        if (!player.pausing()) {
+            start.image = CommUtils.getImage("stop.png")
+            player.pause()
+        } else {
+            start.image = CommUtils.getImage("start.png")
+            player.resume(0)
+        }
+    }
+
+    @FXML
+    private fun pressPrevious() {
+        prev.image = CommUtils.getImage("lastsong-2.png")
+    }
+
+    @FXML
+    private fun playPrevious() {
+        prev.image = CommUtils.getImage("lastsong-1.png")
+        next(null, false)
+    }
+
+    @FXML
+    private fun pressNext() {
+        nextButton.image = CommUtils.getImage("nextsong-2.png")
+    }
+
+    @FXML
+    private fun playNext() {
+        nextButton.image = CommUtils.getImage("nextsong-1.png")
+        next(null, true)
+    }
+
+    @FXML
+    private fun changeSpectrumColor(event: MouseEvent) {
+        if (event.clickCount >= 2) {
+            Constant.SPECTRUM_FOREGROUND_COLOR = spectrumColors[SecureRandom().nextInt(spectrumColors.size)]
+        }
     }
 
     /**
@@ -294,7 +209,7 @@ class MusicPlayerWindow(private val stage: Stage) {
             return
         }
 
-        initSongTable(list!!)
+        initSongTable(list)
     }
 
     /**
@@ -303,6 +218,7 @@ class MusicPlayerWindow(private val stage: Stage) {
      * @date 2024年6月4日19点07分
      * @since SWT-V1.0.0.0
      */
+    @FXML
     private fun addSongs() {
         try {
             val choice = SongChoose()
@@ -311,7 +227,7 @@ class MusicPlayerWindow(private val stage: Stage) {
                 val wrapper = QueryWrapper<SongEntity>(SongEntity::class.java, "song")
                 val list = wrapper.list()
                 if (!CollUtil.isEmpty(list)) {
-                    initSongTable(list!!)
+                    initSongTable(list)
                 }
             }
         } catch (e: Exception) {
@@ -663,7 +579,7 @@ class MusicPlayerWindow(private val stage: Stage) {
                 if (b < validDataLen) {
                     val obj = transSnapshot[b]
                     if (obj != null) {
-                        sum += obj as Double
+                        sum += obj
                         count++
                     }
                 }
@@ -684,17 +600,15 @@ class MusicPlayerWindow(private val stage: Stage) {
     }
 
     /**
-     * 退出并释放关联的托盘与播放器进程硬件资源
+     * 释放定时器、托盘和播放资源，由应用入口统一管理窗口退出
      *
      * @date 2024年6月4日19点07分
      * @since SWT-V1.0.0.0
      */
-    fun exit() {
+    fun dispose() {
         timer.cancel()
         MusicPlayerTray.dispose()
         player.stop()
-        stage.close()
-        Platform.exit()
     }
 
     /**

@@ -1,121 +1,48 @@
-package com.xu.music.player.wrapper;
+package com.xu.music.player.wrapper
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import java.lang.reflect.Modifier
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Date
+import java.util.Locale
 
-import cn.hutool.core.util.StrUtil;
+/** 数据库操作的字段与值转换。 */
+open class BasicWrapper<T> {
+    protected var last: String = ""
+    protected lateinit var bean: Class<T>
+    protected lateinit var table: String
+    protected var fields: List<String> = listOf("*")
+    protected val condition = mutableListOf<String>()
 
-/**
- * 基础类
- *
- * @param <T>
- * @date 2024年6月4日19点07分
- * @since idea
- */
-public class BasicWrapper<T> {
+    protected fun dealValue(values: List<Any?>): String = values.joinToString(",") { dealValue(it) }
 
-    /**
-     * 最后SQL
-     */
-    protected String last;
-
-    /**
-     * 类
-     */
-    protected Class<T> bean;
-
-    /**
-     * 表
-     */
-    protected String table;
-
-    /**
-     * 字段
-     */
-    protected String[] field;
-
-    /**
-     * 条件
-     */
-    protected List<String> condition = new LinkedList<>();
-
-    /**
-     * 填充值
-     *
-     * @param list 值
-     * @return 结果
-     * @date 2024年6月6日20点10分
-     * @since idea
-     */
-    protected String dealValue(List<Object> list) {
-        return Optional.ofNullable(list).orElse(new ArrayList<>()).stream().map(item -> {
-            if (null == item) {
-                return "null";
-            }
-            if (item instanceof Date) {
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                return "'" + format.format(item) + "'";
-            } else if (item instanceof LocalDateTime) {
-                DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                return "'" + format.format((LocalDateTime) item) + "'";
-            } else if (item instanceof String) {
-                return "'" + item + "'";
-            }
-            return String.valueOf(item);
-        }).collect(Collectors.joining(","));
+    protected fun dealValue(value: Any?): String = when (value) {
+        null -> "null"
+        is Date -> "'${SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(value)}'"
+        is LocalDateTime -> "'${value.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))}'"
+        is String -> "'${value.replace("'", "''")}'"
+        else -> value.toString()
     }
 
-    /**
-     * 填充值
-     *
-     * @param value 值
-     * @return 结果
-     * @date 2024年6月6日20点10分
-     * @since idea
-     */
-    protected String dealValue(Object value) {
-        if (null == value) {
-            return "null";
-        }
-        if (value instanceof Date) {
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            return "'" + format.format(value) + "'";
-        } else if (value instanceof LocalDateTime) {
-            DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            return "'" + format.format((LocalDateTime) value) + "'";
-        } else if (value instanceof String) {
-            return "'" + value + "'";
-        }
-        return String.valueOf(value);
+    protected fun dealField(name: String): String {
+        val column = Regex("[A-Z]").replace(name) { "_" + it.value.lowercase(Locale.ROOT) }
+        return if (column.equals("index", ignoreCase = true)) "`$column`" else column
     }
 
-    /**
-     * 字段转换
-     *
-     * @param name 字段名称
-     * @return 结果
-     * @date 2024年6月6日20点10分
-     * @since idea
-     */
-    protected String dealField(String name) {
-        Matcher matcher = Pattern.compile("[A-Z]").matcher(name);
-        while (matcher.find()) {
-            name = name.replace(matcher.group(), "_" + matcher.group().toLowerCase(Locale.ROOT));
+    /** 忽略静态字段和空值，保留原有仅写入非空属性的约定。 */
+    protected fun values(data: Any): List<Pair<String, Any>> = data.javaClass.declaredFields
+        .filterNot { Modifier.isStatic(it.modifiers) || it.isSynthetic }
+        .mapNotNull { field ->
+            field.isAccessible = true
+            field.get(data)?.let { dealField(field.name) to it }
         }
-        if (StrUtil.equalsAnyIgnoreCase(name, "index")) {
-            return "`" + name + "`";
-        }
-        return name;
+
+    protected fun insertSql(data: Any): String {
+        val values = values(data)
+        return "insert into $table(${values.joinToString(", ") { it.first }}) " +
+            "values(${dealValue(values.map { it.second })})"
     }
 
+    protected fun whereSql(): String = " where 1 = 1 " + condition.joinToString(" ") + last
 }
