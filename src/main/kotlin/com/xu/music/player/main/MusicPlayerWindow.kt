@@ -2,7 +2,7 @@ package com.xu.music.player.main
 
 import com.xu.music.player.constant.Constant
 import com.xu.music.player.entity.SongEntity
-import com.xu.music.player.player.MediaPlayerPlayer
+import com.xu.music.player.player.MediaPlayer
 import com.xu.music.player.player.Player
 import com.xu.music.player.sql.SQLiteHelper
 import com.xu.music.player.tray.MusicPlayerTray
@@ -61,7 +61,7 @@ class MusicPlayerWindow(private val stage: Stage) {
     private var position = 0.0
 
     /** 音频播放核心组件 */
-    private var player: Player = MediaPlayerPlayer()
+    private var player: Player = MediaPlayer()
 
     /** 歌曲列表 */
     private lateinit var lists: TableView<SongEntity>
@@ -378,7 +378,7 @@ class MusicPlayerWindow(private val stage: Stage) {
 
         try {
             // 注册播放结束自动下一曲
-            (player as? MediaPlayerPlayer)?.onEndOfMedia = { next(null, true) }
+            (player as? MediaPlayer)?.onEndOfMedia = { next(null, true) }
             player.load(song.songPath)
             player.play()
             Constant.MUSIC_PLAYER_PLAYING_STATE = true
@@ -621,11 +621,11 @@ class MusicPlayerWindow(private val stage: Stage) {
 
         val length = (canvasWidth / 25.0).toInt()
 
-        if (CollUtil.isEmpty(MediaPlayerPlayer.TRANS)) {
+        if (CollUtil.isEmpty(MediaPlayer.TRANS)) {
             return
         }
 
-        val transSnapshot = MediaPlayerPlayer.TRANS.toTypedArray()
+        val transSnapshot = MediaPlayer.TRANS.toTypedArray()
         if (transSnapshot.size < 2) {
             return
         }

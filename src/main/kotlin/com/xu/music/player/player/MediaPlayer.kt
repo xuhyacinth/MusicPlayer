@@ -27,9 +27,9 @@ import javax.sound.sampled.AudioSystem
  * @date 2024年6月4日19点07分
  * @since SWT-V1.0.0.0
  */
-class MediaPlayerPlayer : Player {
+class MediaPlayer : Player {
 
-    private val log = LoggerFactory.getLogger(MediaPlayerPlayer::class.java)
+    private val log = LoggerFactory.getLogger(MediaPlayer::class.java)
 
     /** JavaFX 媒体播放器 */
     private var mediaPlayer: MediaPlayer? = null
