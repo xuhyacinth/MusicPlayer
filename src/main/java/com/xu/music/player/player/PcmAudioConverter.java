@@ -14,12 +14,15 @@ final class PcmAudioConverter {
     }
 
     static AudioInputStream convert(AudioInputStream source, AudioFormat target) throws IOException {
-        if (AudioSystem.isConversionSupported(target, source.getFormat())) {
+        if (!"FLAC".equals(source.getFormat().getEncoding().toString())
+                && AudioSystem.isConversionSupported(target, source.getFormat())) {
             return AudioSystem.getAudioInputStream(target, source);
         }
 
         // FLAC 解码器保留原位深；仅显式选择兼容格式时再进行位深转换。
-        var decoded = AudioSystem.getAudioInputStream(AudioFormat.Encoding.PCM_SIGNED, source);
+        var decoded = "FLAC".equals(source.getFormat().getEncoding().toString())
+                ? FlacPcmInputStream.decode(source)
+                : AudioSystem.getAudioInputStream(AudioFormat.Encoding.PCM_SIGNED, source);
         try {
             return AudioSystem.getAudioInputStream(target, decoded);
         } catch (RuntimeException exception) {
