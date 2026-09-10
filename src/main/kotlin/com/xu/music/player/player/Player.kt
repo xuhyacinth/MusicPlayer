@@ -14,6 +14,9 @@ import javax.sound.sampled.AudioInputStream
  */
 interface Player {
 
+    /** 后台准备音频，就绪或失败后回调 JavaFX 线程；新请求和 stop 会取消旧请求。 */
+    fun loadAsync(path: String, onLoaded: () -> Unit, onError: (Exception) -> Unit)
+
     /**
      * 加载音频
      *
@@ -125,6 +128,9 @@ interface Player {
      * @since V1.0.0.0
      */
     fun volume(volume: Float)
+
+    /** 定位到指定秒数，保持当前播放或暂停状态。 */
+    fun seek(seconds: Double)
 
     /**
      * 获取音频播放位置

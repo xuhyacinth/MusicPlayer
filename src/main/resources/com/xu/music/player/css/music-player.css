@@ -1,25 +1,50 @@
-.add-song-button {
-    -fx-background-color: #e8e8e8;
+.root {
+    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-size: 12px;
+    -fx-base: #f0f0f0;
+    -fx-background-color: #f0f0f0;
+    -fx-accent: #0078d7;
+}
+.content-split { -fx-padding: 0; -fx-background-insets: 0; }
+.content-split > .split-pane-divider { -fx-padding: 0 2px; -fx-background-color: #e2e2e2; }
+.playlist-pane { -fx-background-color: #f0f0f0; }
+.add-song-button, .clear-search-button, .volume-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 2px;
+    -fx-padding: 3px;
     -fx-cursor: hand;
 }
-
-.add-song-button:hover {
-    -fx-background-color: #d0d0d0;
+.add-song-button:hover, .clear-search-button:hover, .volume-button:hover,
+.volume-button:focused, .add-song-button:focused { -fx-background-color: #dcdcdc; }
+.clear-search-button { -fx-font-size: 16px; -fx-padding: 0 3px; }
+.text-field { -fx-background-radius: 0; -fx-border-radius: 0; -fx-padding: 5px; }
+.table-view { -fx-background-color: #bcbcbc, white; -fx-background-insets: 0, 1; -fx-padding: 1; }
+.table-view .column-header-background, .table-view .column-header, .table-view .filler {
+    -fx-background-color: #f4f4f4;
 }
-
-.player-footer {
-    -fx-background-color: #f8f8f8;
-}
-
-.time-label {
-    -fx-font-family: "Consolas";
-    -fx-font-size: 9px;
-}
-
+.table-view .column-header { -fx-border-color: transparent #dedede #dedede transparent; }
+.table-view .column-header .label { -fx-alignment: CENTER_LEFT; -fx-font-weight: normal; }
+.table-row-cell { -fx-background-color: white; -fx-cell-size: 27px; }
+.table-cell { -fx-border-width: 0; -fx-padding: 4px 5px; }
+.table-row-cell:selected { -fx-background-color: #d3d3d3; }
+.table-row-cell:selected .table-cell { -fx-text-fill: #202020; }
+.table-view .placeholder .label { -fx-text-fill: #777777; -fx-font-size: 11px; }
+.lyrics { -fx-background-color: white; -fx-padding: 0; }
 .lyrics .list-cell {
     -fx-background-color: white;
+    -fx-text-fill: #202020;
+    -fx-alignment: CENTER;
+    -fx-padding: 6px 12px;
 }
-
-.lyrics .list-cell:current {
-    -fx-background-color: #d3d3d3;
-}
+.lyrics .list-cell:spacer { -fx-background-color: white; -fx-padding: 0; }
+.lyrics .list-cell:current { -fx-background-color: #d3d3d3; -fx-text-fill: #0078d7; }
+.player-footer { -fx-background-color: #f0f0f0; -fx-border-color: #d5d5d5 transparent transparent transparent; }
+.time-label { -fx-font-family: "Consolas"; -fx-font-size: 12px; -fx-text-fill: #777777; }
+.playback-icon, .progress-hit-area { -fx-cursor: hand; }
+.progress-bar { -fx-padding: 0; -fx-background-color: transparent; }
+.progress-bar > .track { -fx-background-color: #bcbcbc; -fx-background-insets: 0; -fx-background-radius: 3px; }
+.progress-bar > .bar { -fx-background-color: #0078d7; -fx-background-insets: 0; -fx-background-radius: 3px; -fx-padding: 0; }
+.volume-icon { -fx-fill: transparent; -fx-stroke: #555555; -fx-stroke-width: 1.7; -fx-stroke-line-cap: round; -fx-stroke-line-join: round; }
+.volume-popup { -fx-background-color: #f0f0f0; -fx-border-color: #bcbcbc; -fx-padding: 10px 12px; -fx-spacing: 10px; -fx-alignment: CENTER; }
+.volume-popup .slider .track { -fx-background-color: #bcbcbc; -fx-pref-width: 4px; }
+.volume-popup .slider .thumb { -fx-background-color: #0078d7; }

@@ -19,6 +19,8 @@ class MusicPlayer : Application() {
         controller = playerController
         stage.scene = Scene(root, 900.0, 486.0)
         stage.title = "MusicPlayer"
+        stage.minWidth = 640.0
+        stage.minHeight = 360.0
         stage.centerOnScreen()
         stage.show()
         MusicPlayerTray.tray(stage)

@@ -1,21 +1,16 @@
 package com.xu.music.player.player
 
-import cn.hutool.core.io.IoUtil
-import cn.hutool.core.text.CharSequenceUtil
+import javafx.application.Platform
 import javafx.scene.media.AudioSpectrumListener
 import javafx.scene.media.Media
 import javafx.scene.media.MediaPlayer
 import javafx.util.Duration
-import org.slf4j.LoggerFactory
 import java.io.File
 import java.net.URL
-import java.nio.file.Files
 import java.util.Deque
 import java.util.concurrent.ConcurrentLinkedDeque
-import javax.sound.sampled.AudioFileFormat.Type.WAVE
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.AudioInputStream
-import javax.sound.sampled.AudioSystem
 
 /**
  * JavaFX MediaPlayer 音频播放
@@ -29,13 +24,18 @@ import javax.sound.sampled.AudioSystem
  */
 class MediaPlayer : Player {
 
-    private val log = LoggerFactory.getLogger(MediaPlayer::class.java)
-
     /** JavaFX 媒体播放器 */
     private var mediaPlayer: MediaPlayer? = null
 
+    /** 音量设置跨歌曲保留，也允许在加载前调节。 */
+    private var currentVolume = 1.0
+
     /** 临时 FLAC 转 WAV 文件 */
-    private var tempWav: File? = null
+    private var preparedAudio: PreparedAudio? = null
+    private val loadLock = Any()
+    @Volatile private var loadGeneration = 0L
+    private var loadThread: Thread? = null
+    private var pendingAudio: PreparedAudio? = null
 
     /** 暂停状态（JavaFX MediaPlayer 无 pause 标志位，需自行维护） */
     @Volatile
@@ -84,17 +84,64 @@ class MediaPlayer : Player {
         }
         stop()
 
-        val source = File(path)
+        install(PreparedAudio.prepare(File(path)))
+    }
 
-        // FLAC 需要解码为临时 WAV（JavaFX 官方不支持 FLAC）
-        if (CharSequenceUtil.endWithIgnoreCase(source.name, ".flac")) {
-            tempWav = flacToTempWav(source)
-            mediaPlayer = MediaPlayer(Media(tempWav!!.toURI().toString()))
-        } else {
-            mediaPlayer = MediaPlayer(Media(source.toURI().toString()))
+    /** 耗时解码在后台执行；媒体对象和回调始终在 JavaFX 线程上操作。 */
+    override fun loadAsync(path: String, onLoaded: () -> Unit, onError: (Exception) -> Unit) {
+        check(Platform.isFxApplicationThread()) { "异步加载必须由 JavaFX 线程发起" }
+        stop()
+        val generation = loadGeneration
+        fun fail(error: Exception) {
+            if (generation != loadGeneration) return
+            stop()
+            onError(error)
         }
+        loadThread = Thread({
+            try {
+                val audio = PreparedAudio.prepare(File(path))
+                synchronized(loadLock) {
+                    if (generation != loadGeneration) {
+                        audio.close()
+                        return@Thread
+                    }
+                    pendingAudio = audio
+                    Platform.runLater {
+                        if (generation != loadGeneration) return@runLater
+                        synchronized(loadLock) { pendingAudio = null; loadThread = null }
+                        try {
+                            install(audio)
+                            val native = mediaPlayer!!
+                            native.setOnError { fail(native.error ?: IllegalStateException("音频加载失败")) }
+                            native.setOnReady {
+                                if (generation == loadGeneration) {
+                                    try { onLoaded() } catch (e: Exception) { fail(e) }
+                                }
+                            }
+                            native.error?.let { fail(it) }
+                        } catch (e: Exception) {
+                            fail(e)
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                Platform.runLater { fail(e) }
+            }
+        }, "musicplayer-audio-loader").apply { isDaemon = true; start() }
+    }
 
-        bindListener()
+    private fun install(audio: PreparedAudio) {
+        preparedAudio = audio
+        try {
+            mediaPlayer = MediaPlayer(Media(audio.file.toURI().toString()))
+            bindListener()
+        } catch (e: Exception) {
+            mediaPlayer?.dispose()
+            mediaPlayer = null
+            preparedAudio = null
+            audio.close()
+            throw e
+        }
     }
 
     @Throws(Exception::class)
@@ -134,25 +181,32 @@ class MediaPlayer : Player {
     }
 
     override fun stop() {
+        synchronized(loadLock) {
+            loadGeneration++
+            loadThread?.interrupt()
+            loadThread = null
+            pendingAudio?.close()
+            pendingAudio = null
+        }
         playing = false
         paused = false
         mediaPlayer?.stop()
         mediaPlayer?.dispose()
         mediaPlayer = null
-        // 清理临时 FLAC 转 WAV 文件
-        tempWav?.let { wav ->
-            try {
-                Files.deleteIfExists(wav.toPath())
-            } catch (e: Exception) {
-                log.warn("清理临时 WAV 文件失败: {}", wav.absolutePath, e)
-            }
-            tempWav = null
-        }
+        preparedAudio?.close()
+        preparedAudio = null
         TRANS.clear()
     }
 
     override fun volume(volume: Float) {
-        mediaPlayer?.volume = volume.coerceIn(0f, 1f).toDouble()
+        currentVolume = volume.coerceIn(0f, 1f).toDouble()
+        mediaPlayer?.volume = currentVolume
+    }
+
+    override fun seek(seconds: Double) {
+        val total = duration()
+        if (!seconds.isFinite() || !total.isFinite() || total <= 0.0) return
+        mediaPlayer?.seek(Duration.seconds(seconds.coerceIn(0.0, total)))
     }
 
     override fun position(): Double {
@@ -180,7 +234,11 @@ class MediaPlayer : Player {
      * @since SWT-V1.0.0.0
      */
     private fun bindListener() {
+        mediaPlayer?.volume = currentVolume
+        val native = mediaPlayer
+        val generation = loadGeneration
         mediaPlayer?.setOnEndOfMedia {
+            if (generation != loadGeneration || native !== mediaPlayer) return@setOnEndOfMedia
             playing = false
             paused = false
             onEndOfMedia?.invoke()
@@ -190,39 +248,6 @@ class MediaPlayer : Player {
         mediaPlayer?.audioSpectrumThreshold = -80
         mediaPlayer?.audioSpectrumInterval = 0.05
         mediaPlayer?.audioSpectrumListener = spectrumListener
-    }
-
-    /**
-     * FLAC 解码为临时 WAV 文件
-     *
-     * jflac 通过 SPI 注册到 AudioSystem，可直接读取 FLAC 为 AudioInputStream，
-     * 再写为 WAV 临时文件供 JavaFX MediaPlayer 播放。
-     *
-     * @param flac FLAC 源文件
-     * @return 临时 WAV 文件
-     * @date 2024年6月4日19点07分
-     * @since SWT-V1.0.0.0
-     */
-    private fun flacToTempWav(flac: File): File {
-        var stream: AudioInputStream? = null
-        try {
-            stream = AudioSystem.getAudioInputStream(flac)
-            // 统一转为 PCM_SIGNED 16bit，确保 JavaFX 能识别
-            val format = stream.format
-            val pcm = AudioFormat(
-                AudioFormat.Encoding.PCM_SIGNED, format.sampleRate, 16, format.channels,
-                format.channels * 2, format.sampleRate, false
-            )
-            val converted = AudioSystem.getAudioInputStream(pcm, stream)
-            val temp = File.createTempFile("musicplayer_flac_", ".wav")
-            temp.deleteOnExit()
-            AudioSystem.write(converted, WAVE, temp)
-            return temp
-        } catch (e: Exception) {
-            throw RuntimeException("FLAC 解码失败: ${flac.absolutePath}", e)
-        } finally {
-            IoUtil.close(stream)
-        }
     }
 
     companion object {

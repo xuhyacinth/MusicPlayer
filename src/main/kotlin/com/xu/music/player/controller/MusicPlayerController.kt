@@ -14,6 +14,10 @@ import javafx.css.PseudoClass
 import javafx.application.Platform
 import javafx.beans.property.SimpleObjectProperty
 import javafx.scene.canvas.Canvas
+import javafx.scene.control.Button
+import javafx.scene.control.Slider
+import javafx.scene.control.TextField
+import javafx.scene.control.Tooltip
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
 import javafx.scene.control.Label
@@ -21,10 +25,16 @@ import javafx.scene.control.ListCell
 import javafx.scene.control.ListView
 import javafx.scene.control.ProgressBar
 import javafx.scene.control.TableColumn
+import javafx.scene.control.TableRow
 import javafx.scene.control.TableView
+import javafx.scene.control.skin.ListViewSkin
 import javafx.scene.image.ImageView
 import javafx.scene.input.MouseEvent
-import javafx.scene.layout.VBox
+import javafx.scene.layout.StackPane
+import javafx.scene.input.KeyCode
+import javafx.scene.input.MouseButton
+import javafx.scene.shape.SVGPath
+import javafx.stage.Popup
 import javafx.scene.paint.Color
 import javafx.stage.Stage
 import org.slf4j.LoggerFactory
@@ -92,8 +102,9 @@ class MusicPlayerController {
     /** 当前高亮歌词 */
     private var currentLyric: LyricLine? = null
 
-    /** 程序化选中时避免递归触发播放 */
-    private var syncingSelection = false
+    /** 首尾留白只参与显示，不参与时间匹配。 */
+    private val lyricSpacer = LyricLine(-1.0, "")
+    private lateinit var lyricSkin: CenteredLyricSkin
 
     /** 频谱前景色候选 */
     private val spectrumColors = arrayOf(
@@ -108,7 +119,7 @@ class MusicPlayerController {
     private lateinit var nameColumn: TableColumn<SongEntity, String>
 
     @field:FXML
-    private lateinit var foot: VBox
+    private lateinit var foot: StackPane
 
     @field:FXML
     private lateinit var prev: ImageView
@@ -116,14 +127,63 @@ class MusicPlayerController {
     @field:FXML
     private lateinit var nextButton: ImageView
 
+    private var allSongs: List<SongEntity> = emptyList()
+    private var requestedSong: SongEntity? = null
+    private var requestId = 0L
+    private var disposed = false
+
+    @field:FXML
+    private lateinit var playbackStatus: Label
+
+    @field:FXML
+    private lateinit var songSearch: TextField
+
+    @field:FXML
+    private lateinit var clearSearch: Button
+
+    @field:FXML
+    private lateinit var playlistPlaceholder: Label
+
+    @field:FXML
+    private lateinit var progressTrack: StackPane
+
+    @field:FXML
+    private lateinit var volumeButton: Button
+
+    @field:FXML
+    private lateinit var volumePopup: Popup
+
+    @field:FXML
+    private lateinit var volumeSlider: Slider
+
+    @field:FXML
+    private lateinit var volumeLabel: Label
+
+    @field:FXML
+    private lateinit var volumeTooltip: Tooltip
+
+    @field:FXML
+    private lateinit var volumeIcon: SVGPath
+
     /** FXML 注入完成后绑定动态行为，不在此处访问数据库或弹出窗口。 */
     @FXML
     private fun initialize() {
         indexColumn.cellValueFactory = { SimpleObjectProperty(it.value.index ?: 0) }
         nameColumn.cellValueFactory = { SimpleObjectProperty(it.value.name) }
-        lists.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
-            if (!syncingSelection && newValue != null) {
+        lists.setRowFactory {
+            TableRow<SongEntity>().apply {
+                setOnMouseClicked { event ->
+                    if (!isEmpty && event.button == MouseButton.PRIMARY && event.clickCount == 2) {
+                        next(index.toString(), true)
+                        event.consume()
+                    }
+                }
+            }
+        }
+        lists.setOnKeyPressed { event ->
+            if (event.code == KeyCode.ENTER && lists.selectionModel.selectedItem != null) {
                 next(lists.selectionModel.selectedIndex.toString(), true)
+                event.consume()
             }
         }
         val current = PseudoClass.getPseudoClass("current")
@@ -131,12 +191,43 @@ class MusicPlayerController {
             object : ListCell<LyricLine>() {
                 override fun updateItem(item: LyricLine?, empty: Boolean) {
                     super.updateItem(item, empty)
-                    text = if (empty) null else item?.text
-                    pseudoClassStateChanged(current, !empty && item != null && item == currentLyric)
+                    val spacer = item === lyricSpacer
+                    text = if (empty || spacer) null else item?.text
+                    isMouseTransparent = spacer
+                    pseudoClassStateChanged(PseudoClass.getPseudoClass("spacer"), spacer)
+                    pseudoClassStateChanged(current, !empty && !spacer && item != null && item == currentLyric)
                 }
+
             }
         }
-        spectrumCanvas.widthProperty().bind(foot.widthProperty().subtract(40.0))
+        lyricSkin = CenteredLyricSkin()
+        lyrics.skin = lyricSkin
+        lists.columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN
+        songSearch.textProperty().addListener { _, _, _ -> applyCurrentSearch() }
+        songSearch.setOnKeyPressed { event ->
+            if (event.code == KeyCode.ESCAPE) {
+                clearSearch()
+                event.consume()
+            }
+        }
+        clearSearch.visibleProperty().bind(songSearch.textProperty().isNotEmpty)
+        clearSearch.managedProperty().bind(clearSearch.visibleProperty())
+        volumeSlider.valueProperty().addListener { _, _, value ->
+            val percentage = value.toDouble().toInt()
+            player.volume((value.toDouble() / 100.0).toFloat())
+            volumeLabel.text = "$percentage%"
+            volumeTooltip.text = "音量 $percentage%，点击调节"
+            volumeIcon.content = if (percentage == 0) {
+                "M 2 8 L 7 8 L 13 3 L 13 21 L 7 16 L 2 16 Z M 17 8 L 24 16 M 24 8 L 17 16"
+            } else {
+                "M 2 8 L 7 8 L 13 3 L 13 21 L 7 16 L 2 16 Z M 16 8 Q 20 12 16 16 M 19 4 Q 27 12 19 20"
+            }
+        }
+        Tooltip.install(progressTrack, Tooltip("点击调整播放进度"))
+        spectrumCanvas.widthProperty().bind(foot.widthProperty())
+        spectrumCanvas.heightProperty().bind(foot.heightProperty())
+        spectrumCanvas.widthProperty().addListener { _, _, _ -> redrawSpectrum() }
+        spectrumCanvas.heightProperty().addListener { _, _, _ -> redrawSpectrum() }
     }
 
     /** 窗口就绪后加载歌曲并启动刷新，保留空列表时自动导入的行为。 */
@@ -144,6 +235,38 @@ class MusicPlayerController {
         this.stage = stage
         initPlayer()
         startSpectrumTimer()
+    }
+
+    @FXML
+    private fun clearSearch() {
+        songSearch.clear()
+        songSearch.requestFocus()
+    }
+
+    @FXML
+    private fun toggleVolume() {
+        if (volumePopup.isShowing) {
+            volumePopup.hide()
+            return
+        }
+        val bounds = volumeButton.localToScreen(volumeButton.boundsInLocal) ?: return
+        volumePopup.show(volumeButton, bounds.centerX - 36.0, bounds.minY - 190.0)
+    }
+
+    @FXML
+    private fun seekPlayback(event: MouseEvent) {
+        if (event.button != MouseButton.PRIMARY) return
+        event.consume()
+        if ((!player.playing() && !player.pausing()) || progressTrack.width <= 0.0) return
+        val total = player.duration()
+        if (!total.isFinite() || total <= 0.0) return
+        val fraction = (event.x / progressTrack.width).coerceIn(0.0, 1.0)
+        position = total * fraction
+        player.seek(position)
+        progress.progress = fraction
+        timeLabel1.text = CommUtils.format(position.toInt())
+        timeLabel2.text = CommUtils.format(total.toInt())
+        updateLyric(position)
     }
 
     @FXML
@@ -237,12 +360,25 @@ class MusicPlayerController {
     }
 
     private fun initSongTable(list: List<SongEntity>) {
-        lists.items.clear()
-        Constant.PLAYING_LIST.clear()
-        list.forEachIndexed { i, entity ->
-            Constant.PLAYING_LIST[i] = entity
+        allSongs = list.toList()
+        applyCurrentSearch()
+    }
+
+    /** 搜索只更新可见播放队列，不中断当前歌曲，也不触发选中播放。 */
+    private fun applyCurrentSearch() {
+        val keyword = songSearch.text.trim()
+        val visible = allSongs.filter {
+            keyword.isEmpty() || it.name.orEmpty().contains(keyword, ignoreCase = true) ||
+                it.author.orEmpty().contains(keyword, ignoreCase = true)
         }
-        lists.items.addAll(list)
+        lists.items.setAll(visible)
+        Constant.PLAYING_LIST.clear()
+        visible.forEachIndexed { index, song -> Constant.PLAYING_LIST[index] = song }
+        Constant.PLAYING_INDEX = visible.indexOfFirst { it.id == Constant.PLAYING_SONG?.id }
+            .takeIf { it >= 0 }
+        lists.selectionModel.clearSelection()
+        Constant.PLAYING_INDEX?.let { lists.selectionModel.select(it) }
+        playlistPlaceholder.text = if (keyword.isEmpty()) "暂无歌曲，请点击添加" else "没有匹配的歌曲"
     }
 
     /**
@@ -254,6 +390,8 @@ class MusicPlayerController {
      * @since SWT-V1.0.0.0
      */
     private fun next(index: String?, next: Boolean) {
+        if (disposed) return
+        if (Constant.PLAYING_LIST.isEmpty() && allSongs.isNotEmpty()) return
         if (CollUtil.isEmpty(Constant.PLAYING_LIST)) {
             val result = Alert(
                 Alert.AlertType.WARNING, "未发现歌曲，现在添加歌曲？", ButtonType.YES, ButtonType.NO
@@ -266,44 +404,70 @@ class MusicPlayerController {
             }
         }
 
-        if (StrUtil.isNotBlank(index)) {
-            Constant.PLAYING_INDEX = index!!.toInt()
-        } else {
-            if (null == Constant.PLAYING_INDEX) {
-                Constant.PLAYING_INDEX = 0
-            } else {
-                Constant.PLAYING_INDEX = Constant.PLAYING_INDEX!! + if (next) 1 else -1
-            }
-            if (Constant.PLAYING_INDEX!! > Constant.PLAYING_LIST.size - 1) {
-                Constant.PLAYING_INDEX = 0
-            }
-            if (Constant.PLAYING_INDEX!! < 0) {
-                Constant.PLAYING_INDEX = Constant.PLAYING_LIST.size - 1
-            }
-        }
+        if (Constant.PLAYING_LIST.isEmpty()) return
 
-        val song = Constant.PLAYING_LIST[Constant.PLAYING_INDEX]
-        Constant.PLAYING_SONG = song
-        Constant.PLAYING_SONG_LENGTH = song?.length ?: 0.0
+        val currentIndex = lists.items.indexOfFirst { it.id == (requestedSong ?: Constant.PLAYING_SONG)?.id }
+        val targetIndex = index?.toIntOrNull() ?: if (currentIndex < 0) 0
+            else Math.floorMod(currentIndex + if (next) 1 else -1, lists.items.size)
+        val song = Constant.PLAYING_LIST[targetIndex] ?: return
+        val id = ++requestId
+        requestedSong = song
+        player.stop()
+        Constant.PLAYING_SONG = null
+        Constant.PLAYING_INDEX = null
+        Constant.PLAYING_SONG_LENGTH = 0.0
+        Constant.MUSIC_PLAYER_PLAYING_STATE = false
+        Constant.PLAYING_LYRIC = false
+        lyricLines.clear()
+        lyrics.items.clear()
+        currentLyric = null
+        progress.progress = 0.0
+        timeLabel1.text = "00:00"
+        timeLabel2.text = "00:00"
+        start.image = CommUtils.getImage("stop.png")
 
-        // 播放前检查文件是否存在；不存在则提示删除
-        if (song == null || song.songPath.isNullOrBlank() || !Files.exists(Paths.get(song.songPath!!))) {
+        if (song.songPath.isNullOrBlank() || !Files.exists(Paths.get(song.songPath!!))) {
+            requestedSong = null
+            playbackStatus.text = "歌曲文件不存在"
             handleMissingSong(song)
             return
         }
 
-        try {
-            // 注册播放结束自动下一曲
-            (player as? MediaPlayer)?.onEndOfMedia = { next(null, true) }
-            player.load(song.songPath)
-            player.play()
-            Constant.MUSIC_PLAYER_PLAYING_STATE = true
-        } catch (e: Exception) {
-            log.error("选择歌曲播放异常！", e)
-        }
-
-        initLyric()
-        updateSongListsColor(song)
+        playbackStatus.tooltip = null
+        playbackStatus.text = "正在加载：${song.name ?: "未知歌曲"}"
+        (player as? MediaPlayer)?.onEndOfMedia = { next(null, true) }
+        player.loadAsync(song.songPath!!, onLoaded = {
+            if (!disposed && id == requestId) {
+                requestedSong = null
+                Constant.PLAYING_SONG = song
+                Constant.PLAYING_SONG_LENGTH = song.length ?: 0.0
+                Constant.PLAYING_INDEX = lists.items.indexOfFirst { it.id == song.id }.takeIf { it >= 0 }
+                player.play()
+                Constant.MUSIC_PLAYER_PLAYING_STATE = true
+                playbackStatus.text = ""
+                initLyric()
+                updateSongListsColor(song)
+            }
+        }, onError = { error ->
+            if (!disposed && id == requestId) {
+                requestedSong = null
+                Constant.PLAYING_SONG = null
+                Constant.PLAYING_INDEX = null
+                Constant.PLAYING_SONG_LENGTH = 0.0
+                Constant.MUSIC_PLAYER_PLAYING_STATE = false
+                Constant.PLAYING_LYRIC = false
+                lyricLines.clear()
+                lyrics.items.clear()
+                currentLyric = null
+                progress.progress = 0.0
+                timeLabel1.text = "00:00"
+                timeLabel2.text = "00:00"
+                start.image = CommUtils.getImage("stop.png")
+                playbackStatus.text = "播放失败：${song.name ?: "未知歌曲"}"
+                playbackStatus.tooltip = Tooltip(error.message ?: "无法加载音频")
+                log.error("[PLAYBACK-LOAD] 歌曲加载失败: {}", song.songPath, error)
+            }
+        })
     }
 
     /**
@@ -333,32 +497,21 @@ class MusicPlayerController {
             sqliteHelper.delete("delete from song where id = ?", song.id)
             log.info("已删除文件不存在的歌曲: {} (id={})", name, song.id)
 
-            // 从内存列表和界面移除
-            val removedIndex = Constant.PLAYING_INDEX
-            Constant.PLAYING_LIST.values.remove(song)
-            lists.items.remove(song)
-
-            // 若删除的是当前播放歌曲，停止播放
             if (Constant.PLAYING_SONG == song) {
                 player.stop()
                 Constant.PLAYING_SONG = null
-            }
-
-            // 修正播放索引：删除索引前的项索引不变，删除后的项前移一位
-            if (!Constant.PLAYING_LIST.isEmpty()) {
-                if (removedIndex != null) {
-                    if (removedIndex >= Constant.PLAYING_LIST.size) {
-                        Constant.PLAYING_INDEX = Constant.PLAYING_LIST.size - 1
-                    }
-                }
-            } else {
-                // 列表为空则清空播放状态
-                Constant.PLAYING_SONG = null
-                Constant.PLAYING_INDEX = null
+                Constant.PLAYING_LYRIC = false
+                Constant.MUSIC_PLAYER_PLAYING_STATE = false
+                lyricLines.clear()
+                lyrics.items.clear()
+                currentLyric = null
+                progress.progress = 0.0
                 start.image = CommUtils.getImage("stop.png")
                 timeLabel1.text = "00:00"
                 timeLabel2.text = "00:00"
             }
+            allSongs = allSongs.filterNot { it.id == song.id }
+            applyCurrentSearch()
         } catch (e: Exception) {
             log.error("删除歌曲失败！", e)
             Alert(Alert.AlertType.ERROR, "删除歌曲失败: ${e.message}").show()
@@ -372,15 +525,10 @@ class MusicPlayerController {
         timeLabel2.text = if (realDuration > 0) CommUtils.format(realDuration.toInt())
         else CommUtils.format(entity.length?.toInt() ?: 0)
 
-        // 高亮当前播放歌曲（程序化选中，避免递归触发播放）
-        syncingSelection = true
-        try {
-            Constant.PLAYING_INDEX?.let { index ->
-                lists.selectionModel.select(index)
-                lists.scrollTo(index)
-            }
-        } finally {
-            syncingSelection = false
+        // 高亮当前播放歌曲；单纯选中不再触发播放。
+        Constant.PLAYING_INDEX?.let { index ->
+            lists.selectionModel.select(index)
+            lists.scrollTo(index)
         }
     }
 
@@ -441,9 +589,8 @@ class MusicPlayerController {
             lyrics.refresh()
         }
 
-        // 自动滚动，将当前歌词行置于视口偏上
         if (highlightIndex != -1) {
-            lyrics.scrollTo(highlightIndex)
+            lyricSkin.centerOn(highlightIndex)
         }
     }
 
@@ -478,9 +625,73 @@ class MusicPlayerController {
             val lyricTime = parseLrcTime(parts[0])
             lyricLines.add(LyricLine(lyricTime, parts[1]))
         }
-        lyrics.items.addAll(lyricLines)
+        lyricSkin.resetLines()
         currentLyric = null
         lyrics.refresh()
+    }
+
+    /** 按实际行高居中，首尾补足空白行，使第一句和最后一句也能居中。 */
+    private inner class CenteredLyricSkin : ListViewSkin<LyricLine>(lyrics) {
+        private var targetIndex = 0
+        private var spacerCount = 0
+        private var centerPending = true
+        private var previousHeight = -1.0
+        private var previousWidth = -1.0
+
+        fun resetLines() {
+            spacerCount = 0
+            lyrics.items.setAll(lyricLines)
+            targetIndex = -1
+            centerOn(0)
+        }
+
+        fun centerOn(index: Int) {
+            // 同一句的播放进度刷新不重复滚动，避免像素取整导致上下振荡。
+            if (targetIndex == index) return
+            targetIndex = index
+            centerPending = true
+            lyrics.requestLayout()
+        }
+
+        override fun layoutChildren(x: Double, y: Double, w: Double, h: Double) {
+            super.layoutChildren(x, y, w, h)
+            if (lyricLines.isEmpty() || targetIndex !in lyricLines.indices) return
+            val resized = h != previousHeight || w != previousWidth
+            if (!centerPending && !resized) return
+            previousHeight = h
+            previousWidth = w
+            centerPending = false
+            val flow = virtualFlow
+            flow.layout()
+            if (lyrics.fixedCellSize <= 0.0) {
+                val cell = flow.getCell(spacerCount)
+                cell.applyCss()
+                lyrics.fixedCellSize = snapSizeY(cell.prefHeight(-1.0))
+            }
+            val rowHeight = lyrics.fixedCellSize
+            val padding = kotlin.math.ceil(flow.viewportLength / (2.0 * rowHeight)).toInt()
+            if (padding != spacerCount) {
+                spacerCount = padding
+                lyrics.items.setAll(List(padding) { lyricSpacer } + lyricLines + List(padding) { lyricSpacer })
+                super.layoutChildren(x, y, w, h)
+                flow.layout()
+            }
+            val index = targetIndex + spacerCount
+            flow.scrollTo(index)
+            flow.layout()
+            val current = flow.getVisibleCell(index) ?: return
+            val targetY = snapPositionY((flow.viewportLength - current.height) / 2.0)
+            val offset = current.layoutY - targetY
+            if (kotlin.math.abs(offset) > 0.1) flow.scrollPixels(offset)
+            // 大跨度跳转会复用缓存行，同步可见行的高亮状态。
+            val first = flow.firstVisibleCell?.index ?: return
+            val last = flow.lastVisibleCell?.index ?: return
+            val active = PseudoClass.getPseudoClass("current")
+            for (visibleIndex in first..last) {
+                val cell = flow.getVisibleCell(visibleIndex) ?: continue
+                cell.pseudoClassStateChanged(active, !cell.isEmpty && cell.item !== lyricSpacer && cell.item != null && cell.item == currentLyric)
+            }
+        }
     }
 
     /**
@@ -496,6 +707,7 @@ class MusicPlayerController {
         timer.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
                 Platform.runLater {
+                    if (disposed) return@runLater
                     // 使用 MediaPlayer 的真实播放位置
                     position = player.position()
                     // 频谱面板
@@ -606,7 +818,11 @@ class MusicPlayerController {
      * @since SWT-V1.0.0.0
      */
     fun dispose() {
+        disposed = true
+        requestId++
+        requestedSong = null
         timer.cancel()
+        volumePopup.hide()
         MusicPlayerTray.dispose()
         player.stop()
     }

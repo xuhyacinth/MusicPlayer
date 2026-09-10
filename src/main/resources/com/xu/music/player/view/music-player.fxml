@@ -6,48 +6,85 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.SVGPath?>
+<?import javafx.stage.Popup?>
 
 <BorderPane xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.xu.music.player.controller.MusicPlayerController"
             prefWidth="900.0" prefHeight="486.0" stylesheets="@../css/music-player.css">
+    <fx:define>
+        <Popup fx:id="volumePopup" autoHide="true" hideOnEscape="true" consumeAutoHidingEvents="false">
+            <content>
+                <VBox prefWidth="72.0" prefHeight="184.0" styleClass="volume-popup" stylesheets="@../css/music-player.css">
+                    <Label fx:id="volumeLabel" text="100%"/>
+                    <Slider fx:id="volumeSlider" orientation="VERTICAL" min="0.0" max="100.0" value="100.0" blockIncrement="5.0" VBox.vgrow="ALWAYS" accessibleText="音量百分比"/>
+                </VBox>
+            </content>
+        </Popup>
+    </fx:define>
     <center>
-        <HBox>
-            <VBox spacing="4.0" prefWidth="170.0" minWidth="170.0">
-                <Button text="＋ 添加歌曲" prefWidth="170.0" styleClass="add-song-button" onAction="#addSongs"/>
-                <TableView fx:id="lists" editable="false" prefWidth="170.0" minWidth="170.0" VBox.vgrow="ALWAYS">
+        <SplitPane fx:id="contentSplit" dividerPositions="0.249" styleClass="content-split">
+            <VBox minWidth="215.0" prefWidth="220.0" spacing="5.0" styleClass="playlist-pane" SplitPane.resizableWithParent="false">
+                <padding><Insets top="5.0" right="5.0" bottom="5.0" left="5.0"/></padding>
+                <HBox spacing="5.0" alignment="CENTER_LEFT">
+                    <Button styleClass="add-song-button" onAction="#addSongs" accessibleText="添加歌曲">
+                        <tooltip><Tooltip text="添加歌曲"/></tooltip>
+                        <graphic><ImageView fitWidth="24.0" fitHeight="24.0" preserveRatio="true">
+                            <image><Image url="@../image/addMusic.png"/></image>
+                        </ImageView></graphic>
+                    </Button>
+                    <TextField fx:id="songSearch" promptText="搜索歌曲或歌手" minWidth="0.0" HBox.hgrow="ALWAYS" accessibleText="搜索歌曲或歌手"/>
+                    <Button fx:id="clearSearch" text="×" onAction="#clearSearch" styleClass="clear-search-button" accessibleText="清空搜索">
+                        <tooltip><Tooltip text="清空搜索（Esc）"/></tooltip>
+                    </Button>
+                </HBox>
+                <TableView fx:id="lists" editable="false" VBox.vgrow="ALWAYS">
+                    <placeholder><Label fx:id="playlistPlaceholder" text="暂无歌曲，请点击添加"/></placeholder>
                     <columns>
-                        <TableColumn fx:id="indexColumn" text="序号" prefWidth="40.0"/>
-                        <TableColumn fx:id="nameColumn" text="歌曲" prefWidth="130.0"/>
+                        <TableColumn fx:id="indexColumn" text="序号" prefWidth="41.0" minWidth="41.0" maxWidth="41.0" sortable="false"/>
+                        <TableColumn fx:id="nameColumn" text="歌曲" prefWidth="160.0" sortable="false"/>
                     </columns>
                 </TableView>
             </VBox>
-            <ListView fx:id="lyrics" styleClass="lyrics" HBox.hgrow="ALWAYS"/>
-        </HBox>
+            <ListView fx:id="lyrics" minWidth="200.0" styleClass="lyrics"/>
+        </SplitPane>
     </center>
     <bottom>
-        <VBox fx:id="foot" spacing="4.0" styleClass="player-footer" onMouseClicked="#changeSpectrumColor">
-            <padding><Insets top="8.0" right="20.0" bottom="8.0" left="20.0"/></padding>
-            <HBox alignment="CENTER_LEFT" maxWidth="Infinity">
-                <Label fx:id="timeLabel1" text="00:00" styleClass="time-label"/>
-                <Region HBox.hgrow="ALWAYS"/>
-                <Label fx:id="timeLabel2" text="00:00" styleClass="time-label"/>
+        <StackPane fx:id="foot" prefHeight="70.0" minHeight="70.0" maxHeight="70.0" styleClass="player-footer" onMouseClicked="#changeSpectrumColor">
+            <Canvas fx:id="spectrumCanvas" managed="false" mouseTransparent="true" opacity="0.18"/>
+            <HBox alignment="CENTER_LEFT" spacing="0.0" pickOnBounds="false">
+                <padding><Insets top="4.0" right="33.0" bottom="4.0" left="33.0"/></padding>
+                <HBox spacing="33.0" alignment="CENTER_LEFT" pickOnBounds="false">
+                    <ImageView fx:id="prev" fitWidth="32.0" fitHeight="32.0" preserveRatio="true" styleClass="playback-icon" accessibleText="上一曲"
+                               onMousePressed="#pressPrevious" onMouseReleased="#playPrevious">
+                        <image><Image url="@../image/lastsong-1.png"/></image>
+                    </ImageView>
+                    <ImageView fx:id="start" fitWidth="32.0" fitHeight="32.0" preserveRatio="true" styleClass="playback-icon" accessibleText="播放或暂停"
+                               onMouseClicked="#togglePlayback">
+                        <image><Image url="@../image/stop.png"/></image>
+                    </ImageView>
+                    <ImageView fx:id="nextButton" fitWidth="32.0" fitHeight="32.0" preserveRatio="true" styleClass="playback-icon" accessibleText="下一曲"
+                               onMousePressed="#pressNext" onMouseReleased="#playNext">
+                        <image><Image url="@../image/nextsong-1.png"/></image>
+                    </ImageView>
+                </HBox>
+                <Region minWidth="43.0" prefWidth="43.0"/>
+                <VBox alignment="CENTER" minWidth="100.0" HBox.hgrow="ALWAYS" translateY="-5.0" pickOnBounds="false">
+                    <HBox alignment="CENTER_LEFT">
+                        <Label fx:id="timeLabel1" text="00:00" styleClass="time-label"/>
+                        <Label fx:id="playbackStatus" minWidth="0.0" maxWidth="Infinity" alignment="CENTER" HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="timeLabel2" text="00:00" styleClass="time-label"/>
+                    </HBox>
+                    <StackPane fx:id="progressTrack" minHeight="20.0" prefHeight="20.0" styleClass="progress-hit-area" onMouseClicked="#seekPlayback">
+                        <ProgressBar fx:id="progress" progress="0.0" minHeight="6.0" prefHeight="6.0" maxHeight="6.0" maxWidth="Infinity" mouseTransparent="true"/>
+                    </StackPane>
+                </VBox>
+                <Region minWidth="18.0" prefWidth="18.0"/>
+                <Button fx:id="volumeButton" onAction="#toggleVolume" styleClass="volume-button" minWidth="32.0" prefWidth="32.0" minHeight="32.0" prefHeight="32.0" accessibleText="调节音量">
+                    <tooltip><Tooltip fx:id="volumeTooltip" text="音量 100%，点击调节"/></tooltip>
+                    <graphic><SVGPath fx:id="volumeIcon" content="M 2 8 L 7 8 L 13 3 L 13 21 L 7 16 L 2 16 Z M 16 8 Q 20 12 16 16 M 19 4 Q 27 12 19 20" styleClass="volume-icon"/></graphic>
+                </Button>
             </HBox>
-            <HBox spacing="20.0" alignment="CENTER_LEFT" maxWidth="Infinity">
-                <ImageView fx:id="prev" fitWidth="28.0" fitHeight="28.0" preserveRatio="true"
-                           onMousePressed="#pressPrevious" onMouseReleased="#playPrevious">
-                    <image><Image url="@../image/lastsong-1.png"/></image>
-                </ImageView>
-                <ImageView fx:id="start" fitWidth="28.0" fitHeight="28.0" preserveRatio="true"
-                           onMouseClicked="#togglePlayback">
-                    <image><Image url="@../image/stop.png"/></image>
-                </ImageView>
-                <ImageView fx:id="nextButton" fitWidth="28.0" fitHeight="28.0" preserveRatio="true"
-                           onMousePressed="#pressNext" onMouseReleased="#playNext">
-                    <image><Image url="@../image/nextsong-1.png"/></image>
-                </ImageView>
-                <ProgressBar fx:id="progress" progress="0.0" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
-            </HBox>
-            <Canvas fx:id="spectrumCanvas" height="60.0"/>
-        </VBox>
+        </StackPane>
     </bottom>
 </BorderPane>
