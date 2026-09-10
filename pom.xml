@@ -19,6 +19,12 @@
     </properties>
 
     <dependencies>
+        <!-- Windows 任务栏歌词窗口使用原生接口，非 Windows 平台不初始化。 -->
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna-platform-jpms</artifactId>
+            <version>5.19.0</version>
+        </dependency>
 
         <!-- mp3 -->
         <dependency>
@@ -178,6 +184,7 @@
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>com.xu.music.player.main.MusicPlayer</mainClass>
                                     <manifestEntries>
+                                        <Enable-Native-Access>ALL-UNNAMED</Enable-Native-Access>
                                         <SWT-OS>${swt.os}</SWT-OS>
                                         <SWT-Arch>${swt.arch}</SWT-Arch>
                                     </manifestEntries>

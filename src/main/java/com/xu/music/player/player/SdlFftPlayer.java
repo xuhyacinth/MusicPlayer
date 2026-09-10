@@ -33,11 +33,7 @@ public final class SdlFftPlayer implements Player {
     }
 
     public static SdlFftPlayer create() {
-        return SingletonHolder.PLAYER;
-    }
-
-    private static class SingletonHolder {
-        private static final SdlFftPlayer PLAYER = new SdlFftPlayer();
+        return new SdlFftPlayer();
     }
 
     @Override

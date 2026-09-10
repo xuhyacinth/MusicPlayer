@@ -23,7 +23,11 @@ import org.slf4j.LoggerFactory;
 
 import com.xu.music.player.constant.Constant;
 import com.xu.music.player.entity.SongEntity;
-import com.xu.music.player.hander.MusicPlayerError;
+import com.xu.music.player.lyric.CenteredLyrics;
+import com.xu.music.player.lyric.LrcLine;
+import com.xu.music.player.taskbar.TaskbarLyrics;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import com.xu.music.player.lyric.LrcParser;
 import com.xu.music.player.player.Player;
 import com.xu.music.player.player.SdlFftPlayer;
@@ -67,7 +71,11 @@ public class MusicPlayer {
     // 歌曲列表搜索输入框
     private Text songSearch;
     // 歌词列表格
-    private Table lyrics;
+    private CenteredLyrics lyrics;
+    private final TaskbarLyrics taskbarLyrics = new TaskbarLyrics();
+    private final AsyncPlaybackLoader playbackLoader = new AsyncPlaybackLoader(SdlFftPlayer::create);
+    private volatile int volumePercentage = 100;
+    private volatile boolean closing;
     // 底部控制与频谱展示面板
     private Composite foot;
     // 进度条组件
@@ -141,7 +149,7 @@ public class MusicPlayer {
 
         // 托盘引入
         tray = display.getSystemTray();
-        MusicPlayerTray trayutil = new MusicPlayerTray(shell, tray, this::exit);
+        MusicPlayerTray trayutil = new MusicPlayerTray(shell, tray, this::exit, taskbarLyrics);
         trayutil.tray();
 
         Composite composite = new Composite(shell, SWT.NONE);
@@ -234,14 +242,7 @@ public class MusicPlayer {
         composite2.setBackgroundMode(SWT.INHERIT_FORCE);
         composite2.setLayout(new FillLayout(SWT.HORIZONTAL));
 
-        lyrics = new Table(composite2, SWT.NONE);
-
-        TableColumn lyric1 = new TableColumn(lyrics, SWT.CENTER);
-        lyric1.setText("歌词");
-
-        TableColumn lyric2 = new TableColumn(lyrics, SWT.CENTER);
-        lyric2.setWidth(738);
-        lyric2.setText("歌词");
+        lyrics = new CenteredLyrics(composite2);
 
         foot = new Composite(sashForm, SWT.NONE);
         foot.setBackgroundMode(SWT.INHERIT_FORCE);
@@ -315,7 +316,10 @@ public class MusicPlayer {
         timeLabel2.setEnabled(false);
         timeLabel2.setBounds(743, 4, 73, 20);
 
-        var volumeControl = new VolumeControl(foot, player::setVolume);
+        var volumeControl = new VolumeControl(foot, value -> {
+            volumePercentage = value;
+            player.setVolume(value);
+        });
         volumeControl.setBounds(834, 18, 32, 32);
 
         sashForm.setWeights(1, 5, 1);
@@ -632,7 +636,8 @@ public class MusicPlayer {
         Constant.PLAYING_INDEX = snapshot.playingIndex();
         if (snapshot.playingIndex() == null) {
             if (previousSong != null && !containsSong(allSongs, playingSongId)) {
-                player.stop();
+                AsyncPlaybackLoader.release(player);
+                player = SdlFftPlayer.create();
                 clearCurrentSong();
                 resetPlaybackUi();
             }
@@ -651,6 +656,7 @@ public class MusicPlayer {
     }
 
     private void clearCurrentSong() {
+        playbackRequests.beginRequest();
         Constant.PLAYING_SONG = null;
         Constant.PLAYING_INDEX = null;
         Constant.PLAYING_SONG_LENGTH = 0;
@@ -686,29 +692,68 @@ public class MusicPlayer {
     }
 
     private void playSong(int index, SongEntity song, long requestGeneration) {
+        resetPlaybackUi();
+        // UI 只持有已就绪的播放器，不与后台 load 的同步锁竞争。
+        player = SdlFftPlayer.create();
         Constant.PLAYING_INDEX = index;
         Constant.PLAYING_SONG = song;
         Constant.PLAYING_SONG_LENGTH = song.getLength();
-        try {
-            player.onNaturalCompletion(() -> scheduleNaturalAdvance(requestGeneration));
-            PlaybackStarter.start(player, song.getSongPath());
-        } catch (MusicPlayerError exception) {
-            log.error("选择歌曲播放异常", exception);
-            resetPlaybackUi();
-            showError("无法播放所选歌曲，请检查文件格式和音频设备。");
-            return;
-        }
+        var loadedLyrics = new AtomicReference<List<LrcLine>>(List.of());
+        var lyricFailed = new AtomicBoolean();
+        var completed = new AtomicBoolean();
+        playbackLoader.load(song.getSongPath(),
+                () -> !closing && playbackRequests.snapshot() == requestGeneration,
+                candidate -> {
+                    loadedLyrics.set(readLyrics(song, lyricFailed));
+                    candidate.setVolume(volumePercentage);
+                    candidate.onNaturalCompletion(() -> {
+                        completed.set(true);
+                        postPlaybackUi(() -> {
+                            if (player == candidate) scheduleNaturalAdvance(requestGeneration);
+                        }, () -> {});
+                    });
+                },
+                candidate -> postPlaybackUi(() -> {
+                    if (playbackRequests.snapshot() != requestGeneration) {
+                        AsyncPlaybackLoader.release(candidate);
+                        return;
+                    }
+                    try {
+                        player = candidate;
+                        player.setVolume(volumePercentage);
+                        Constant.MUSIC_PLAYER_PLAYING_STATE = true;
+                        lyrics.setLines(loadedLyrics.get());
+                        Constant.PLAYING_LYRIC = !loadedLyrics.get().isEmpty();
+                        taskbarLyrics.update(song, null);
+                        startRefresh(foot);
+                        updateSongListsColor(lists, song);
+                        if (completed.get()) scheduleNaturalAdvance(requestGeneration);
+                        if (lyricFailed.get()) showError("歌曲已开始播放，但歌词文件无法读取。");
+                    } catch (RuntimeException error) {
+                        AsyncPlaybackLoader.release(candidate);
+                        player = SdlFftPlayer.create();
+                        resetPlaybackUi();
+                        log.error("播放界面更新异常", error);
+                        showError("歌曲已停止，播放器界面更新失败。");
+                    }
+                }, () -> AsyncPlaybackLoader.release(candidate)),
+                error -> postPlaybackUi(() -> {
+                    if (playbackRequests.snapshot() != requestGeneration) return;
+                    log.error("选择歌曲播放异常", error);
+                    resetPlaybackUi();
+                    showError("无法播放所选歌曲，请检查文件格式和音频设备。");
+                }, () -> {}));
+    }
 
+    private void postPlaybackUi(Runnable action, Runnable discarded) {
+        if (closing || display.isDisposed()) { discarded.run(); return; }
         try {
-            Constant.MUSIC_PLAYER_PLAYING_STATE = true;
-            initLyric();
-            startRefresh(foot);
-            updateSongListsColor(lists, song);
-        } catch (RuntimeException exception) {
-            player.stop();
-            log.error("播放界面更新异常", exception);
-            resetPlaybackUi();
-            showError("歌曲已停止，播放器界面更新失败。");
+            display.asyncExec(() -> {
+                if (closing || shell.isDisposed()) discarded.run(); else action.run();
+            });
+        } catch (org.eclipse.swt.SWTException error) {
+            if (error.code != SWT.ERROR_DEVICE_DISPOSED) throw error;
+            discarded.run();
         }
     }
 
@@ -771,77 +816,19 @@ public class MusicPlayer {
     }
 
     private void updateLyric(double currentPosition) {
-        if (!Constant.PLAYING_LYRIC) {
-            return;
-        }
-
-        TableItem[] items = lyrics.getItems();
-        if (items.length == 0) {
-            return;
-        }
-
-        int highlightIndex = -1;
-        double maxTime = -1.0;
-
-        // 寻找小于等于当前播放进度的最大歌词时间戳
-        for (int i = 0; i < items.length; i++) {
-            Object timeObj = items[i].getData("time");
-            if (timeObj instanceof Double) {
-                double t = (Double) timeObj;
-                if (t >= 0 && t <= currentPosition) {
-                    if (t > maxTime) {
-                        maxTime = t;
-                        highlightIndex = i;
-                    }
-                }
-            }
-        }
-
-        // 高亮当前行，清除其它行高亮
-        for (int i = 0; i < items.length; i++) {
-            if (i == highlightIndex) {
-                items[i].setBackground(Utils.getColor(SWT.COLOR_GRAY));
-            } else {
-                items[i].setBackground(Utils.getColor(SWT.COLOR_WHITE));
-            }
-        }
-
-        // 自动滚动，将当前歌词行置于视口偏上
-        if (highlightIndex != -1) {
-            if (highlightIndex <= 7) {
-                lyrics.setTopIndex(0);
-            } else {
-                lyrics.setTopIndex(highlightIndex - 7);
-            }
-        }
+        taskbarLyrics.update(Constant.PLAYING_SONG, lyrics.update(currentPosition));
     }
 
-    private void initLyric() {
-        Constant.PLAYING_LYRIC = false;
-        lyrics.removeAll();
-
-        if (StrUtil.isBlank(Constant.PLAYING_SONG.getLyricPath())) {
-            return;
-        }
-
-        var path = Paths.get(Constant.PLAYING_SONG.getLyricPath());
-        if (!Files.exists(path)) {
-            return;
-        }
-
+    private List<LrcLine> readLyrics(SongEntity song, AtomicBoolean failed) {
+        if (StrUtil.isBlank(song.getLyricPath())) return List.of();
         try {
-            var lyric = LrcParser.parse(FileUtil.readUtf8Lines(path.toFile()));
-            Constant.PLAYING_LYRIC = !lyric.isEmpty();
-            for (var line : lyric) {
-                var item = new TableItem(lyrics, SWT.NONE);
-                item.setText(new String[]{line.tag(), line.text()});
-                item.setData("time", line.seconds());
-            }
-        } catch (RuntimeException exception) {
-            log.error("歌词加载异常: {}", path, exception);
-            Constant.PLAYING_LYRIC = false;
-            lyrics.removeAll();
-            showError("歌曲已开始播放，但歌词文件无法读取。");
+            var path = Paths.get(song.getLyricPath());
+            if (!Files.exists(path)) return List.of();
+            return LrcParser.parse(FileUtil.readUtf8Lines(path.toFile()));
+        } catch (RuntimeException error) {
+            log.error("歌词加载异常: {}", song.getLyricPath(), error);
+            failed.set(true);
+            return List.of();
         }
     }
 
@@ -903,9 +890,8 @@ public class MusicPlayer {
         if (timeLabel2 != null && !timeLabel2.isDisposed()) {
             timeLabel2.setText(Utils.format(0));
         }
-        if (lyrics != null && !lyrics.isDisposed()) {
-            lyrics.removeAll();
-        }
+        if (lyrics != null) lyrics.setLines(List.of());
+        taskbarLyrics.update(null, null);
     }
 
     private void showError(String message) {
@@ -926,10 +912,12 @@ public class MusicPlayer {
      * 退出并释放关联的托盘与播放器进程硬件资源
      */
     private void exit() {
+        closing = true;
+        playbackRequests.beginRequest();
         stopRefresh();
-        if (player != null) {
-            player.close();
-        }
+        taskbarLyrics.close();
+        AsyncPlaybackLoader.release(player);
+        playbackLoader.close();
         if (tray != null && !tray.isDisposed()) {
             tray.dispose();
         }
