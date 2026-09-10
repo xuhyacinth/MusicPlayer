@@ -31,6 +31,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import com.xu.music.player.lyric.LrcParser;
 import com.xu.music.player.player.Player;
 import com.xu.music.player.player.SdlFftPlayer;
+import com.xu.music.player.player.UnsupportedAudioOutputException;
 import com.xu.music.player.tray.MusicPlayerTray;
 import com.xu.music.player.utils.Utils;
 import com.xu.music.player.window.SongChoose;
@@ -87,6 +88,7 @@ public class MusicPlayer {
     private int clickX, clickY;
     // 总播放时间标签
     private Label timeLabel2;
+    private Label audioFormatLabel;
     private final PlaybackRequestGate playbackRequests = new PlaybackRequestGate();
     // 播放/暂停控制按钮
     private Label start;
@@ -315,6 +317,10 @@ public class MusicPlayer {
         timeLabel2.setFont(Utils.getFont("Consolas", 9, SWT.NORMAL));
         timeLabel2.setEnabled(false);
         timeLabel2.setBounds(743, 4, 73, 20);
+
+        audioFormatLabel = new Label(foot, SWT.CENTER);
+        audioFormatLabel.setFont(foot.getFont());
+        audioFormatLabel.setBounds(313, 4, 428, 20);
 
         var volumeControl = new VolumeControl(foot, value -> {
             volumePercentage = value;
@@ -692,6 +698,10 @@ public class MusicPlayer {
     }
 
     private void playSong(int index, SongEntity song, long requestGeneration) {
+        playSong(index, song, requestGeneration, false);
+    }
+
+    private void playSong(int index, SongEntity song, long requestGeneration, boolean allow16BitCompatibility) {
         resetPlaybackUi();
         // UI 只持有已就绪的播放器，不与后台 load 的同步锁竞争。
         player = SdlFftPlayer.create();
@@ -701,7 +711,7 @@ public class MusicPlayer {
         var loadedLyrics = new AtomicReference<List<LrcLine>>(List.of());
         var lyricFailed = new AtomicBoolean();
         var completed = new AtomicBoolean();
-        playbackLoader.load(song.getSongPath(),
+        playbackLoader.load(song.getSongPath(), () -> SdlFftPlayer.create(allow16BitCompatibility),
                 () -> !closing && playbackRequests.snapshot() == requestGeneration,
                 candidate -> {
                     loadedLyrics.set(readLyrics(song, lyricFailed));
@@ -720,6 +730,9 @@ public class MusicPlayer {
                     }
                     try {
                         player = candidate;
+                        audioFormatLabel.setText(candidate.audioFormatDescription());
+                        audioFormatLabel.setToolTipText(candidate.audioFormatDescription()
+                                + "\n显示 Java Sound 通道格式；系统混音和设备处理可能改变数据，不代表端到端位精确输出。");
                         player.setVolume(volumePercentage);
                         Constant.MUSIC_PLAYER_PLAYING_STATE = true;
                         lyrics.setLines(loadedLyrics.get());
@@ -741,7 +754,21 @@ public class MusicPlayer {
                     if (playbackRequests.snapshot() != requestGeneration) return;
                     log.error("选择歌曲播放异常", error);
                     resetPlaybackUi();
-                    showError("无法播放所选歌曲，请检查文件格式和音频设备。");
+                    if (error instanceof UnsupportedAudioOutputException unsupported) {
+                        if (unsupported.compatibilityAvailable()) {
+                            var box = new MessageBox(shell, SWT.YES | SWT.NO | SWT.ICON_QUESTION);
+                            box.setText("音频输出格式不支持");
+                            box.setMessage(unsupported.getMessage()
+                                    + "\n\n是否仅对本次播放使用 16 位兼容模式？这会降低播放精度，但不会修改原文件。"
+                                    + "\n选择“否”将保持停止。");
+                            int answer = box.open();
+                            // 模态对话框期间也可能切歌或关闭窗口，不重试已过期请求。
+                            if (answer == SWT.YES && !closing && !shell.isDisposed()
+                                    && playbackRequests.snapshot() == requestGeneration) {
+                                playSong(index, song, playbackRequests.beginRequest(), true);
+                            }
+                        } else showError(unsupported.getMessage());
+                    } else showError("无法播放所选歌曲，请检查文件格式和音频设备。");
                 }, () -> {}));
     }
 
@@ -874,6 +901,10 @@ public class MusicPlayer {
     }
 
     private void resetPlaybackUi() {
+        if (audioFormatLabel != null && !audioFormatLabel.isDisposed()) {
+            audioFormatLabel.setText("");
+            audioFormatLabel.setToolTipText(null);
+        }
         Constant.MUSIC_PLAYER_PLAYING_STATE = false;
         Constant.PLAYING_LYRIC = false;
         stopRefresh();

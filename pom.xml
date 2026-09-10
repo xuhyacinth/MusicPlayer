@@ -12,6 +12,7 @@
 
     <properties>
         <java.version>25</java.version>
+        <musicplayer.buildDirectory>target</musicplayer.buildDirectory>
         <slf4j.version>2.0.18</slf4j.version>
         <swt.version>3.134.0</swt.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -116,6 +117,8 @@
     </dependencies>
 
     <build>
+        <!-- 跨平台打包可使用独立输出目录，避免覆盖本机产物。 -->
+        <directory>${musicplayer.buildDirectory}</directory>
         <plugins>
             <!-- 配置 maven-jar-plugin -->
             <plugin>

@@ -86,7 +86,7 @@ SWT 3.134 的 `Library.isLoadable` 从 Shade JAR 加载原生库时，需要 Man
 flowchart LR
     UI["SWT 事件与播放列表"] --> Player["SdlFftPlayer.load / play"]
     Player --> Decode["Java Sound + MP3/FLAC Provider"]
-    Decode --> PCM["16-bit little-endian PCM"]
+    Decode --> PCM["原始位深 little-endian PCM"]
     PCM --> Line["SourceDataLine 音频输出"]
     PCM --> Analyzer["PcmSpectrumAnalyzer"]
     Analyzer --> FFT["JTransforms FFT 快照"]
@@ -185,6 +185,40 @@ lib/song/                          示例音频与歌词
 
 任务栏歌词是独立透明窗口，不向 Explorer 注入。当前仅支持 Windows 主屏横向任务栏；自动隐藏收起或前台全屏时隐藏，不自动避让每一个任务栏图标，位置及宽度尚未跨启动保存。非 Windows 平台不显示任务栏歌词菜单。
 
+## FLAC 位深与跨平台音频输出
+
+Windows、Linux、macOS 使用同一套 Java Sound 解码、输出选择和 PCM 处理代码，不引入平台专用音频库。
+
+- 默认保留采样率、声道数和已知位深，24 位 FLAC 不会自动降成 16 位。
+- 音量和频谱支持 8/16/24/32 位小端有符号 PCM；FLAC 可解码的位深仍受 JFLAC Provider 限制，当前回归覆盖 16 位和 24 位。
+- 100% 软件音量直接复制采样字节；降低音量会改变采样值。频谱只读取数据，不改变音频输出。
+- 当前 Java Sound 输出通道不支持原始格式、但支持同采样率/声道的 16 位格式时，弹窗询问是否仅对本次播放启用兼容模式。选择“否”保持停止，选择“是”才降位深；切歌后重新按原始精度请求。
+- 进度条上方显示源格式与实际打开的 Java Sound 通道格式，降位深时标注“兼容”；悬停可查看完整说明。
+- 打开设备失败不会被当成格式不支持而悄悄降级。没有可用兼容格式时明确报错。
+- Java Sound 接受 24 位不等于系统端到端位精确输出；系统共享混音、驱动或设备仍可能转换。当前未实现 WASAPI/CoreAudio/ALSA 独占模式。
+
+### 构建与验证范围
+
+`.github/workflows/build.yml` 配置 Windows、Linux、macOS 三系统 JDK 25 构建与无设备依赖测试；推送后由 CI 执行，工作流文件本身不是三端运行通过的证明。
+
+从 Windows 交叉打包时显式关闭 Windows Profile，并使用独立目录，避免混入其他平台的 SWT 或覆盖本机产物：
+
+```powershell
+mvn verify "-P!windows-x64,linux-x64" "-Dmusicplayer.buildDirectory=target/platform-check/linux-x64"
+mvn verify "-P!windows-x64,macos-x64" "-Dmusicplayer.buildDirectory=target/platform-check/macos-x64"
+mvn verify "-P!windows-x64,macos-arm64" "-Dmusicplayer.buildDirectory=target/platform-check/macos-arm64"
+```
+
+这些交叉构建验证源代码、测试和平台依赖打包，不代表在目标系统打开了设备或窗口。目标系统使用自己的构建包；macOS 启动 SWT 仍需 `-XstartOnFirstThread`。
+
+真实设备验证可在三系统分别执行（静音测试，不访问用户歌曲和数据库）：
+
+```text
+mvn test -Dtest=AudioOutputDeviceTest -Dmusicplayer.audioTests=true
+```
+
+回归样本包含非零低八位的 24 位 FLAC，测试逐采样验证精度、音量、频谱、前后跳转和资源释放。真机验收还需检查：不支持格式时取消/接受弹窗、实际播放与暂停/跳转、连续切歌，以及 UI 显示的源格式和输出格式。
+
 ## 数据库模型
 
 `song` 表的主要字段如下：
@@ -218,7 +252,7 @@ lib/song/                          示例音频与歌词
 - 删除歌曲记录只修改 SQLite，不删除对应音频文件；
 - 示例数据库中的外部文件路径。
 
-这些测试不打开真实声卡。`SourceDataLine` 用测试替身验证生命周期，因此 CI 或无音频设备环境也能运行；真实设备、托盘和窗口交互仍需要目标平台冒烟测试。
+默认测试不打开真实声卡；显式启用的 `AudioOutputDeviceTest` 除外。`SourceDataLine` 用测试替身验证生命周期，因此 CI 或无音频设备环境也能运行；真实设备、托盘和窗口交互仍需要目标平台冒烟测试。
 
 新增回归测试覆盖异步加载与过期请求释放、歌词时间边界与居中留白、任务栏缩放坐标和穿透窗口样式。默认跳过需要真实桌面的测试；Windows 桌面可显式运行：
 

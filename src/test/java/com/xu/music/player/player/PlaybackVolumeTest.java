@@ -20,7 +20,7 @@ public class PlaybackVolumeTest {
         byte[] input = samples(32767, -32768, 1000, -1000);
         byte[] original = input.clone();
         byte[] output = new byte[input.length];
-        volume.apply(input, 0, input.length, output);
+        volume.apply(input, 0, input.length, output, 16);
         assertArrayEquals(original, output);
         assertArrayEquals(original, input);
     }
@@ -31,7 +31,7 @@ public class PlaybackVolumeTest {
         volume.setPercentage(50);
         byte[] input = samples(32767, -32768, 1000, -1000);
         byte[] output = new byte[input.length];
-        volume.apply(input, 0, input.length, output);
+        volume.apply(input, 0, input.length, output, 16);
         assertArrayEquals(samples(16383, -16384, 500, -500), output);
         assertArrayEquals(samples(32767, -32768, 1000, -1000), input);
     }
@@ -43,10 +43,10 @@ public class PlaybackVolumeTest {
         byte[] output = new byte[input.length];
         Arrays.fill(output, (byte) 127);
         volume.setPercentage(0);
-        volume.apply(input, 0, input.length, output);
+        volume.apply(input, 0, input.length, output, 16);
         assertArrayEquals(new byte[input.length], output);
         volume.setPercentage(100);
-        volume.apply(input, 0, input.length, output);
+        volume.apply(input, 0, input.length, output, 16);
         assertArrayEquals(input, output);
     }
 
@@ -56,10 +56,10 @@ public class PlaybackVolumeTest {
         byte[] input = samples(6000, -6000, 2000, -2000);
         byte[] output = new byte[4];
         volume.setPercentage(200);
-        volume.apply(input, 4, 4, output);
+        volume.apply(input, 4, 4, output, 16);
         assertArrayEquals(samples(2000, -2000), output);
         volume.setPercentage(-1);
-        volume.apply(input, 4, 4, output);
+        volume.apply(input, 4, 4, output, 16);
         assertArrayEquals(new byte[4], output);
     }
 

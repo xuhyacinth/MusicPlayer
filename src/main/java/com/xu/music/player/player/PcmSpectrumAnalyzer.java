@@ -6,7 +6,7 @@ import javax.sound.sampled.AudioFormat;
 import java.util.Arrays;
 
 /**
- * 将小端 16 位 PCM 转为单声道样本并生成频谱快照。
+ * 将小端有符号 PCM 转为单声道频谱样本，不改写播放数据。
  */
 public final class PcmSpectrumAnalyzer {
 
@@ -26,8 +26,8 @@ public final class PcmSpectrumAnalyzer {
     }
 
     public synchronized void accept(byte[] buffer, int offset, int length, AudioFormat format) {
-        if (format.isBigEndian() || format.getSampleSizeInBits() != 16) {
-            throw new IllegalArgumentException("仅支持小端 16 位 PCM");
+        if (format.isBigEndian() || !AudioFormat.Encoding.PCM_SIGNED.equals(format.getEncoding())) {
+            throw new IllegalArgumentException("仅支持小端有符号 PCM");
         }
 
         var frameSize = format.getFrameSize();
@@ -43,15 +43,17 @@ public final class PcmSpectrumAnalyzer {
     }
 
     double decodeFrame(byte[] buffer, int offset, int channels, int sampleSizeInBits) {
-        if (sampleSizeInBits != 16 || channels <= 0) {
+        if (channels <= 0) {
             throw new IllegalArgumentException("PCM 参数不受支持");
         }
 
+        int bytes = PcmSamples.bytesPerSample(sampleSizeInBits);
+        double scale = Math.scalb(1.0, sampleSizeInBits - 1);
         var mixed = 0.0;
         for (var channel = 0; channel < channels; channel++) {
-            var sampleOffset = offset + channel * 2;
-            var sample = (short) ((buffer[sampleOffset + 1] << 8) | (buffer[sampleOffset] & 0xFF));
-            mixed += sample / 32768.0;
+            var sampleOffset = offset + channel * bytes;
+            var sample = PcmSamples.read(buffer, sampleOffset, bytes);
+            mixed += sample / scale;
         }
         return mixed / channels;
     }

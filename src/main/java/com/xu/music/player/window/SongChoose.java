@@ -39,8 +39,7 @@ public class SongChoose {
      */
     public int open(Shell shell) {
         try {
-            FileDialog dialog = new FileDialog(shell, SWT.OPEN | SWT.MULTI);
-            dialog.setFilterExtensions(new String[]{"*.mp3", "*.MP3", "*.wav", "*.WAV", "*.flac", "*.FLAC", "*.pcm", "*.PCM"});
+            FileDialog dialog = createDialog(shell);
             if (dialog.open() == null) {
                 return 0;
             }
@@ -111,6 +110,21 @@ public class SongChoose {
         } catch (Exception e) {
             throw new RuntimeException("导入歌曲失败", e);
         }
+    }
+
+    static FileDialog createDialog(Shell shell) {
+        FileDialog dialog = new FileDialog(shell, SWT.OPEN | SWT.MULTI);
+        // 每个数组元素对应一个筛选项，同一项中的多个扩展名须用分号分隔。
+        dialog.setFilterExtensions(new String[]{
+                "*.mp3;*.MP3;*.wav;*.WAV;*.flac;*.FLAC;*.pcm;*.PCM",
+                "*.mp3;*.MP3", "*.wav;*.WAV", "*.flac;*.FLAC", "*.pcm;*.PCM"
+        });
+        dialog.setFilterNames(new String[]{
+                "音频文件（MP3、WAV、FLAC、PCM）",
+                "MP3 音频", "WAV 音频", "FLAC 音频", "PCM 音频"
+        });
+        dialog.setFilterIndex(0);
+        return dialog;
     }
 
     /**

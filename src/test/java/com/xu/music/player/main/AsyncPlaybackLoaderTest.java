@@ -107,6 +107,27 @@ public class AsyncPlaybackLoaderTest {
         assertNotSame(SdlFftPlayer.create(), SdlFftPlayer.create());
     }
 
+    @Test public void requestSpecificCompatibilityDoesNotLeakToNextSong() throws Exception {
+        var defaults = new AtomicInteger();
+        var compatible = new AtomicInteger();
+        var ready = new CountDownLatch(2);
+        var failure = new AtomicReference<Exception>();
+        try (var loader = new AsyncPlaybackLoader(() -> {
+            defaults.incrementAndGet();
+            return player(method -> {});
+        })) {
+            loader.load("compatible", () -> {
+                compatible.incrementAndGet();
+                return player(method -> {});
+            }, () -> true, value -> {}, value -> ready.countDown(), failure::set);
+            loader.load("next", () -> true, value -> {}, value -> ready.countDown(), failure::set);
+            assertTrue(ready.await(5, TimeUnit.SECONDS));
+            assertNull(failure.get());
+            assertEquals(1, compatible.get());
+            assertEquals(1, defaults.get());
+        }
+    }
+
     private static Player player(Invocation invocation) {
         return (Player) Proxy.newProxyInstance(Player.class.getClassLoader(), new Class<?>[]{Player.class},
                 (proxy, method, args) -> { invocation.call(method.getName()); return null; });

@@ -29,11 +29,24 @@ public final class SdlFftPlayer implements Player {
     private final PlaybackVolume playbackVolume = new PlaybackVolume();
     private final AtomicLong taskSequence = new AtomicLong();
 
-    private SdlFftPlayer() {
+    private final boolean allow16BitCompatibility;
+    private volatile String formatDescription = "";
+
+    private SdlFftPlayer(boolean allow16BitCompatibility) {
+        this.allow16BitCompatibility = allow16BitCompatibility;
     }
 
     public static SdlFftPlayer create() {
-        return new SdlFftPlayer();
+        return create(false);
+    }
+
+    public static SdlFftPlayer create(boolean allow16BitCompatibility) {
+        return new SdlFftPlayer(allow16BitCompatibility);
+    }
+
+    @Override
+    public String audioFormatDescription() {
+        return formatDescription;
     }
 
     @Override
@@ -90,24 +103,21 @@ public final class SdlFftPlayer implements Player {
         SourceDataLine line = null;
         try {
             var sourceFormat = source.getFormat();
-            var pcmFormat = new AudioFormat(
-                    AudioFormat.Encoding.PCM_SIGNED,
-                    sourceFormat.getSampleRate(),
-                    16,
-                    sourceFormat.getChannels(),
-                    sourceFormat.getChannels() * 2,
-                    sourceFormat.getSampleRate(),
-                    false);
-            pcm = AudioSystem.getAudioInputStream(pcmFormat, source);
+            var pcmFormat = AudioOutputPolicy.select(sourceFormat, allow16BitCompatibility,
+                    format -> AudioSystem.isLineSupported(new DataLine.Info(SourceDataLine.class, format)));
+            pcm = PcmAudioConverter.convert(source, pcmFormat);
             var info = new DataLine.Info(SourceDataLine.class, pcmFormat, AudioSystem.NOT_SPECIFIED);
             line = (SourceDataLine) AudioSystem.getLine(info);
             line.open(pcmFormat);
+            if (!pcmFormat.matches(line.getFormat())) {
+                throw new UnsupportedAudioOutputException("音频通道实际打开的格式与请求不一致，已停止播放。", false);
+            }
 
             var analyzer = new PcmSpectrumAnalyzer(Constant.SPECTRUM_TOTAL_NUMBER);
             PlaybackSession.AudioSource pcmSource = reopen == null ? null : () -> {
                 var reopened = reopen.open();
                 try {
-                    return AudioSystem.getAudioInputStream(pcmFormat, reopened);
+                    return PcmAudioConverter.convert(reopened, pcmFormat);
                 } catch (Exception exception) {
                     reopened.close();
                     throw exception;
@@ -115,6 +125,9 @@ public final class SdlFftPlayer implements Player {
             };
             var session = new PlaybackSession(pcm, line, pcmFormat, analyzer, pcmSource, playbackVolume);
             var previous = sessions.replace(session);
+            formatDescription = AudioOutputPolicy.describeRoute(sourceFormat, line.getFormat());
+            log.info("音频输出：{}；源编码={}，Java Sound 格式不代表系统端到端位精确输出", formatDescription,
+                    sourceFormat.getEncoding());
             if (previous != null) {
                 previous.close();
             }
@@ -245,6 +258,7 @@ public final class SdlFftPlayer implements Player {
 
     @Override
     public synchronized void stop() {
+        formatDescription = "";
         var session = sessions.detach();
         if (session != null) {
             session.close();

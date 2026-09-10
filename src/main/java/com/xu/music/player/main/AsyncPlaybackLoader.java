@@ -21,6 +21,11 @@ final class AsyncPlaybackLoader implements AutoCloseable {
 
     void load(String path, BooleanSupplier current, Consumer<Player> prepare,
               Consumer<Player> ready, Consumer<Exception> failed) {
+        load(path, factory, current, prepare, ready, failed);
+    }
+
+    void load(String path, Supplier<Player> requestFactory, BooleanSupplier current, Consumer<Player> prepare,
+              Consumer<Player> ready, Consumer<Exception> failed) {
         worker.execute(() -> {
             if (!current.getAsBoolean()) return;
             Player candidate = null;
@@ -29,7 +34,7 @@ final class AsyncPlaybackLoader implements AutoCloseable {
                     active.close();
                     active = null;
                 }
-                candidate = factory.get();
+                candidate = requestFactory.get();
                 candidate.load(path);
                 if (!current.getAsBoolean()) { candidate.close(); return; }
                 prepare.accept(candidate);

@@ -15,6 +15,10 @@ import javax.sound.sampled.AudioInputStream;
  */
 public interface Player extends AutoCloseable {
 
+    /** 源格式和当前 Java Sound 输出格式，仅描述应用输出，不保证系统位精确输出。 */
+    default String audioFormatDescription() {
+        return "";
+    }
     /**
      * 加载音频
      *

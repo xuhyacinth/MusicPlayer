@@ -191,7 +191,7 @@ final class PlaybackSession implements AutoCloseable {
                         if (volumeBuffer.length < writable) {
                             volumeBuffer = new byte[writable];
                         }
-                        volume.apply(buffer, offset, writable, volumeBuffer);
+                        volume.apply(buffer, offset, writable, volumeBuffer, format.getSampleSizeInBits());
                         int written = line.write(volumeBuffer, 0, writable);
                         analyzer.accept(volumeBuffer, 0, written, format);
                         offset += written;
