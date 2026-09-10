@@ -92,6 +92,7 @@ public class MusicPlayer {
     private final PlaybackRequestGate playbackRequests = new PlaybackRequestGate();
     // 播放/暂停控制按钮
     private Label start;
+    private PlaybackModeControl playbackMode;
     // 是否按下了界面以进行拖拽移动
     private boolean click = false;
 
@@ -249,13 +250,16 @@ public class MusicPlayer {
         foot = new Composite(sashForm, SWT.NONE);
         foot.setBackgroundMode(SWT.INHERIT_FORCE);
 
+        playbackMode = new PlaybackModeControl(foot);
+        playbackMode.setBounds(28, 18, 32, 32);
+
         Label prev = new Label(foot, SWT.NONE);
         prev.setImage(Utils.getImage("lastsong-1.png"));
-        prev.setBounds(33, 18, 32, 32);
+        prev.setBounds(84, 18, 32, 32);
 
         Label next = new Label(foot, SWT.NONE);
         next.setImage(Utils.getImage("nextsong-1.png"));
-        next.setBounds(165, 18, 32, 32);
+        next.setBounds(196, 18, 32, 32);
 
         start = new Label(foot, SWT.NONE);
         start.addMouseListener(new MouseAdapter() {
@@ -276,7 +280,7 @@ public class MusicPlayer {
             }
         });
         start.setImage(Utils.getImage("stop.png"));
-        start.setBounds(98, 18, 32, 32);
+        start.setBounds(140, 18, 32, 32);
 
         progress = new Canvas(foot, SWT.DOUBLE_BUFFERED);
         progress.setBounds(238, 24, 578, 20);
@@ -683,13 +687,14 @@ public class MusicPlayer {
         var playableIndex = PlaylistNavigator.findPlayable(
                 Constant.PLAYING_INDEX,
                 Constant.PLAYING_LIST.size(),
-                direction,
-                index -> SongFileAvailability.isPlayable(Constant.PLAYING_LIST.get(index)));
+                direction, playbackMode.mode(), playbackAlreadyEnded,
+                index -> SongFileAvailability.isPlayable(Constant.PLAYING_LIST.get(index)),
+                bound -> java.util.concurrent.ThreadLocalRandom.current().nextInt(bound));
         if (playableIndex.isEmpty()) {
             if (playbackAlreadyEnded || !player.playing()) {
                 resetPlaybackUi();
             }
-            showInfo("没有可播放的歌曲。");
+            if (!playbackAlreadyEnded) showInfo("没有可播放的歌曲。");
             return;
         }
 
