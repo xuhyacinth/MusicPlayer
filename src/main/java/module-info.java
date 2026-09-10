@@ -7,6 +7,8 @@ module com.xu.music.player.musicplayer {
     requires javafx.media;
     requires kotlin.stdlib;
     requires java.desktop;
+    requires com.sun.jna;
+    requires com.sun.jna.platform;
     requires cn.hutool;
     requires java.sql;
     requires org.slf4j;

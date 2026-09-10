@@ -1,8 +1,10 @@
 package com.xu.music.player.tray
 
+import com.xu.music.player.taskbar.TaskbarLyrics
 import com.xu.music.player.utils.CommUtils
 import javafx.application.Platform
 import javafx.stage.Stage
+import java.awt.CheckboxMenuItem
 import java.awt.MenuItem
 import java.awt.PopupMenu
 import java.awt.SystemTray
@@ -59,6 +61,24 @@ object MusicPlayerTray {
 
             popup.addSeparator()
 
+            if (TaskbarLyrics.supported) {
+                val lyricsItem = CheckboxMenuItem("任务栏歌词", false)
+                lyricsItem.addItemListener {
+                    TaskbarLyrics.setEnabled(lyricsItem.state) { message ->
+                        lyricsItem.state = false
+                        trayIcon?.displayMessage("任务栏歌词不可用", message, TrayIcon.MessageType.ERROR)
+                    }
+                }
+                popup.add(lyricsItem)
+                val lockItem = CheckboxMenuItem("锁定歌词位置（鼠标穿透）", true)
+                lockItem.addItemListener { TaskbarLyrics.setLocked(lockItem.state) }
+                popup.add(lockItem)
+                popup.add(MenuItem("歌词变窄").apply { addActionListener { TaskbarLyrics.changeWidth(-40) } })
+                popup.add(MenuItem("歌词变宽").apply { addActionListener { TaskbarLyrics.changeWidth(40) } })
+                popup.add(MenuItem("重置歌词位置和宽度").apply { addActionListener { TaskbarLyrics.resetPosition() } })
+                popup.addSeparator()
+            }
+
             val closeItem = MenuItem("关闭")
             closeItem.addActionListener { _: ActionEvent? ->
                 Platform.runLater { stage.close() }
@@ -88,6 +108,7 @@ object MusicPlayerTray {
      * @since SWT-V1.0.0.0
      */
     fun dispose() {
+        TaskbarLyrics.dispose()
         try {
             if (trayIcon != null) {
                 SystemTray.getSystemTray().remove(trayIcon)

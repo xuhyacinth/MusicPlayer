@@ -5,6 +5,7 @@ import com.xu.music.player.entity.SongEntity
 import com.xu.music.player.player.MediaPlayer
 import com.xu.music.player.player.Player
 import com.xu.music.player.sql.SQLiteHelper
+import com.xu.music.player.taskbar.TaskbarLyrics
 import com.xu.music.player.tray.MusicPlayerTray
 import com.xu.music.player.utils.CommUtils
 import com.xu.music.player.window.SongChoose
@@ -421,6 +422,7 @@ class MusicPlayerController {
         lyricLines.clear()
         lyrics.items.clear()
         currentLyric = null
+        TaskbarLyrics.update(Constant.PLAYING_SONG, null)
         progress.progress = 0.0
         timeLabel1.text = "00:00"
         timeLabel2.text = "00:00"
@@ -459,6 +461,7 @@ class MusicPlayerController {
                 lyricLines.clear()
                 lyrics.items.clear()
                 currentLyric = null
+                TaskbarLyrics.update(Constant.PLAYING_SONG, null)
                 progress.progress = 0.0
                 timeLabel1.text = "00:00"
                 timeLabel2.text = "00:00"
@@ -505,6 +508,7 @@ class MusicPlayerController {
                 lyricLines.clear()
                 lyrics.items.clear()
                 currentLyric = null
+                TaskbarLyrics.update(Constant.PLAYING_SONG, null)
                 progress.progress = 0.0
                 start.image = CommUtils.getImage("stop.png")
                 timeLabel1.text = "00:00"
@@ -561,10 +565,8 @@ class MusicPlayerController {
      * @since SWT-V1.0.0.0
      */
     private fun updateLyric(currentPosition: Double) {
-        if (!Constant.PLAYING_LYRIC) {
-            return
-        }
-        if (lyricLines.isEmpty()) {
+        if (!Constant.PLAYING_LYRIC || lyricLines.isEmpty()) {
+            TaskbarLyrics.update(Constant.PLAYING_SONG, null)
             return
         }
 
@@ -589,6 +591,7 @@ class MusicPlayerController {
             lyrics.refresh()
         }
 
+        TaskbarLyrics.update(Constant.PLAYING_SONG, currentLyric?.text)
         if (highlightIndex != -1) {
             lyricSkin.centerOn(highlightIndex)
         }
@@ -627,6 +630,7 @@ class MusicPlayerController {
         }
         lyricSkin.resetLines()
         currentLyric = null
+        TaskbarLyrics.update(Constant.PLAYING_SONG, null)
         lyrics.refresh()
     }
 

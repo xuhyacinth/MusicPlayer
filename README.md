@@ -24,6 +24,20 @@ JavaFX 界面参考 `swt-java/v1.1.0` 分支，保留系统标题栏的最小化
 - 点击右侧音量图标弹出竖向滑块；再次点击图标、点击外部或按 Esc 收起。音量在切换歌曲时保留，不写入数据库，也不跨应用重启保存。
 - 频谱绘制在底栏背景，不再额外占一行；双击底栏空白处切换频谱颜色。
 
+## Windows 11 任务栏歌词
+
+右键系统托盘中的播放器图标，勾选 **任务栏歌词**（默认关闭）。它是任务栏空白区域上的独立透明窗口，不修改 Explorer，也不会自动挤开任务栏图标。
+
+- 正常播放显示当前句；没有歌词、歌词尚未开始或当前句为空时显示歌曲名和歌手。暂停时保留当前句，切歌或加载失败时清除旧句。
+- 默认锁定位置，鼠标点击穿透，不抢焦点，不新增任务栏按钮或 Alt+Tab 项目。
+- 取消 **锁定歌词位置（鼠标穿透）** 后出现蓝色调整背景：可横向拖动，滚轮调整宽度。调好后重新锁定。
+- 托盘另有 **歌词变窄 / 歌词变宽 / 重置歌词位置和宽度**。超长文字省略显示，位置和宽度仅在本次运行内保留。
+- 只覆盖主任务栏，按主屏显示缩放换算坐标。任务栏隐藏到屏幕边缘、Explorer 暂时不可用或前台窗口覆盖整屏时隐藏歌词，并每 500ms 检查恢复。
+- 右侧预留托盘区域，但**不自动识别所有任务栏图标的空隙**。如与图标、其他播放器歌词重叠，请解锁后调整位置或缩窄；不需要时关闭。
+- 主屏 Windows 11 的窗口创建、位置、焦点、穿透样式及退出释放有原生测试；多屏混合缩放、自动隐藏动画和各类独占全屏应用仍需实际环境验收。
+
+原生接口使用 JNA 的 JPMS 模块。通过 Maven 启动已配置 `--enable-native-access=com.sun.jna`；手动使用模块路径启动时，请保留此授权及原有 JavaFX、SQLite 原生访问参数。非 Windows 不显示此菜单，不影响主播放器。
+
 ## 代码结构
 
 ```text
@@ -33,6 +47,7 @@ src/main/
 │   ├── MusicPlayer.kt                          # FXML 加载与应用生命周期
 │   ├── controller/MusicPlayerController.kt      # 事件绑定与动态界面更新
 │   ├── player/                                 # 音频播放
+│   ├── taskbar/                                # Windows 透明任务栏歌词及原生定位
 │   ├── window/SongChoose.kt                     # 系统文件选择器与导入
 │   ├── sql/                                    # SQLite 访问
 │   └── wrapper/                                # Kotlin 数据库操作封装
@@ -52,9 +67,9 @@ src/main/
 .\mvnw.cmd clean verify
 ```
 
-测试覆盖 FXML/CSS/图片加载、正常/放大/最小尺寸布局、搜索与清空、播放队列切换、进度定位与歌词同步、百行歌词顺序播放及首中末行跳转居中、单行歌词与窗口缩放居中、音量弹窗、Kotlin Wrapper 增删改查，以及静音 WAV 原生播放、暂停定位和切歌音量保留。另覆盖 FLAC 样本边界、截断/无样本数文件、异步加载失败、过期请求和关闭取消。JavaFX 测试需要可用的桌面和媒体运行环境。
+测试覆盖 FXML/CSS/图片加载、正常/放大/最小尺寸布局、搜索与清空、播放队列切换、进度定位与歌词同步、百行歌词顺序播放及首中末行跳转居中、跨界面刷新周期的同句防抖、单行歌词与窗口缩放居中、音量弹窗、Kotlin Wrapper 增删改查，以及静音 WAV 原生播放、暂停定位和切歌音量保留。另覆盖 FLAC 样本边界、截断/无样本数文件、异步加载失败、过期请求和关闭取消。JavaFX 测试需要可用的桌面和媒体运行环境。
 
-测试工作目录固定为 `target`，测试数据库只写入 `target/sqlite/db/MusicPlayer.db`，不会修改项目的真实数据库。测试还会生成界面快照 `target/fxml-preview.png`、`target/fxml-wide-preview.png`、`target/fxml-small-preview.png` 、`target/volume-preview.png` 和 `target/lyrics-center-preview.png`（使用测试数据，不包含系统标题栏）。
+测试工作目录固定为 `target`，测试数据库只写入 `target/sqlite/db/MusicPlayer.db`，不会修改项目的真实数据库。测试还会生成界面快照 `target/fxml-preview.png`、`target/fxml-wide-preview.png`、`target/fxml-small-preview.png` 、`target/volume-preview.png` 和 `target/lyrics-center-preview.png`（使用测试数据，不包含系统标题栏）。任务栏歌词测试另生成 `target/taskbar-lyrics-preview.png`，覆盖文本回退、缩放坐标、穿透切换、窗口显隐及资源释放。
 
 测试用 `playback-tone.flac` 是 FFmpeg 生成的 0.35 秒、44.1kHz 双声道 16-bit 正弦波，不包含真实歌曲。FLAC 转码按文件声明的样本数结束；没有有效总样本数的文件会明确报错，不进行无边界解码。
 

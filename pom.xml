@@ -73,6 +73,13 @@
             <version>${javafx.version}</version>
         </dependency>
 
+        <!-- Windows 任务栏歌词窗口使用的原生接口，选择显式模块版本。 -->
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna-platform-jpms</artifactId>
+            <version>5.19.0</version>
+        </dependency>
+
         <!-- kotlin -->
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
@@ -125,7 +132,7 @@
                         <configuration>
                             <mainClass>com.xu.music.player.musicplayer/com.xu.music.player.MusicPlayer</mainClass>
                             <options>
-                                <option>--enable-native-access=javafx.graphics,javafx.media,org.xerial.sqlitejdbc</option>
+                                <option>--enable-native-access=javafx.graphics,javafx.media,org.xerial.sqlitejdbc,com.sun.jna</option>
                             </options>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
