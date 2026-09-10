@@ -62,6 +62,70 @@ class MigrationTest {
     }
 
     @Test
+    fun `tray uses Swing Chinese menus and preserves checkbox actions and disposal`(): Unit = onFx {
+        org.junit.jupiter.api.Assumptions.assumeTrue(java.awt.SystemTray.isSupported())
+        val stage = Stage()
+        com.xu.music.player.tray.MusicPlayerTray.tray(stage)
+        val task = FutureTask {
+            val type = com.xu.music.player.tray.MusicPlayerTray::class.java
+            val field = type.getDeclaredField("trayPopup").apply { isAccessible = true }
+            val popup = field.get(null) as com.xu.music.player.tray.SwingTrayPopup
+            try {
+                val items = popup.menu.components.filterIsInstance<javax.swing.JMenuItem>()
+                assertEquals("显示主窗口", items.first().text)
+                assertEquals("关闭", items.last().text)
+                assertTrue(items.all { it.font.canDisplayUpTo(it.text) == -1 })
+                assertTrue(java.awt.SystemTray.getSystemTray().trayIcons.all { it.popupMenu == null })
+                val lock = items.filterIsInstance<javax.swing.JCheckBoxMenuItem>()
+                    .firstOrNull { it.text == "锁定歌词位置（鼠标穿透）" }
+                lock?.let {
+                    val locked = com.xu.music.player.taskbar.TaskbarLyrics::class.java
+                        .getDeclaredField("locked").apply { isAccessible = true }
+                    assertTrue(it.isSelected)
+                    it.doClick(0)
+                    assertFalse(it.isSelected)
+                    assertFalse(locked.getBoolean(null))
+                    it.doClick(0)
+                    assertTrue(it.isSelected)
+                    assertTrue(locked.getBoolean(null))
+                }
+                val pointer = java.awt.MouseInfo.getPointerInfo()
+                val config = pointer.device.defaultConfiguration
+                val bounds = config.bounds
+                val insets = java.awt.Toolkit.getDefaultToolkit().getScreenInsets(config)
+                val available = java.awt.Rectangle(bounds.x + insets.left, bounds.y + insets.top,
+                    bounds.width - insets.left - insets.right, bounds.height - insets.top - insets.bottom)
+                val icon = java.awt.SystemTray.getSystemTray().trayIcons.single()
+                val trigger = java.awt.event.MouseEvent(java.awt.Canvas(), java.awt.event.MouseEvent.MOUSE_RELEASED,
+                    0, 0, -30000, -30000, 1, true,
+                    java.awt.event.MouseEvent.BUTTON3)
+                icon.mouseListeners.forEach { it.mouseReleased(trigger) }
+                assertTrue(popup.menu.isVisible)
+                assertTrue(bounds.contains(popup.owner.bounds))
+                // 故意传入远离鼠标的事件坐标，验证托盘入口使用真实鼠标逻辑坐标。
+                if (pointer.location == java.awt.MouseInfo.getPointerInfo().location) {
+                    assertEquals(com.xu.music.player.tray.SwingTrayPopup.placement(pointer.location,
+                        popup.menu.preferredSize, available), popup.owner.bounds)
+                }
+                val image = BufferedImage(popup.menu.width, popup.menu.height, BufferedImage.TYPE_INT_ARGB)
+                val graphics = image.createGraphics()
+                try { popup.menu.printAll(graphics) } finally { graphics.dispose() }
+                ImageIO.write(image, "png", Path.of("swing-tray-menu-preview.png").toFile())
+                popup.menu.isVisible = false
+                assertFalse(popup.owner.isVisible)
+                popup.showAt(java.awt.Point(bounds.x + 50, bounds.y + 50))
+                assertTrue(popup.menu.isVisible)
+            } finally {
+                com.xu.music.player.tray.MusicPlayerTray.dispose()
+                assertFalse(popup.owner.isDisplayable)
+                assertNull(field.get(null))
+            }
+        }
+        java.awt.EventQueue.invokeLater(task)
+        try { task.get(10, TimeUnit.SECONDS) } finally { stage.close() }
+    }
+
+    @Test
     fun `Kotlin wrappers preserve song fields and quote names`() {
         val song = SongEntity(id = "song-1", name = "歌手's 歌曲", index = 1,
             songPath = "C:/音乐/歌曲.wav", length = 123.0)

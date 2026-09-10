@@ -4,9 +4,12 @@ import com.xu.music.player.taskbar.TaskbarLyrics
 import com.xu.music.player.utils.CommUtils
 import javafx.application.Platform
 import javafx.stage.Stage
-import java.awt.CheckboxMenuItem
-import java.awt.MenuItem
-import java.awt.PopupMenu
+import java.awt.EventQueue
+import java.awt.event.MouseAdapter
+import java.awt.event.MouseEvent
+import javax.swing.JCheckBoxMenuItem
+import javax.swing.JMenuItem
+import javax.swing.JPopupMenu
 import java.awt.SystemTray
 import java.awt.TrayIcon
 import java.awt.event.ActionEvent
@@ -21,6 +24,7 @@ import java.awt.image.BufferedImage
 object MusicPlayerTray {
 
     private var trayIcon: TrayIcon? = null
+    private var trayPopup: SwingTrayPopup? = null
 
     /**
      * 初始化系统托盘
@@ -33,71 +37,81 @@ object MusicPlayerTray {
         if (stage == null || !SystemTray.isSupported()) {
             return
         }
-        try {
-            if (trayIcon != null) {
-                return
-            }
-
-            val awtImage = CommUtils.getImage("main.png")
-                ?.let { fromFxImage(it) }
-                ?: BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB)
-
-            val popup = PopupMenu()
-            val showItem = MenuItem("显示主窗口")
-            showItem.addActionListener { _: ActionEvent? ->
-                Platform.runLater {
-                    stage.show()
-                    stage.toFront()
-                    stage.isIconified = false
-                }
-            }
-            popup.add(showItem)
-
-            val miniItem = MenuItem("最小化")
-            miniItem.addActionListener { _: ActionEvent? ->
-                Platform.runLater { stage.isIconified = true }
-            }
-            popup.add(miniItem)
-
-            popup.addSeparator()
-
-            if (TaskbarLyrics.supported) {
-                val lyricsItem = CheckboxMenuItem("任务栏歌词", false)
-                lyricsItem.addItemListener {
-                    TaskbarLyrics.setEnabled(lyricsItem.state) { message ->
-                        lyricsItem.state = false
-                        trayIcon?.displayMessage("任务栏歌词不可用", message, TrayIcon.MessageType.ERROR)
+        val awtImage = CommUtils.getImage("main.png")
+            ?.let { fromFxImage(it) }
+            ?: BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB)
+        onAwt {
+            try {
+                if (trayIcon != null) return@onAwt
+                val popup = JPopupMenu()
+                val showItem = JMenuItem("显示主窗口")
+                showItem.addActionListener { _: ActionEvent? ->
+                    Platform.runLater {
+                        stage.show()
+                        stage.toFront()
+                        stage.isIconified = false
                     }
                 }
-                popup.add(lyricsItem)
-                val lockItem = CheckboxMenuItem("锁定歌词位置（鼠标穿透）", true)
-                lockItem.addItemListener { TaskbarLyrics.setLocked(lockItem.state) }
-                popup.add(lockItem)
-                popup.add(MenuItem("歌词变窄").apply { addActionListener { TaskbarLyrics.changeWidth(-40) } })
-                popup.add(MenuItem("歌词变宽").apply { addActionListener { TaskbarLyrics.changeWidth(40) } })
-                popup.add(MenuItem("重置歌词位置和宽度").apply { addActionListener { TaskbarLyrics.resetPosition() } })
-                popup.addSeparator()
-            }
+                popup.add(showItem)
 
-            val closeItem = MenuItem("关闭")
-            closeItem.addActionListener { _: ActionEvent? ->
-                Platform.runLater { stage.close() }
-            }
-            popup.add(closeItem)
-
-            val icon = TrayIcon(awtImage, "音乐播放器", popup)
-            icon.isImageAutoSize = true
-            icon.addActionListener { _: ActionEvent? ->
-                Platform.runLater {
-                    stage.show()
-                    stage.toFront()
-                    stage.isIconified = false
+                val miniItem = JMenuItem("最小化")
+                miniItem.addActionListener { _: ActionEvent? ->
+                    Platform.runLater { stage.isIconified = true }
                 }
+                popup.add(miniItem)
+
+                popup.addSeparator()
+
+                if (TaskbarLyrics.supported) {
+                    val lyricsItem = JCheckBoxMenuItem("任务栏歌词", false)
+                    lyricsItem.addActionListener {
+                        TaskbarLyrics.setEnabled(lyricsItem.isSelected) { message ->
+                            lyricsItem.isSelected = false
+                            trayIcon?.displayMessage("任务栏歌词不可用", message, TrayIcon.MessageType.ERROR)
+                        }
+                    }
+                    popup.add(lyricsItem)
+                    val lockItem = JCheckBoxMenuItem("锁定歌词位置（鼠标穿透）", true)
+                    lockItem.addActionListener { TaskbarLyrics.setLocked(lockItem.isSelected) }
+                    popup.add(lockItem)
+                    popup.add(JMenuItem("歌词变窄").apply { addActionListener { TaskbarLyrics.changeWidth(-40) } })
+                    popup.add(JMenuItem("歌词变宽").apply { addActionListener { TaskbarLyrics.changeWidth(40) } })
+                    popup.add(JMenuItem("重置歌词位置和宽度").apply { addActionListener { TaskbarLyrics.resetPosition() } })
+                    popup.addSeparator()
+                }
+
+                val closeItem = JMenuItem("关闭")
+                closeItem.addActionListener { _: ActionEvent? ->
+                    Platform.runLater { stage.close() }
+                }
+                popup.add(closeItem)
+
+                val menu = SwingTrayPopup(popup)
+                trayPopup = menu
+                val icon = TrayIcon(awtImage, "音乐播放器")
+                icon.addMouseListener(object : MouseAdapter() {
+                    override fun mousePressed(event: MouseEvent) {
+                        if (event.isPopupTrigger) menu.showAtPointer()
+                    }
+                    override fun mouseReleased(event: MouseEvent) {
+                        if (event.isPopupTrigger) menu.showAtPointer()
+                    }
+                })
+                icon.isImageAutoSize = true
+                icon.addActionListener { _: ActionEvent? ->
+                    Platform.runLater {
+                        stage.show()
+                        stage.toFront()
+                        stage.isIconified = false
+                    }
+                }
+                SystemTray.getSystemTray().add(icon)
+                trayIcon = icon
+            } catch (e: Exception) {
+                trayPopup?.dispose()
+                trayPopup = null
+                // 托盘初始化失败不影响主程序运行
             }
-            SystemTray.getSystemTray().add(icon)
-            trayIcon = icon
-        } catch (e: Exception) {
-            // 托盘初始化失败不影响主程序运行
         }
     }
 
@@ -109,14 +123,16 @@ object MusicPlayerTray {
      */
     fun dispose() {
         TaskbarLyrics.dispose()
-        try {
-            if (trayIcon != null) {
-                SystemTray.getSystemTray().remove(trayIcon)
-                trayIcon = null
-            }
-        } catch (e: Exception) {
-            // 忽略
+        onAwt {
+            trayPopup?.dispose()
+            trayPopup = null
+            trayIcon?.let { SystemTray.getSystemTray().remove(it) }
+            trayIcon = null
         }
+    }
+
+    private fun onAwt(action: () -> Unit) {
+        if (EventQueue.isDispatchThread()) action() else EventQueue.invokeLater(action)
     }
 
     /**
